@@ -20,7 +20,7 @@ public class Constants {
     
     
     public static final String FUNCIONARIO = "/funcionario";
-    
+    public static final String GENERAR = CONTRATO + "/generar";
     
     /*REST Actividad*/
     public static final String ACTIVIDAD = "actividad";       

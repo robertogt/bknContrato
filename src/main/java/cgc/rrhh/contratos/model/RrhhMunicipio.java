@@ -32,7 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "RrhhMunicipio.findByDepartamento", query = "SELECT r FROM RrhhMunicipio r WHERE r.rrhhMunicipioPK.departamento = :departamento")
     , @NamedQuery(name = "RrhhMunicipio.findByMunicipio", query = "SELECT r FROM RrhhMunicipio r WHERE r.rrhhMunicipioPK.municipio = :municipio")
     , @NamedQuery(name = "RrhhMunicipio.findByNombre", query = "SELECT r FROM RrhhMunicipio r WHERE r.nombre = :nombre")
-    , @NamedQuery(name = "RrhhMunicipio.findByOrden", query = "SELECT r FROM RrhhMunicipio r WHERE r.orden = :orden")})
+    , @NamedQuery(name = "RrhhMunicipio.findByOrden", query = "SELECT r FROM RrhhMunicipio r WHERE r.orden = :orden")
+    , @NamedQuery(name = "RrhhMunicipio.findByMunicipioDepto", query = "SELECT r FROM RrhhMunicipio r WHERE r.rrhhMunicipioPK.municipio = :municipio AND r.rrhhMunicipioPK.departamento = :departamento")})
 public class RrhhMunicipio implements Serializable {
 
     private static final long serialVersionUID = 1L;

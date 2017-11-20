@@ -59,7 +59,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "RrhhLaboral.findByBonoProfesional", query = "SELECT r FROM RrhhLaboral r WHERE r.bonoProfesional = :bonoProfesional")
     , @NamedQuery(name = "RrhhLaboral.findByHonorario", query = "SELECT r FROM RrhhLaboral r WHERE r.honorario = :honorario")
     , @NamedQuery(name = "RrhhLaboral.findByNumeroFianza", query = "SELECT r FROM RrhhLaboral r WHERE r.numeroFianza = :numeroFianza")
-    , @NamedQuery(name = "RrhhLaboral.findByRue", query = "SELECT r FROM RrhhLaboral r WHERE r.idRue.idRue = :rue ORDER BY r.fechaInsert DESC ")})
+    , @NamedQuery(name = "RrhhLaboral.findByRue", query = "SELECT r FROM RrhhLaboral r WHERE r.idRue.idRue = :rue ORDER BY r.fechaInsert DESC ")
+    , @NamedQuery(name = "RrhhLaboral.findByContrato", query = "SELECT r FROM RrhhLaboral r WHERE r.idContrato.idContrato = :contrato ")})
 
 public class RrhhLaboral implements Serializable {
 

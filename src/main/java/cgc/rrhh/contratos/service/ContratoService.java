@@ -276,6 +276,20 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         return eval;
     }
     
+    public RrhhLaboral findLaboralByContrato(BigDecimal idContrato){
+        try {
+            TypedQuery<RrhhLaboral> query = em
+                    .createNamedQuery("RrhhLaboral.findByContrato",RrhhLaboral.class);
+            query.setParameter("contrato", idContrato);            
+            return query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
 
     @Override
     protected EntityManager getEntityManager() {

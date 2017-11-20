@@ -142,5 +142,19 @@ public class ActividadPerfilService {
         }
     }
     
+    public List<ResultsActividad> findActividadesByContrato(BigDecimal idContrato){
+        try {
+            TypedQuery<ResultsActividad> query = em
+                .createNamedQuery("RrhhActividad.actividadByContrato",ResultsActividad.class);            
+            query.setParameter(1, idContrato);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
     
 }

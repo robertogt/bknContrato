@@ -60,6 +60,11 @@ import javax.xml.bind.annotation.XmlRootElement;
                             "WHERE P.ID_PERFIL = ? "+
                             "ORDER BY A.NOMBRE ASC ",
                       resultSetMapping = "ResultsActividad"),
+    @NamedNativeQuery(name = "RrhhActividad.actividadByContrato",
+                      query = "SELECT ROWNUM ID_ACTIVIDAD, A.DESCRIPCION FROM RRHH_ACTIVIDAD_CONTRATO C " +
+"INNER JOIN RRHH_ACTIVIDAD A ON C.ID_ACTIVIDAD = A.ID_ACTIVIDAD " +
+"WHERE C.ID_CONTRATO = ? AND C.ESTADO = 'A' ",
+                      resultSetMapping = "ResultsActividad2"),
     @NamedNativeQuery(name = "RrhhActividad.ActividadContrato",
                       query = "SELECT ID_ACTIVIDAD,NOMBRE,DESCRIPCION,SELECCIONADO FROM ( " +
                             "SELECT A.ID_ACTIVIDAD,A.NOMBRE,A.DESCRIPCION, 1 SELECCIONADO " +
@@ -85,6 +90,12 @@ import javax.xml.bind.annotation.XmlRootElement;
                                             @ColumnResult(name = "NOMBRE", type = String.class),
                                             @ColumnResult(name = "DESCRIPCION", type = String.class),
                                             @ColumnResult(name = "SELECCIONADO", type = boolean.class)
+                                 })
+                         }),
+    @SqlResultSetMapping(name = "ResultsActividad2",
+                         classes = {@ConstructorResult(targetClass = ResultsActividad.class,
+                                 columns = {@ColumnResult(name = "ID_ACTIVIDAD", type = BigDecimal.class),
+                                            @ColumnResult(name = "DESCRIPCION", type = String.class)
                                  })
                          })
 })

@@ -27,6 +27,11 @@ public class ResultsActividad {
         this.Descripcion = Descripcion;
         this.seleccionado = seleccionado;
     }
+    
+    public ResultsActividad(BigDecimal idActividad, String Descripcion){
+        this.idActividad = idActividad;
+        this.Descripcion = Descripcion;
+    }
 
     public BigDecimal getIdActividad() {
         return idActividad;

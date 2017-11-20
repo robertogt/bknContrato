@@ -54,10 +54,6 @@ public class RrhhContratoEstado implements Serializable {
     @GeneratedValue(generator = "gSequence",strategy = GenerationType.SEQUENCE)
     @Column(name = "ID_CONTRATO_ESTADO")
     private BigDecimal idContratoEstado;
-    @Basic(optional = false)
-    @JoinColumn(name = "ID_CONTRATO", referencedColumnName = "ID_CONTRATO")
-    @ManyToOne(optional = false)
-    private RrhhContrato idContrato;
     @Basic(optional = true)
     @Size(min = 1, max = 500)
     @Column(name = "OBSERVACION")
@@ -84,7 +80,10 @@ public class RrhhContratoEstado implements Serializable {
     private Date fechaUpdate;
     @JoinColumn(name = "ID_CATALOGO_ESTADO", referencedColumnName = "ID_CATALOGO_ESTADO")
     @ManyToOne(optional = false)
-    private RrhhCatalogoEstado idCatalogoEstado;
+    private RrhhCatalogoEstado idCatalogoEstado;    
+    @JoinColumn(name = "ID_CONTRATO", referencedColumnName = "ID_CONTRATO")
+    @ManyToOne(optional = false)
+    private RrhhContrato idContrato;
 
     public RrhhContratoEstado() {
     }

@@ -9,6 +9,8 @@ import cgc.rhh.contratos.util.Constants;
 import cgc.rrhh.contratos.model.RrhhAcademico;
 import cgc.rrhh.contratos.model.RrhhCatalogoEstado;
 import cgc.rrhh.contratos.model.RrhhControlPresupuesto;
+import cgc.rrhh.contratos.model.RrhhDepartamento;
+import cgc.rrhh.contratos.model.RrhhMunicipio;
 import cgc.rrhh.contratos.model.RrhhPlantilla;
 import cgc.rrhh.contratos.model.RrhhPuestoFuncional;
 import cgc.rrhh.contratos.model.RrhhPuestoNominal;
@@ -204,6 +206,21 @@ public class GeneralService {
             TypedQuery<RrhhCatalogoEstado> query = em
                     .createNamedQuery("RrhhCatalogoEstado.findByIdCatalogoEstado",RrhhCatalogoEstado.class);
             query.setParameter("idCatalogoEstado", idEstado);            
+            return query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            return null;
+        }     
+    }
+    
+    public RrhhMunicipio getMunicipioDepto(String idMunicipio,String idDepartamento){
+        try {
+            TypedQuery<RrhhMunicipio> query = em
+                    .createNamedQuery("RrhhMunicipio.findByMunicipioDepto",RrhhMunicipio.class);
+            query.setParameter("municipio", idMunicipio);    
+            query.setParameter("departamento", idDepartamento);
             return query.getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
