@@ -21,7 +21,7 @@ public class Constants {
     
     public static final String FUNCIONARIO = "/funcionario";
     
-    
+    public static final String LABORAL ="/laboral";
     /*REST Actividad*/
     public static final String ACTIVIDAD = "actividad";       
     public static final String UBICACION = "/ubicacion";

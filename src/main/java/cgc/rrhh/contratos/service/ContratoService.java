@@ -276,6 +276,23 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         return eval;
     }
     
+    public ResultsFuncionario findContratosByidContrato(BigDecimal idContrato ){
+        try {
+            TypedQuery<ResultsFuncionario> query = em
+                    .createNamedQuery("RrhhContrato.findByContrato", ResultsFuncionario.class);
+            query.setMaxResults(1);
+            query.setParameter(1, idContrato);            
+            return query.getSingleResult();
+        } catch (NonUniqueResultException | NoResultException  nr) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
 
     @Override
     protected EntityManager getEntityManager() {

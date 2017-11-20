@@ -140,6 +140,20 @@ public class ResultsFuncionario {
         this.ubicacionFuncional = ubicacionFuncional;
         this.nombreUbicacion = nombreUbicacion;
     }
+    
+    public ResultsFuncionario(BigDecimal idRue, String dpi, String fechaDel, 
+            String fechaAl, String fechaCambioTipoMovimiento, 
+            String renglon, String tipoServicios, BigDecimal ubicacionFuncional,String nombreUbicacion){        
+        this.idRue = idRue;
+        this.dpi = dpi;
+        this.fechaDel = fechaDel;
+        this.fechaAl = fechaAl;
+        this.fechaCambioTipoMovimiento = fechaCambioTipoMovimiento;
+        this.renglon = renglon;
+        this.tipoServicios = tipoServicios;
+        this.ubicacionFuncional = ubicacionFuncional;
+        this.nombreUbicacion = nombreUbicacion;                
+    }
 
     public BigDecimal getIdRue() {
         return idRue;
