@@ -5,21 +5,29 @@
  */
 package cgc.rrhh.contratos.model;
 
+import cgc.rrhh.contratos.pojo.ResultsAcademico;
+import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.SqlResultSetMappings;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -43,6 +51,35 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "RrhhContrato.findByFechaInsert", query = "SELECT r FROM RrhhContrato r WHERE r.fechaInsert = :fechaInsert")
     , @NamedQuery(name = "RrhhContrato.findByUsuarioUpdate", query = "SELECT r FROM RrhhContrato r WHERE r.usuarioUpdate = :usuarioUpdate")
     , @NamedQuery(name = "RrhhContrato.findByFechaUpdate", query = "SELECT r FROM RrhhContrato r WHERE r.fechaUpdate = :fechaUpdate")})
+@NamedNativeQueries({
+    @NamedNativeQuery(name="RrhhContrato.findByContrato",
+                        query="SELECT RUE.ID_RUE, RUE.CUI, TO_CHAR(LAB.FECHA_DEL,'dd/mm/yyyy') FECHA_DEL, TO_CHAR(LAB.FECHA_AL,'dd/mm/yyyy') FECHA_AL, "
+                                + "TO_CHAR(LAB.FECHA_CAMBIO_TIPO_MOVIMIENTO,'dd/mm/yyyy') FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
+"LAB.RENGLON, LAB.TIPO_SERVICIOS, LAB.UBICACION_FUNCIONAL, UF.NOMBRE NOMBRE_UBICACION " +
+"FROM RRHH_RUE RUE " +
+"INNER JOIN RRHH_LABORAL LAB ON RUE.ID_RUE = LAB.ID_RUE " +
+"INNER JOIN RRHH_UBICACION_FUNCIONAL UF ON LAB.UBICACION_FUNCIONAL = UF.UBICACION_FUNCIONAL " +
+"INNER JOIN RRHH_CONTRATO C ON LAB.ID_CONTRATO = C.ID_CONTRATO " +
+"WHERE LAB.ESTADO = 'A' AND C.ID_CONTRATO = ? ",
+                        resultSetMapping = "ResultFuncionario")
+})
+@SqlResultSetMappings({
+    @SqlResultSetMapping(name = "ResultFuncionario",
+                         classes = {@ConstructorResult(targetClass = ResultsFuncionario.class,
+                                   columns = {
+                                              @ColumnResult(name = "ID_RUE", type = BigDecimal.class),
+                                              @ColumnResult(name = "CUI", type = String.class),                                              
+                                              @ColumnResult(name = "FECHA_DEL", type = String.class),
+                                              @ColumnResult(name = "FECHA_AL", type = String.class),
+                                              @ColumnResult(name = "FECHA_CAMBIO_TIPO_MOVIMIENTO", type = String.class),
+                                              @ColumnResult(name = "RENGLON", type = String.class),
+                                              @ColumnResult(name = "TIPO_SERVICIOS", type = String.class),
+                                              @ColumnResult(name = "UBICACION_FUNCIONAL", type = BigDecimal.class),
+                                              @ColumnResult(name = "NOMBRE_UBICACION", type = String.class)
+                                   })
+                         })
+})
+
 public class RrhhContrato implements Serializable {
 
   
