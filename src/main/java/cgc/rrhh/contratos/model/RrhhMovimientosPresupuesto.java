@@ -38,7 +38,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "RrhhMovimientosPresupuesto.findByIdMovimientosPresupuesto", query = "SELECT r FROM RrhhMovimientosPresupuesto r WHERE r.idMovimientosPresupuesto = :idMovimientosPresupuesto")
     , @NamedQuery(name = "RrhhMovimientosPresupuesto.findByMonto", query = "SELECT r FROM RrhhMovimientosPresupuesto r WHERE r.monto = :monto")
     , @NamedQuery(name = "RrhhMovimientosPresupuesto.findByUsuarioInsert", query = "SELECT r FROM RrhhMovimientosPresupuesto r WHERE r.usuarioInsert = :usuarioInsert")
-    , @NamedQuery(name = "RrhhMovimientosPresupuesto.findByFechaInsert", query = "SELECT r FROM RrhhMovimientosPresupuesto r WHERE r.fechaInsert = :fechaInsert")})
+    , @NamedQuery(name = "RrhhMovimientosPresupuesto.findByFechaInsert", query = "SELECT r FROM RrhhMovimientosPresupuesto r WHERE r.fechaInsert = :fechaInsert")
+    , @NamedQuery(name = "RrhhMovimientosPresupuesto.findByContrato", query = "SELECT r FROM RrhhMovimientosPresupuesto r WHERE r.idContrato.idContrato = :contrato")})
 public class RrhhMovimientosPresupuesto implements Serializable {
 
     private static final long serialVersionUID = 1L;

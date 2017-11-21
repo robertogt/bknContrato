@@ -15,6 +15,7 @@ import cgc.rrhh.contratos.model.RrhhLaboral;
 import cgc.rrhh.contratos.model.RrhhMovimientosPresupuesto;
 import cgc.rrhh.contratos.model.RrhhRue;
 import cgc.rrhh.contratos.pojo.PersistAcademico;
+import cgc.rrhh.contratos.pojo.PersistActividades;
 import cgc.rrhh.contratos.pojo.ResultsAcademico;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
@@ -276,6 +277,64 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         return eval;
     }
     
+    public void editarContrato(RrhhLaboral laboral, RrhhContrato contrato,
+            PersistAcademico persistAcademico,RrhhMovimientosPresupuesto crear,
+            RrhhMovimientosPresupuesto anular,PersistActividades persistActividad) throws Exception {
+        try {
+            RrhhAcademico academico = persistAcademico.getRrhhAcademico();
+            
+             if(contrato == null)
+                throw new Exception("Contrato es nulo");
+            
+            if(academico == null)
+                throw new Exception("academico es nulo");
+            
+            if(laboral == null)
+                throw new Exception("Laboral es nulo");
+            
+            if(crear == null)
+                throw new Exception("CrearMovimiento es nulo");
+            
+            if(anular == null)
+                throw new Exception("anularMovimiento es nulo");
+            
+            if(persistActividad == null)
+                throw new Exception("persistActividad es nulo");
+            
+            if(persistAcademico.isCreate()){
+               academico.setIdRue(laboral.getIdRue());
+               em.persist(academico);
+            }else if(persistAcademico.isUpdate()){
+                em.merge(academico);
+            }
+            
+            if(academico.getAcademico() == null)
+                throw new Exception("Academico es nulo");
+            
+            contrato.setAcademico(academico);
+            em.merge(contrato);
+            
+            em.merge(laboral);
+            
+            em.persist(anular);
+            em.persist(crear);
+            
+            for(RrhhActividadContrato crearActividadContrato:persistActividad.getCrear()){
+                em.persist(crearActividadContrato);
+            }
+            
+            for(RrhhActividadContrato updateActividadContrato: persistActividad.getUpdate()){
+                em.merge(updateActividadContrato);
+            }
+            
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new Exception(e.getMessage());
+        }
+    }
+    
     public RrhhLaboral findLaboralByContrato(BigDecimal idContrato){
         try {
             TypedQuery<RrhhLaboral> query = em
@@ -304,6 +363,40 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             System.err.println(e.getMessage());
             System.out.println(e.getMessage());
             return null;
+        }
+    }
+    
+    public RrhhMovimientosPresupuesto findMovimientoByContrato(BigDecimal idContrato){
+        try {
+            TypedQuery<RrhhMovimientosPresupuesto> query = em
+                    .createNamedQuery("RrhhMovimientosPresupuesto.findByContrato",RrhhMovimientosPresupuesto.class);
+            query.setParameter("contrato", idContrato);
+            return query.getSingleResult();
+          } catch (NonUniqueResultException | NoResultException  nr) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
+    public void crearMovimiento(RrhhMovimientosPresupuesto movimiento, RrhhLaboral laboral) throws Exception{
+        try {
+            if(movimiento == null)
+                throw new Exception("movimiento es nulo");
+            
+            if(laboral == null)
+                throw new Exception("laboral es nulo");
+            
+            em.persist(movimiento);
+            em.merge(laboral);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
     

@@ -7,6 +7,7 @@ package cgc.rrhh.contratos.service;
 
 import cgc.rhh.contratos.util.Constants;
 import cgc.rrhh.contratos.model.RrhhActividad;
+import cgc.rrhh.contratos.model.RrhhActividadContrato;
 import cgc.rrhh.contratos.model.RrhhLaboral;
 import cgc.rrhh.contratos.model.RrhhPerfil;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
@@ -147,6 +148,35 @@ public class ActividadPerfilService {
             TypedQuery<ResultsActividad> query = em
                 .createNamedQuery("RrhhActividad.actividadByContrato",ResultsActividad.class);            
             query.setParameter(1, idContrato);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
+    public List<RrhhActividadContrato> findActividadesByPerfilContrato(BigDecimal idPerfil, BigDecimal idContrato){
+        try {
+            TypedQuery<RrhhActividadContrato> query = em
+                .createNamedQuery("RrhhActividadContrato.findByPerfilContrato",RrhhActividadContrato.class);            
+            query.setParameter("perfil", idPerfil);
+            query.setParameter("contrato", idContrato);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
+     public List<RrhhActividadContrato> findActividadContratoByContrato(BigDecimal idContrato){
+        try {
+            TypedQuery<RrhhActividadContrato> query = em
+                .createNamedQuery("RrhhActividadContrato.findByContrato",RrhhActividadContrato.class);
+            query.setParameter("contrato", idContrato);
             return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();

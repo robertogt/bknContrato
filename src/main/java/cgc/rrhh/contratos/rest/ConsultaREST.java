@@ -201,6 +201,7 @@ public class ConsultaREST {
                 builder.append(" ZONA ");
                 builder.append(rue.getZonaVivienda());
             }
+            builder.append(" ");
             builder.append(municipio.getNombre());
             builder.append(", ");
             builder.append(municipio.getRrhhDepartamento().getNombre());

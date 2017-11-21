@@ -39,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -80,6 +81,40 @@ public class ContratoREST {
     @Produces(MediaType.APPLICATION_JSON)
     public List<RrhhContrato> findAll() throws Exception{
         return contratoService.findAll();
+    }
+    
+    @POST
+    @Path(Constants.ANULAR)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ResponseData anular(@FormParam("contrato") BigDecimal idContrato) {
+        ResponseData response = new ResponseData();
+        response.setCode(403);
+        response.setMessage("Error al anular contrato");
+        try {
+            if(idContrato != null){
+                RrhhLaboral laboral = contratoService.findLaboralByContrato(idContrato);
+                RrhhMovimientosPresupuesto movimientoPresupuesto = 
+                        contratoService.findMovimientoByContrato(laboral.getIdContrato().getIdContrato());
+                if(laboral != null && movimientoPresupuesto != null){
+                    RrhhMovimientosPresupuesto movimiento = new RrhhMovimientosPresupuesto();
+                        movimiento.setFechaInsert(new Date());
+                        movimiento.setUsuarioInsert("S/U");
+                        movimiento.setIdContrato(laboral.getIdContrato());
+                        movimiento.setIdControlPresupuesto(movimientoPresupuesto.getIdControlPresupuesto());
+                        movimiento.setMonto(movimientoPresupuesto.getMonto());
+                        
+                        
+                       laboral.setEstado(Constants.ANULADO);
+                       
+                       contratoService.crearMovimiento(movimiento, laboral);
+                }else{
+                    response.setMessage("Error al consultar contrato");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return response;
     }
     
     @GET
@@ -357,7 +392,7 @@ public class ContratoREST {
             laboral.setFechaInsert(new Date());
             laboral.setBonoProfesional("N");
             laboral.setDocumentoMovimiento(this.numeroContrato(funcionario.getRenglon(), funcionario.getTipoServicios(),correlativoContrato));
-            laboral.setEstado(Constants.ACTIVO);
+            laboral.setEstado(Constants.INACTIVO);
             laboral.setFechaAl(format.parse(funcionario.getFechaAl()));
             laboral.setFechaDel(format.parse(funcionario.getFechaDel()));
             laboral.setFechaCambioTipoMovimiento(format

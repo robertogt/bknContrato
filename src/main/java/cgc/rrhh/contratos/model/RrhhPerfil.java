@@ -55,7 +55,7 @@ public class RrhhPerfil implements Serializable {
     private BigDecimal idPerfil;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ID_UBICACION")
+    @Column(name = "UBICACION_FUNCIONAL")
     private BigInteger idUbicacion;
     @Basic(optional = false)
     @NotNull
