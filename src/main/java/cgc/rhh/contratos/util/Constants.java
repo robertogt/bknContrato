@@ -28,6 +28,9 @@ public class Constants {
     public static final String ACTIVIDAD = "actividad";       
     public static final String UBICACION = "/ubicacion";
     
+    /*REST Addendum*/
+    public static final String ADDENDUM = "addendum";
+    
     /*REST Perfil*/
     public static final String BUSQUEDA ="/busqueda";
     public static final String PERFIL = "perfil";

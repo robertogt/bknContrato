@@ -664,21 +664,4 @@ public class ContratoREST {
         return eval;
     }
     
-    @GET
-    @Path(Constants.CONTRATO)
-    @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData findContrato(@QueryParam("idContrato") BigDecimal idContrato){
-        ResponseData response = new ResponseData();
-        try {
-            ResultsFuncionario funcionarioRue = contratoService.findContratosByidContrato(idContrato);
-            response.setCode(200);
-            response.setData(funcionarioRue);
-            response.setMessage("Response status OK");                
-        } catch (Exception e) {
-            response.setCode(500);
-            response.setMessage("Error interno del servidor");
-        }
-        return response;
-    }
-    
 }

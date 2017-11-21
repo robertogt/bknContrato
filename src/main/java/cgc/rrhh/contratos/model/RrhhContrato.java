@@ -55,12 +55,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedNativeQuery(name="RrhhContrato.findByContrato",
                         query="SELECT RUE.ID_RUE, RUE.CUI, TO_CHAR(LAB.FECHA_DEL,'dd/mm/yyyy') FECHA_DEL, TO_CHAR(LAB.FECHA_AL,'dd/mm/yyyy') FECHA_AL, "
                                 + "TO_CHAR(LAB.FECHA_CAMBIO_TIPO_MOVIMIENTO,'dd/mm/yyyy') FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
-"LAB.RENGLON, LAB.TIPO_SERVICIOS, LAB.UBICACION_FUNCIONAL, UF.NOMBRE NOMBRE_UBICACION " +
+"LAB.RENGLON, LAB.TIPO_SERVICIOS, LAB.UBICACION_FUNCIONAL, UF.NOMBRE NOMBRE_UBICACION, " +
+"(SELECT MAX(ID_PERFIL) ID_PERFIL FROM RRHH_ACTIVIDAD_CONTRATO WHERE ID_CONTRATO = ?idContrato) ID_PERFIL, LAB.HONORARIO "+
 "FROM RRHH_RUE RUE " +
 "INNER JOIN RRHH_LABORAL LAB ON RUE.ID_RUE = LAB.ID_RUE " +
 "INNER JOIN RRHH_UBICACION_FUNCIONAL UF ON LAB.UBICACION_FUNCIONAL = UF.UBICACION_FUNCIONAL " +
 "INNER JOIN RRHH_CONTRATO C ON LAB.ID_CONTRATO = C.ID_CONTRATO " +
-"WHERE LAB.ESTADO = 'A' AND C.ID_CONTRATO = ? ",
+"WHERE LAB.ESTADO = 'A' AND C.ID_CONTRATO = ?idContrato ",
                         resultSetMapping = "ResultFuncionario")
 })
 @SqlResultSetMappings({
@@ -75,7 +76,9 @@ import javax.xml.bind.annotation.XmlRootElement;
                                               @ColumnResult(name = "RENGLON", type = String.class),
                                               @ColumnResult(name = "TIPO_SERVICIOS", type = String.class),
                                               @ColumnResult(name = "UBICACION_FUNCIONAL", type = BigDecimal.class),
-                                              @ColumnResult(name = "NOMBRE_UBICACION", type = String.class)
+                                              @ColumnResult(name = "NOMBRE_UBICACION", type = String.class),
+                                              @ColumnResult(name = "ID_PERFIL", type = BigDecimal.class),
+                                              @ColumnResult(name = "HONORARIO", type = Double.class)
                                    })
                          })
 })
