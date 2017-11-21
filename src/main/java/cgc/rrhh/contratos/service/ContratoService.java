@@ -139,7 +139,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
     
     public String findCorrelativo(String renglon, String tipoServicios, String anio){
         try {
-            Query query = em.createNativeQuery("SELECT LPAD(NVL(MAX(C.CORRELATIVO_CONTRATO),0) + 1,3,'0') CORRELATIVO FROM RRHH_CONTRATO C INNER JOIN RRHH_LABORAL L ON C.ID_CONTRATO = L.ID_CONTRATO WHERE L.RENGLON = ? AND L.TIPO_SERVICIOS = ? AND C.ANIO = ?  ");
+            Query query = em.createNativeQuery("SELECT NVL(MAX(C.CORRELATIVO_CONTRATO),0) + 1 CORRELATIVO FROM RRHH_CONTRATO C INNER JOIN RRHH_LABORAL L ON C.ID_CONTRATO = L.ID_CONTRATO WHERE L.RENGLON = ? AND L.TIPO_SERVICIOS = ? AND C.ANIO = ?  ");
             query.setParameter(1, renglon);
             query.setParameter(2, tipoServicios);
             query.setParameter(3, anio);

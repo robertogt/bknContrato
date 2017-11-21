@@ -86,8 +86,7 @@ public class ContratoEditarREST {
                        
                        if(funcionario.getHonorario().compareTo(laboral.getHonorario().doubleValue()) != 0 && 
                                !format.format(laboral.getFechaDel()).equalsIgnoreCase(funcionario.getFechaDel()) &&
-                               !format.format(laboral.getFechaAl()).equalsIgnoreCase(funcionario.getFechaAl()) && 
-                               !format.format(laboral.getFechaCambioTipoMovimiento()).equalsIgnoreCase(funcionario.getFechaCambioTipoMovimiento())){
+                               !format.format(laboral.getFechaAl()).equalsIgnoreCase(funcionario.getFechaAl())){
                            
                            Contrato temp = new Contrato(laboral.getIdContrato().getCorrelativoContrato().intValue(),
                                    funcionario.getHonorario(),
