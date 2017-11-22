@@ -44,8 +44,10 @@ public class AddendumREST {
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseData findContrato(@QueryParam("idContrato") BigDecimal idContrato){
         ResponseData response = new ResponseData();
+        System.out.println(idContrato);
         try {
-            ResultsFuncionario funcionarioRue = addendumService.findContratoByid(idContrato);            
+            System.out.println(idContrato);
+            ResultsFuncionario funcionarioRue = addendumService.findContratoByid(idContrato);
             List<ResultsActividad> actividades = actividadPerfilService.findAllActividadesByContrato(funcionarioRue.getIdPerfil(), idContrato);
             funcionarioRue.setActividades(actividades);
             response.setCode(200);
@@ -54,6 +56,9 @@ public class AddendumREST {
         } catch (Exception e) {
             response.setCode(500);
             response.setMessage("Error interno del servidor");
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
         return response;
     }
