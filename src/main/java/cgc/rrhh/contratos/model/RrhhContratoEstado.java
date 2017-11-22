@@ -5,12 +5,15 @@
  */
 package cgc.rrhh.contratos.model;
 
+import cgc.rrhh.contratos.pojo.ResultsHistorial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,9 +21,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.SqlResultSetMappings;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,12 +45,30 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "RrhhContratoEstado.findAll", query = "SELECT r FROM RrhhContratoEstado r")
     , @NamedQuery(name = "RrhhContratoEstado.findByIdContratoEstado", query = "SELECT r FROM RrhhContratoEstado r WHERE r.idContratoEstado = :idContratoEstado")
-    , @NamedQuery(name = "RrhhContratoEstado.findByIdContrato", query = "SELECT r FROM RrhhContratoEstado r WHERE r.idContrato = :idContrato")
+    , @NamedQuery(name = "RrhhContratoEstado.findByIdContrato", query = "SELECT r FROM RrhhContratoEstado r WHERE r.idContrato.idContrato = :idContrato AND r.estado = 'A' AND r.idCatalogoEstado.idCatalogoEstado = 1 ")
     , @NamedQuery(name = "RrhhContratoEstado.findByObservacion", query = "SELECT r FROM RrhhContratoEstado r WHERE r.observacion = :observacion")
     , @NamedQuery(name = "RrhhContratoEstado.findByUsuarioInsert", query = "SELECT r FROM RrhhContratoEstado r WHERE r.usuarioInsert = :usuarioInsert")
     , @NamedQuery(name = "RrhhContratoEstado.findByFechaInsert", query = "SELECT r FROM RrhhContratoEstado r WHERE r.fechaInsert = :fechaInsert")
     , @NamedQuery(name = "RrhhContratoEstado.findByUsuarioUpdate", query = "SELECT r FROM RrhhContratoEstado r WHERE r.usuarioUpdate = :usuarioUpdate")
     , @NamedQuery(name = "RrhhContratoEstado.findByFechaUpdate", query = "SELECT r FROM RrhhContratoEstado r WHERE r.fechaUpdate = :fechaUpdate")})
+@NamedNativeQueries({
+    @NamedNativeQuery(name = "RrhhContratoEstado.findByContrato",
+                      query = "SELECT CAT.NOMBRE NOMBRE_ESTADO,C.OBSERVACION,C.USUARIO_INSERT,C.FECHA_INSERT FROM RRHH_CONTRATO_ESTADO C  " +
+                        "INNER JOIN RRHH_CATALOGO_ESTADO CAT ON C.ID_CATALOGO_ESTADO = CAT.ID_CATALOGO_ESTADO " +
+                        "WHERE C.ID_CONTRATO = ? " +
+                        "ORDER BY FECHA_INSERT ASC ",
+                        resultSetMapping = "ResultsHistorial")
+})
+@SqlResultSetMappings({
+    @SqlResultSetMapping(name = "ResultsHistorial",
+                         classes = {@ConstructorResult(targetClass = ResultsHistorial.class,
+                                 columns = {@ColumnResult(name = "NOMBRE_ESTADO", type = String.class),
+                                            @ColumnResult(name = "OBSERVACION", type = String.class),
+                                            @ColumnResult(name = "USUARIO_INSERT", type = String.class),
+                                            @ColumnResult(name = "FECHA_INSERT", type = Date.class)
+                                 })
+                         })
+})
 public class RrhhContratoEstado implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -84,6 +109,8 @@ public class RrhhContratoEstado implements Serializable {
     @JoinColumn(name = "ID_CONTRATO", referencedColumnName = "ID_CONTRATO")
     @ManyToOne(optional = false)
     private RrhhContrato idContrato;
+    @Column(name = "ESTADO")
+    private String estado;
 
     public RrhhContratoEstado() {
     }
@@ -92,14 +119,23 @@ public class RrhhContratoEstado implements Serializable {
         this.idContratoEstado = idContratoEstado;
     }
 
-    public RrhhContratoEstado(BigDecimal idContratoEstado, BigInteger idContrato, String observacion, byte[] documento, String usuarioInsert, Date fechaInsert) {
+    public RrhhContratoEstado(BigDecimal idContratoEstado, String observacion, byte[] documento, String usuarioInsert, Date fechaInsert, String estado) {
         this.idContratoEstado = idContratoEstado;
         this.observacion = observacion;
         this.documento = documento;
         this.usuarioInsert = usuarioInsert;
         this.fechaInsert = fechaInsert;
+        this.estado = estado;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+   
     public BigDecimal getIdContratoEstado() {
         return idContratoEstado;
     }

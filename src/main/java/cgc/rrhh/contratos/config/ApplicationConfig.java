@@ -27,6 +27,7 @@ public class ApplicationConfig extends Application{
         resources.add(cgc.rrhh.contratos.config.CorsFilter.class); 
         resources.add(cgc.rrhh.contratos.rest.ActividadPerfilREST.class);
         resources.add(cgc.rrhh.contratos.rest.AddendumREST.class);
+        resources.add(cgc.rrhh.contratos.rest.AsesorREST.class);
         resources.add(cgc.rrhh.contratos.rest.ColegiosRest.class);
         resources.add(cgc.rrhh.contratos.rest.ConsultaREST.class);
         resources.add(cgc.rrhh.contratos.rest.ContratoEditarREST.class);

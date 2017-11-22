@@ -14,15 +14,22 @@ public class Constants {
     /*Unidad de Persistencia*/    
     public static final String PERSIST_RUE = "persistRue";
     
+    /*REST Globales*/
     public static final String COLEGIOS = "colegios";
     public static final String TITULOS = "titulos";
     public static final String CONTRATO = "contrato";
+    public static final String ASESOR = "asesor";
     
     
     public static final String FUNCIONARIO = "/funcionario";
     public static final String GENERAR = CONTRATO + "/generar";
     public static final String EDITAR = CONTRATO + "/editar";
     public static final String LABORAL ="/laboral";
+    
+    /*REST Asesor*/
+    public static final String HISTORIAL = "/historial";
+    public static final String APROBAR = "/aprobar";
+    public static final String RECHAZAR = "/rechazar";
     
     /*REST Actividad*/
     public static final String ACTIVIDAD = "actividad";       

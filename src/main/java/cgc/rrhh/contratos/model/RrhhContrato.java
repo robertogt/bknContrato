@@ -6,6 +6,7 @@
 package cgc.rrhh.contratos.model;
 
 import cgc.rrhh.contratos.pojo.ResultsAcademico;
+import cgc.rrhh.contratos.pojo.ResultsContrato;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -62,9 +63,77 @@ import javax.xml.bind.annotation.XmlRootElement;
 "INNER JOIN RRHH_UBICACION_FUNCIONAL UF ON LAB.UBICACION_FUNCIONAL = UF.UBICACION_FUNCIONAL " +
 "INNER JOIN RRHH_CONTRATO C ON LAB.ID_CONTRATO = C.ID_CONTRATO " +
 "WHERE LAB.ESTADO = 'A' AND C.ID_CONTRATO = ?idContrato ",
-                        resultSetMapping = "ResultFuncionario")
+                        resultSetMapping = "ResultFuncionario"),
+    @NamedNativeQuery(name="RrhhContrato.listAllContrato",
+                        query="SELECT L.ID_CONTRATO, " +
+"R.PRIMER_NOMBRE||' '||R.SEGUNDO_NOMBRE||' '||R.PRIMER_APELLIDO||' '||R.SEGUNDO_APELLIDO NOMBRE_COMPLETO, " +
+"L.NUMERO_CONTRATO, " +
+"TO_CHAR(L.FECHA_DEL,'DD/MM/YYYY') FECHA_DEL, " +
+"TO_CHAR(L.FECHA_AL,'DD/MM/YYYY') FECHA_AL, " +
+"TO_CHAR(L.FECHA_CAMBIO_TIPO_MOVIMIENTO,'DD/MM/YYYY') FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
+"U.NOMBRE NOMBRE_UBICACION, " +
+"RE.NOMBRE NOMBRE_RENGLON, " +
+"CASE R.ESTADO_CIVIL WHEN 'C' THEN 'CASADO/A'  " +
+"WHEN 'S' THEN 'SOLTERO/A' WHEN 'V' THEN 'VIUDO/A' WHEN 'D' THEN 'DIVORCIADO/A'  " +
+"WHEN 'U' THEN 'UNIDO/A' END ESTADO_CIVIL_LETRAS, " +
+"R.NIT, " +
+"UPPER(R.DIRECCION||' '||M.NOMBRE||', '||D.NOMBRE) DIRECCION, " +
+"REPLACE(REPLACE(R.CUI,'-',''),' ','') DPI, " +
+"L.TIPO_SERVICIOS, " +
+"T.NOMBRE TITULO, " +
+"CP.NOMBRE_COLEGIO_PROFESIONAL, " +
+"A.NUMERO_COLEGIADO, " +
+"L.HONORARIO, " +
+"CE.ID_CATALOGO_ESTADO, " +
+"L.USUARIO_INSERT, " +
+"L.FECHA_INSERT, " +
+"L.USUARIO_UPDATE, " +
+"L.FECHA_UPDATE, " +
+"C.OBSERVACIONES "+
+"FROM RRHH_LABORAL L " +
+"INNER JOIN RRHH_RENGLON RE ON L.RENGLON = RE.RENGLON " +
+"INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
+"INNER JOIN RRHH_CONTRATO C ON L.ID_CONTRATO = C.ID_CONTRATO " +
+"INNER JOIN RRHH_UBICACION_FUNCIONAL U ON L.UBICACION_FUNCIONAL = U.UBICACION_FUNCIONAL " +
+"INNER JOIN RRHH_ACADEMICO A ON C.ACADEMICO = A.ACADEMICO " +
+"INNER JOIN RRHH_TITULO T ON A.TITULO = T.TITULO " +
+"INNER JOIN RRHH_MUNICIPIO M ON R.MUNICIPIO_VIVIENDA = M.MUNICIPIO AND R.DEPARTAMENTO_VIVIENDA = M.DEPARTAMENTO  " +
+"INNER JOIN RRHH_DEPARTAMENTO D ON M.DEPARTAMENTO = D.DEPARTAMENTO " +
+"LEFT JOIN RRHH_COLEGIO_PROFESIONAL CP ON A.COLEGIO_PROFESIONAL = CP.COLEGIO_PROFESIONAL " +
+"INNER JOIN ( SELECT C.ID_CONTRATO, C.ID_CATALOGO_ESTADO FROM RRHH_CONTRATO_ESTADO C WHERE ESTADO = 'A' AND ID_CATALOGO_ESTADO = DECODE(?,1,1, ID_CATALOGO_ESTADO )) CE ON C.ID_CONTRATO = CE.ID_CONTRATO " +
+"WHERE L.ESTADO = ? ORDER BY L.FECHA_INSERT ASC",
+                        resultSetMapping = "ResultsContrato")
 })
 @SqlResultSetMappings({
+    @SqlResultSetMapping(name = "ResultsContrato",
+                         classes = {@ConstructorResult(targetClass = ResultsContrato.class,
+                                   columns = {
+                                              @ColumnResult(name = "ID_CONTRATO", type = BigDecimal.class),
+                                              @ColumnResult(name = "NOMBRE_COMPLETO", type = String.class),                                              
+                                              @ColumnResult(name = "NUMERO_CONTRATO", type = String.class),
+                                              @ColumnResult(name = "FECHA_DEL", type = String.class),
+                                              @ColumnResult(name = "FECHA_AL", type = String.class),
+                                              @ColumnResult(name = "FECHA_CAMBIO_TIPO_MOVIMIENTO", type = String.class),
+                                              @ColumnResult(name = "NOMBRE_UBICACION", type = String.class),
+                                              @ColumnResult(name = "NOMBRE_RENGLON", type = String.class),
+                                              @ColumnResult(name = "ESTADO_CIVIL_LETRAS", type = String.class),
+                                              @ColumnResult(name = "NIT", type = String.class),
+                                              @ColumnResult(name = "DIRECCION", type = String.class),
+                                              @ColumnResult(name = "DPI", type = String.class),
+                                              @ColumnResult(name = "TIPO_SERVICIOS", type = String.class),
+                                              @ColumnResult(name = "TITULO", type = String.class),
+                                              @ColumnResult(name = "NOMBRE_COLEGIO_PROFESIONAL", type = String.class),
+                                              @ColumnResult(name = "NUMERO_COLEGIADO", type = BigDecimal.class),
+                                              @ColumnResult(name = "HONORARIO", type = BigDecimal.class),
+                                              @ColumnResult(name = "ID_CATALOGO_ESTADO", type = BigDecimal.class),
+                                              @ColumnResult(name = "USUARIO_INSERT", type = String.class),
+                                              @ColumnResult(name = "FECHA_INSERT", type = Date.class),
+                                              @ColumnResult(name = "USUARIO_UPDATE", type = String.class),
+                                              @ColumnResult(name = "FECHA_UPDATE", type = Date.class),
+                                              @ColumnResult(name = "OBSERVACIONES", type = String.class)
+                                              
+                                   })
+                         }),
     @SqlResultSetMapping(name = "ResultFuncionario",
                          classes = {@ConstructorResult(targetClass = ResultsFuncionario.class,
                                    columns = {
