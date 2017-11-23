@@ -12,11 +12,14 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -69,7 +72,8 @@ public class RrhhHistoricoLaboral implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
     @Basic(optional = false)
-    @NotNull
+     @SequenceGenerator(name = "hSequence", sequenceName = "SEQ_RRHH_HISTORICO_LABORAL", allocationSize = 1)
+    @GeneratedValue(generator = "hSequence",strategy = GenerationType.SEQUENCE)
     @Column(name = "HISTORICO_LABORAL")
     private BigDecimal historicoLaboral;
     @Basic(optional = false)
