@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "RrhhPlantilla.findByFechaInsert", query = "SELECT r FROM RrhhPlantilla r WHERE r.fechaInsert = :fechaInsert")
     , @NamedQuery(name = "RrhhPlantilla.findByUsuarioUpdate", query = "SELECT r FROM RrhhPlantilla r WHERE r.usuarioUpdate = :usuarioUpdate")
     , @NamedQuery(name = "RrhhPlantilla.findByFechaUpdate", query = "SELECT r FROM RrhhPlantilla r WHERE r.fechaUpdate = :fechaUpdate")
-    , @NamedQuery(name = "RrhhPlantilla.findByRenglonAnioTipo", query = "SELECT r FROM RrhhPlantilla r WHERE r.anio = :anio AND r.idRenglon.renglon = :renglon AND r.tipoServicio = :tipoServicio AND r.estado = 'A' ")})
+    , @NamedQuery(name = "RrhhPlantilla.findByRenglonAnioTipo", query = "SELECT r FROM RrhhPlantilla r WHERE r.anio = :anio AND r.idTipoDocumento.idTipoDocumento = :tipoDocumento AND r.idRenglon.renglon = COALESCE(:renglon,r.idRenglon.renglon) AND r.tipoServicio = COALESCE(:tipoServicio,r.tipoServicio) AND r.estado = 'A' ")})
 public class RrhhPlantilla implements Serializable {
 
     private static final long serialVersionUID = 1L;

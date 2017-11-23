@@ -20,6 +20,8 @@ public class Constants {
     public static final String CONTRATO = "contrato";
     public static final String ASESOR = "asesor";
     
+    public static final String RESCINDIR = CONTRATO+"/resindir";
+    
     
     public static final String FUNCIONARIO = "/funcionario";
     public static final String GENERAR = CONTRATO + "/generar";

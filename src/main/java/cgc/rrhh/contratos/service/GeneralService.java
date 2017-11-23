@@ -129,13 +129,14 @@ public class GeneralService {
         }     
     }
     
-    public RrhhPlantilla getPlantillaByRenglonAnio(String anio, String renglon, String tipoServicio){
+    public RrhhPlantilla getPlantillaByRenglonAnio(String anio, String renglon, String tipoServicio, BigDecimal tipoDocumento){
         try {
             TypedQuery<RrhhPlantilla> query = em
                     .createNamedQuery("RrhhPlantilla.findByRenglonAnioTipo",RrhhPlantilla.class);
             query.setParameter("anio", anio);            
             query.setParameter("renglon", renglon);            
-            query.setParameter("tipoServicio", tipoServicio);            
+            query.setParameter("tipoServicio", tipoServicio); 
+            query.setParameter("tipoDocumento", tipoDocumento);
             return query.getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();

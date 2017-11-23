@@ -189,7 +189,8 @@ public class ContratoEditarREST {
                        
                        
                        contratoService.editarContrato(laboral, contrato, academico, crear, anular, persistActividades);
-                       
+                       response.setCode(200);
+                       response.setMessage("Contrato "+laboral.getNumeroContrato()+" editado con éxito");
                        
                        
                     }else{                        
@@ -315,7 +316,7 @@ public class ContratoEditarREST {
            contrato.setIdPlantilla(generalService
                     .getPlantillaByRenglonAnio(String.valueOf(now.get(Calendar.YEAR)),
                             funcionario.getRenglon(),
-                            funcionario.getTipoServicios()));
+                            funcionario.getTipoServicios(),BigDecimal.valueOf(1)));
             
             return contrato;
         } catch (Exception e) {
@@ -355,7 +356,7 @@ public class ContratoEditarREST {
                 /*if(resultsFuncionario.getIdRue() != null){
                     academico.setIdRue(generalService.getRueById(resultsFuncionario.getIdRue()));
                 }*/
-                academico.setGradoAcademico(titulosService.getGradoAcademicoById(BigDecimal.valueOf(39)));
+                academico.setGradoAcademico(titulosService.getGradoAcademicoById("39"));
                 academico.setTitulo(titulosService
                         .getTituloById(resultsFuncionario.getInfoAcademica().getTitulo()));
                 academico.setEstado(Constants.ACTIVO);

@@ -19,6 +19,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -141,8 +143,9 @@ public class RrhhActividad implements Serializable {
     @Column(name = "FECHA_UPDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaUpdate;
-    @Column(name = "ID_UBICACION")
-    private BigInteger idUbicacion;
+    @JoinColumn(name = "UBICACION_FUNCIONAL", referencedColumnName = "UBICACION_FUNCIONAL")
+    @ManyToOne(optional = false)
+    private RrhhUbicacionFuncional idUbicacion;
 
     public RrhhActividad() {
     }
@@ -232,11 +235,11 @@ public class RrhhActividad implements Serializable {
         this.fechaUpdate = fechaUpdate;
     }
 
-    public BigInteger getIdUbicacion() {
+    public RrhhUbicacionFuncional getIdUbicacion() {
         return idUbicacion;
     }
 
-    public void setIdUbicacion(BigInteger idUbicacion) {
+    public void setIdUbicacion(RrhhUbicacionFuncional idUbicacion) {
         this.idUbicacion = idUbicacion;
     }
 

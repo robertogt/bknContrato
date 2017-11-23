@@ -6,7 +6,11 @@
 package cgc.rrhh.contratos.service;
 
 import cgc.rhh.contratos.util.Constants;
+import cgc.rrhh.contratos.model.RrhhActividadContrato;
 import cgc.rrhh.contratos.model.RrhhContrato;
+import cgc.rrhh.contratos.model.RrhhHistoricoLaboral;
+import cgc.rrhh.contratos.model.RrhhLaboral;
+import cgc.rrhh.contratos.model.RrhhMovimientosPresupuesto;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 import java.math.BigDecimal;
@@ -49,6 +53,55 @@ public class AddendumService extends GenericAbstractService<RrhhContrato>{
             System.err.println(e.getMessage());
             System.out.println(e.getMessage());
             return null;
+        }
+    }
+    
+    public void crearAddendum(RrhhLaboral laboral,RrhhContrato contrato,
+            RrhhMovimientosPresupuesto diff, RrhhMovimientosPresupuesto nuevo,
+            List<RrhhActividadContrato> actividades, RrhhHistoricoLaboral historico) throws Exception{
+        try {
+            if(laboral == null)
+                throw new Exception("Laboral es nulo");
+            
+            if(contrato == null)
+                throw new Exception("contrato es nulo");
+            
+            if(diff == null)
+                throw new Exception("diff es nulo");
+            
+            if(nuevo == null)
+                throw new Exception("nuevo es nulo");
+            
+            if(actividades == null)
+                throw new Exception("actividades es nulo");
+            
+            if(historico == null)
+                throw new Exception("historico es nulo");
+            em.persist(contrato);
+            
+            if(contrato.getIdContrato() == null)
+                throw new Exception("id Contrato es nulo");
+            
+            em.persist(historico);
+            
+            laboral.setIdContrato(contrato);
+            em.merge(laboral);
+            
+            for(RrhhActividadContrato actContrato: actividades){
+                actContrato.setIdContrato(contrato);
+                em.persist(actContrato);
+            }
+            
+            diff.setIdContrato(contrato);
+            em.persist(diff);
+            
+            nuevo.setIdContrato(contrato);
+            em.persist(nuevo);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 

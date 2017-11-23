@@ -237,7 +237,7 @@ public class ContratoREST {
                            String correlativo = contratoService
                                    .findCorrelativo(resultsFuncionario.getRenglon(), 
                                            resultsFuncionario.getTipoServicios(),
-                                           String.valueOf(now.get(Calendar.YEAR)));
+                                           String.valueOf(now.get(Calendar.YEAR))).toString();
                            RrhhRue rue = this.createRue(usuario, resultsFuncionario);
                            RrhhLaboral laboral = this.createLaboral(usuario, 
                                    resultsFuncionario, 
@@ -285,6 +285,7 @@ public class ContratoREST {
             estado.setFechaInsert(new Date());
             estado.setUsuarioInsert(usuario);
             estado.setIdCatalogoEstado(generalService.findEstadoById(BigDecimal.valueOf(1)));
+            estado.setEstado(Constants.ACTIVO);
             
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -433,7 +434,7 @@ public class ContratoREST {
             contrato.setIdPlantilla(generalService
                     .getPlantillaByRenglonAnio(String.valueOf(now.get(Calendar.YEAR)),
                             resultsFuncionario.getRenglon(),
-                            resultsFuncionario.getTipoServicios()));
+                            resultsFuncionario.getTipoServicios(),BigDecimal.valueOf(1)));
             contrato.setCorrelativoContrato(BigInteger.valueOf(Integer.parseInt(correlativoContrato)));
             /*if(resultsFuncionario.getIdRue() != null){
                 contrato.setIdRue(generalService.getRueById(resultsFuncionario.getIdRue()));
@@ -505,7 +506,7 @@ public class ContratoREST {
                 /*if(resultsFuncionario.getIdRue() != null){
                     academico.setIdRue(generalService.getRueById(resultsFuncionario.getIdRue()));
                 }*/
-                academico.setGradoAcademico(titulosService.getGradoAcademicoById(BigDecimal.valueOf(39)));
+                academico.setGradoAcademico(titulosService.getGradoAcademicoById("39"));
                 academico.setTitulo(titulosService
                         .getTituloById(resultsFuncionario.getInfoAcademica().getTitulo()));
                 academico.setEstado(Constants.ACTIVO);

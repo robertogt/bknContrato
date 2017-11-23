@@ -137,14 +137,14 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         }
     }
     
-    public String findCorrelativo(String renglon, String tipoServicios, String anio){
+    public BigDecimal findCorrelativo(String renglon, String tipoServicios, String anio){
         try {
             Query query = em.createNativeQuery("SELECT NVL(MAX(C.CORRELATIVO_CONTRATO),0) + 1 CORRELATIVO FROM RRHH_CONTRATO C INNER JOIN RRHH_LABORAL L ON C.ID_CONTRATO = L.ID_CONTRATO WHERE L.RENGLON = ? AND L.TIPO_SERVICIOS = ? AND C.ANIO = ?  ");
             query.setParameter(1, renglon);
             query.setParameter(2, tipoServicios);
             query.setParameter(3, anio);
             
-            String value = (String)query.getSingleResult();
+            BigDecimal value = (BigDecimal)query.getSingleResult();
             return value;
         } catch (Exception e) {
             e.printStackTrace();

@@ -61,7 +61,7 @@ public class TitulosService {
         }
     }
     
-    public RrhhGradoAcademico getGradoAcademicoById(BigDecimal gradoAcademico){
+    public RrhhGradoAcademico getGradoAcademicoById(String gradoAcademico){
         try {
             TypedQuery<RrhhGradoAcademico> query = em
                     .createNamedQuery("RrhhGradoAcademico.findByGradoAcademico",RrhhGradoAcademico.class);
