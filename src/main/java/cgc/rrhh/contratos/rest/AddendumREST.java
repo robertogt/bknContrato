@@ -77,7 +77,7 @@ public class AddendumREST {
             response.setMessage("Response status OK");                
         } catch (Exception e) {
             response.setCode(500);
-            response.setMessage("Error interno del servidor");
+            response.setMessage("Error interno del servidor..");
             e.printStackTrace();
             System.err.println(e.getMessage());
             System.out.println(e.getMessage());

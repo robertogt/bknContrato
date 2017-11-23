@@ -54,7 +54,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "RrhhContrato.findByFechaUpdate", query = "SELECT r FROM RrhhContrato r WHERE r.fechaUpdate = :fechaUpdate")})
 @NamedNativeQueries({
     @NamedNativeQuery(name="RrhhContrato.findByContrato",
-                        query="SELECT RUE.ID_RUE, RUE.CUI, TO_CHAR(LAB.FECHA_DEL,'dd/mm/yyyy') FECHA_DEL, TO_CHAR(LAB.FECHA_AL,'dd/mm/yyyy') FECHA_AL, "
+                        query="SELECT C.ID_CONTRATO, RUE.ID_RUE, RUE.CUI, TO_CHAR(LAB.FECHA_DEL,'dd/mm/yyyy') FECHA_DEL, TO_CHAR(LAB.FECHA_AL,'dd/mm/yyyy') FECHA_AL, "
                                 + "TO_CHAR(LAB.FECHA_CAMBIO_TIPO_MOVIMIENTO,'dd/mm/yyyy') FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
 "LAB.RENGLON, LAB.TIPO_SERVICIOS, LAB.UBICACION_FUNCIONAL, UF.NOMBRE NOMBRE_UBICACION, " +
 "(SELECT MAX(ID_PERFIL) ID_PERFIL FROM RRHH_ACTIVIDAD_CONTRATO WHERE ID_CONTRATO = ?idContrato) ID_PERFIL, LAB.HONORARIO "+
@@ -137,6 +137,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @SqlResultSetMapping(name = "ResultFuncionario",
                          classes = {@ConstructorResult(targetClass = ResultsFuncionario.class,
                                    columns = {
+                                              @ColumnResult(name = "ID_CONTRATO", type = BigDecimal.class),
                                               @ColumnResult(name = "ID_RUE", type = BigDecimal.class),
                                               @ColumnResult(name = "CUI", type = String.class),                                              
                                               @ColumnResult(name = "FECHA_DEL", type = String.class),

@@ -62,7 +62,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "RrhhHistoricoLaboral.findByUsuarioUpdateHistorico", query = "SELECT r FROM RrhhHistoricoLaboral r WHERE r.usuarioUpdateHistorico = :usuarioUpdateHistorico")
     , @NamedQuery(name = "RrhhHistoricoLaboral.findByFechaUpdateHistorico", query = "SELECT r FROM RrhhHistoricoLaboral r WHERE r.fechaUpdateHistorico = :fechaUpdateHistorico")
     , @NamedQuery(name = "RrhhHistoricoLaboral.findByIdContrato", query = "SELECT r FROM RrhhHistoricoLaboral r WHERE r.idContrato = :idContrato")
-    , @NamedQuery(name = "RrhhHistoricoLaboral.findByColumn2", query = "SELECT r FROM RrhhHistoricoLaboral r WHERE r.column2 = :column2")})
+    })
 public class RrhhHistoricoLaboral implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -141,10 +141,11 @@ public class ResultsFuncionario {
         this.nombreUbicacion = nombreUbicacion;
     }
     
-    public ResultsFuncionario(BigDecimal idRue, String dpi, String fechaDel, 
+    public ResultsFuncionario(BigDecimal idContrato, BigDecimal idRue, String dpi, String fechaDel, 
             String fechaAl, String fechaCambioTipoMovimiento, 
             String renglon, String tipoServicios, BigDecimal ubicacionFuncional,
             String nombreUbicacion, BigDecimal idPerfil, Double honorario){        
+        this.idContrato = idContrato;
         this.idRue = idRue;
         this.dpi = dpi;
         this.fechaDel = fechaDel;
