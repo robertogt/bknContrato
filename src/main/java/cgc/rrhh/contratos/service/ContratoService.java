@@ -18,6 +18,7 @@ import cgc.rrhh.contratos.pojo.PersistAcademico;
 import cgc.rrhh.contratos.pojo.PersistActividades;
 import cgc.rrhh.contratos.pojo.ResultsAcademico;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
+import cgc.rrhh.contratos.pojo.ResultsContrato;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -41,6 +43,8 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
     
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
+    
+    private static final Logger log = Logger.getLogger(ContratoService.class);
     
     public ContratoService() {
         super(RrhhContrato.class);
@@ -397,6 +401,19 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             System.err.println(e.getMessage());
             System.out.println(e.getMessage());
             throw new Exception(e.getMessage());
+        }
+    }
+    
+    
+    public List<ResultsContrato> findAllContratosByAnio(String anio){
+        try {
+            TypedQuery<ResultsContrato> query = em
+                    .createNamedQuery("RrhhContrato.busquedaGeneral", ResultsContrato.class);
+            query.setParameter(1, anio);
+            return query.getResultList();
+        } catch (Exception e) {
+            log.error("findAllContratosByAnio: ",e);
+            return new ArrayList<ResultsContrato>();
         }
     }
     

@@ -22,6 +22,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -34,6 +35,8 @@ public class ActividadPerfilService {
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
 
+    private static final Logger log = Logger.getLogger(ActividadPerfilService.class);
+    
      public List<RrhhPerfil> findAllByUbicacion(Integer idUbicacion){
         try {
             TypedQuery<RrhhPerfil> query = em
@@ -185,6 +188,18 @@ public class ActividadPerfilService {
             return null;
         }
     }
+     
+     public List<RrhhActividad> findActividadesByIdContrato(BigDecimal idContrato){
+         try {
+             TypedQuery<RrhhActividad> query = em
+                .createNamedQuery("RrhhActividadContrato.findByActividadesByContrato",RrhhActividad.class);
+            query.setParameter("contrato", idContrato);
+            return query.getResultList();
+         } catch (Exception e) {
+             log.info("findActividadesByIdContrato: ",e);
+             return new ArrayList<RrhhActividad>();
+         }
+     }
     
     
 }

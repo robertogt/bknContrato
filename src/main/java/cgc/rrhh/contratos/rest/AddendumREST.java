@@ -7,13 +7,11 @@ package cgc.rrhh.contratos.rest;
 
 import cgc.rhh.contratos.util.Constants;
 import cgc.rhh.contratos.util.ResponseData;
-import cgc.rrhh.contratos.model.RrhhActividad;
 import cgc.rrhh.contratos.model.RrhhActividadContrato;
 import cgc.rrhh.contratos.model.RrhhContrato;
 import cgc.rrhh.contratos.model.RrhhControlPresupuesto;
 import cgc.rrhh.contratos.model.RrhhHistoricoLaboral;
 import cgc.rrhh.contratos.model.RrhhLaboral;
-import cgc.rrhh.contratos.model.RrhhLaboral_;
 import cgc.rrhh.contratos.model.RrhhMovimientosPresupuesto;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
@@ -22,7 +20,6 @@ import cgc.rrhh.contratos.service.AddendumService;
 import cgc.rrhh.contratos.service.ContratoService;
 import cgc.rrhh.contratos.service.GeneralService;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +36,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+import org.apache.log4j.Logger;
 import rrhh.calculos.contrato.Contrato;
 
 /**
@@ -60,6 +58,9 @@ public class AddendumREST {
     
     @EJB
     private GeneralService generalService;
+    
+    //private Logger logger = Logger.getLogger("");
+    private static final Logger log = Logger.getLogger(AddendumREST.class);
     
     @GET
     @Path(Constants.CONTRATO)
@@ -97,6 +98,7 @@ public class AddendumREST {
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(funcionario.getIdContrato());
                 if(laboral  != null){
                     String usuario = "S/U";
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
                     RrhhHistoricoLaboral historico = this.setHistoricoLaboral(usuario,laboral);
                     RrhhContrato contratoAddendum = this.setContrato(usuario, laboral);                    
                     RrhhMovimientosPresupuesto diferencia = new RrhhMovimientosPresupuesto();                    
@@ -104,14 +106,17 @@ public class AddendumREST {
                     List<RrhhActividadContrato> actividades =this.setActividades(usuario, funcionario);
                     
                     if(laboral.getHonorario().compareTo(BigDecimal.valueOf(funcionario.getHonorario())) != 0){
-                        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                        
                         
                         RrhhMovimientosPresupuesto movimiento = contratoService.findMovimientoByContrato(laboral.getIdContrato().getIdContrato());
                         Contrato diff = new Contrato(laboral.getIdContrato().getCorrelativoContrato().intValue(),
-                                funcionario.getHonorario(),
+                                laboral.getHonorario().doubleValue(),
                                 format.format(laboral.getFechaDel()), 
                                 funcionario.getFechaCambioTipoMovimiento(),
                                 format.format(laboral.getFechaCambioTipoMovimiento()));
+                        log.info("fecha DEL: "+laboral.getFechaDel());
+                        log.info("fechaMovimiento: "+funcionario.getFechaCambioTipoMovimiento());
+                        log.info("DIFF: "+diff.getMontoTotal());
                         
                         Contrato sum = new Contrato(laboral.getIdContrato().getCorrelativoContrato().intValue(),
                                 funcionario.getHonorario(),
@@ -119,15 +124,17 @@ public class AddendumREST {
                                 format.format(laboral.getFechaAl()),
                                 format.format(laboral.getFechaCambioTipoMovimiento()));
                         
-                        
-                        BigDecimal diferenciaAnterior = movimiento.getMonto().add(BigDecimal.valueOf(diff.getMontoTotal()));
-                        System.out.println(diferenciaAnterior);
+                        BigDecimal sumLaboral = addendumService.findMontoByLaboral(laboral.getLaboral());
+                        log.info("SUMLABORAL: "+sumLaboral);
+                        BigDecimal diferenciaAnterior = sumLaboral.add(BigDecimal.valueOf(diff.getMontoTotal()));
+                        log.info("DIFERENCIA SUMLABORAL - DIFF: "+diferenciaAnterior);
                         BigDecimal montoTotal = contratoService.findMontoTotal(movimiento.getIdControlPresupuesto().getIdControlPresupuesto());
-                        System.out.println(montoTotal);
+                        log.info("MONTO TOTAL PRESUPUESTO: "+montoTotal);
                         BigDecimal montoReal = montoTotal.add(diferenciaAnterior.abs());
-                        System.out.println(montoReal);
+                        log.info("MONTO REAL: "+montoReal);
                         
                         BigDecimal montoContrato = BigDecimal.valueOf(sum.getMontoTotal());
+                        log.info("MONTO CONTRATO TIEMPO RESTANTE: "+montoContrato);
                         
                             diferencia.setFechaInsert(new Date());
                             diferencia.setIdContrato(movimiento.getIdContrato());
@@ -181,12 +188,12 @@ public class AddendumREST {
                         laboral.setUbicacionFuncional(generalService.getUbicacionFuncional(funcionario.getUbicacionFuncional()));                                                
                     }
                     
-                    
+                        laboral.setFechaCambioTipoMovimiento(format.parse(funcionario.getFechaCambioTipoMovimiento()));
                         laboral.setObservacion("ADDENDUM AL CONTRATO +"+laboral.getNumeroContrato()+" SURTE EFECTO A PARTIR DEL "+funcionario.getFechaCambioTipoMovimiento());
                         laboral.setFechaUpdate(new Date());
                         laboral.setUsuarioUpdate(usuario);
                     
-                    addendumService.crearAddendum(laboral, contratoAddendum, nuevo, nuevo, actividades, historico);
+                    addendumService.crearAddendum(laboral, contratoAddendum, diferencia, nuevo, actividades, historico);
                     data.setCode(200);
                     data.setMessage("ADDENDUM AL CONTRATO +"+laboral.getNumeroContrato()+" SURTE EFECTO A PARTIR DEL "+funcionario.getFechaCambioTipoMovimiento());
                 }
@@ -280,9 +287,20 @@ public class AddendumREST {
             contrato.setAnio(laboral.getIdContrato().getAnio());
             contrato.setAcademico(laboral.getIdContrato().getAcademico());
             contrato.setCorrelativoContrato(laboral.getIdContrato().getCorrelativoContrato());
+            log.info(String.valueOf(now.get(Calendar.YEAR)));
+            System.out.println(now.get(Calendar.YEAR));
+            log.info(laboral.getRenglon().getRenglon());
+            System.out.println(laboral.getRenglon().getRenglon());
+            log.info(laboral.getTipoServicios());
+            System.out.println(laboral.getTipoServicios());
             contrato.setIdPlantilla(generalService
                     .getPlantillaByRenglonAnio(String.valueOf(now.get(Calendar.YEAR)),
-                            null, null,BigDecimal.valueOf(2)));
+                            laboral.getRenglon().getRenglon(),
+                            laboral.getTipoServicios(),
+                            BigDecimal.valueOf(2)));
+            
+            
+            //contrato.setIdPlantilla(generalService.getPlantillaByRenglonAnio("2017", "6", "T", BigDecimal.valueOf(2)));
             if(laboral.getIdContrato().getObservaciones() != null 
                     && !laboral.getIdContrato().getObservaciones().isEmpty()){
                 contrato.setObservaciones(laboral.getIdContrato().getObservaciones());

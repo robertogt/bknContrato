@@ -21,7 +21,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -33,9 +35,24 @@ public class AddendumService extends GenericAbstractService<RrhhContrato>{
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
     
+    private static final Logger log = Logger.getLogger(AddendumService.class);
+    
     public AddendumService(){
         super(RrhhContrato.class);
     }
+    
+    public BigDecimal findMontoByLaboral(BigDecimal idLaboral) throws Exception{
+        try {
+            Query query = em.createNativeQuery("SELECT SUM(MONTO) MONTO_LABORAL FROM RRHH_MOVIMIENTO_PRESUPUESTO M INNER JOIN (SELECT ID_CONTRATO FROM RRHH_LABORAL WHERE LABORAL = ?laboral AND ESTADO = 'A' UNION ALL SELECT ID_CONTRATO FROM RRHH_HISTORICO_LABORAL WHERE LABORAL = ?laboral AND ESTADO = 'A' AND ESTADO_HISTORICO = 'A' ) U ON M.ID_CONTRATO = U.ID_CONTRATO ");
+            query.setParameter("laboral", idLaboral);
+            BigDecimal value = (BigDecimal)query.getSingleResult();
+            return value;
+        } catch (Exception e) {
+            log.info("FindMontoByLaboral AddendumService: ",e);
+            throw new Exception("error al consultar monto");
+        }
+    }
+    
     
     public ResultsFuncionario findContratoByid(BigDecimal idContrato ){
         try {
@@ -92,7 +109,6 @@ public class AddendumService extends GenericAbstractService<RrhhContrato>{
                 em.persist(actContrato);
             }
             
-            diff.setIdContrato(contrato);
             em.persist(diff);
             
             nuevo.setIdContrato(contrato);

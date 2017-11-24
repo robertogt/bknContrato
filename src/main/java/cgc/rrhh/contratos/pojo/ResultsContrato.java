@@ -5,8 +5,10 @@
  */
 package cgc.rrhh.contratos.pojo;
 
+import cgc.rrhh.contratos.model.RrhhActividad;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -37,6 +39,7 @@ public class ResultsContrato {
     private String usuarioUpdate;
     private Date fechaUpdate;
     private String observaciones;
+    private List<RrhhActividad> actividades;
 
     public ResultsContrato() {
     }
@@ -72,6 +75,43 @@ public class ResultsContrato {
         this.fechaUpdate = fechaUpdate;
         this.observaciones = observaciones;
     }
+
+    public ResultsContrato(BigDecimal idContrato, String nombreCompleto, String numeroContrato, String fechaDel, String fechaAl, String fechaCambioTipoMovimiento, String nombreUbicacion, String nombreRenglon, String estadoCivilLetras, String nit, String direccion, String dpi, String tipoServicios, String titulo, String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario, BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate, Date fechaUpdate, String observaciones, List<RrhhActividad> actividades) {
+        this.idContrato = idContrato;
+        this.nombreCompleto = nombreCompleto;
+        this.numeroContrato = numeroContrato;
+        this.fechaDel = fechaDel;
+        this.fechaAl = fechaAl;
+        this.fechaCambioTipoMovimiento = fechaCambioTipoMovimiento;
+        this.nombreUbicacion = nombreUbicacion;
+        this.nombreRenglon = nombreRenglon;
+        this.estadoCivilLetras = estadoCivilLetras;
+        this.nit = nit;
+        this.direccion = direccion;
+        this.dpi = dpi;
+        this.tipoServicios = tipoServicios;
+        this.titulo = titulo;
+        this.nombreColegioProfesional = nombreColegioProfesional;
+        this.numeroColegiado = numeroColegiado;
+        this.honorario = honorario;
+        this.idCatalogoEstado = idCatalogoEstado;
+        this.usuarioInsert = usuarioInsert;
+        this.fechaInsert = fechaInsert;
+        this.usuarioUpdate = usuarioUpdate;
+        this.fechaUpdate = fechaUpdate;
+        this.observaciones = observaciones;
+        this.actividades = actividades;
+    }
+
+    public List<RrhhActividad> getActividades() {
+        return actividades;
+    }
+
+    public void setActividades(List<RrhhActividad> actividades) {
+        this.actividades = actividades;
+    }
+    
+    
 
     public BigDecimal getIdContrato() {
         return idContrato;

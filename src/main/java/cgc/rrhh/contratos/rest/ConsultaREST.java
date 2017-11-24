@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -31,6 +32,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
+import org.apache.log4j.Logger;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -57,11 +59,13 @@ public class ConsultaREST {
     @EJB
     private ActividadPerfilService actividadPerfilService;
     
+    private static final Logger log = Logger.getLogger(ConsultaREST.class);
+    
     @GET
     @Path("/{id}") 
     public void generarContrato(@Context HttpServletResponse response,@PathParam("id") BigDecimal id) throws Exception{            	    
 	    try {
-                System.out.println("entro generarContrato");
+                
 	    	//DocWord word = super.getDocument(1);
               //  ResultsArchivo archivo = super.findArchivoByIdPlantilla(id);
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(id);
@@ -69,6 +73,7 @@ public class ConsultaREST {
                 if(laboral == null)
                     throw new Exception("No se encontro Informacion del Id Solicitado");
                  
+                log.info("ENTRO A GENERAR CONTRATO: S/U a la hora: "+new Date()+" NUMERO CONTRATO: "+laboral.getNumeroContrato());
                  SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
                  Contrato contrato = new Contrato(laboral.getIdContrato().getCorrelativoContrato().intValue(),
                          laboral.getHonorario().intValue(),
@@ -96,8 +101,13 @@ public class ConsultaREST {
                     range.replaceText("<ACTIVIDADES>",this.concatActividades(laboral.getIdContrato().getIdContrato()));
                     range.replaceText("<MONTO_TOTAL_EN_LETRAS>", contrato.getMontoTotalEnLetras());
                     range.replaceText("<PLAZO>",contrato.getPlazoEnLetras());
-                    range.replaceText("<COLEGIADO>",Colegiado.toText(laboral.getIdContrato().getAcademico().getNumeroColegiado()));
-                    range.replaceText("<COLEGIO>",laboral.getIdContrato().getAcademico().getColegioProfesional().getNombreColegioProfesional().toUpperCase());
+                    if(laboral.getIdContrato().getAcademico().getNumeroColegiado() != null 
+                            && !laboral.getIdContrato().getAcademico().getNumeroColegiado().isEmpty()){
+                        range.replaceText("<COLEGIADO>",Colegiado.toText(laboral.getIdContrato().getAcademico().getNumeroColegiado()));
+                    }
+                    if(laboral.getIdContrato().getAcademico().getColegioProfesional() != null){
+                        range.replaceText("<COLEGIO>",laboral.getIdContrato().getAcademico().getColegioProfesional().getNombreColegioProfesional().toUpperCase());
+                    }                    
                     range.replaceText("DIECISÉIS .","DIECISÉIS.");
                     range.replaceText(" ) ",") ");
                     range.replaceText("  ("," (");
@@ -122,7 +132,7 @@ public class ConsultaREST {
 			baos.writeTo(os);
 			os.flush();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+                        log.error("ConsultaREST: ",e);
                         throw new Exception(e.getMessage());
 		}
     }
