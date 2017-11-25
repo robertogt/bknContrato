@@ -128,7 +128,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 "L.FECHA_UPDATE, " +
 "L.USUARIO_INSERT, " +
 "L.USUARIO_UPDATE, " +
-"C.OBSERVACIONES " +
+"C.OBSERVACIONES, " +
+"L.NUMERO_FIANZA "+                             
 "FROM RRHH_LABORAL L " +
 "INNER JOIN RRHH_RENGLON RE ON L.RENGLON = RE.RENGLON " +
 "INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
@@ -171,7 +172,8 @@ import javax.xml.bind.annotation.XmlRootElement;
                                               @ColumnResult(name = "FECHA_INSERT", type = Date.class),
                                               @ColumnResult(name = "USUARIO_UPDATE", type = String.class),
                                               @ColumnResult(name = "FECHA_UPDATE", type = Date.class),
-                                              @ColumnResult(name = "OBSERVACIONES", type = String.class)
+                                              @ColumnResult(name = "OBSERVACIONES", type = String.class),
+                                              @ColumnResult(name = "NUMERO_FIANZA", type = String.class)
                                               
                                    })
                          }),

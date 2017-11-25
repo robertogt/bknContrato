@@ -26,6 +26,7 @@ public class ResultsContrato {
     private String nombreRenglon; 
     private String estadoCivilLetras;
     private String nit;
+    private String numeroFianza;
     private String direccion;
     private String dpi;    
     private String tipoServicios;
@@ -50,7 +51,7 @@ public class ResultsContrato {
             String nit, String direccion, String dpi, String tipoServicios, String titulo,
             String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario,
             BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate,
-            Date fechaUpdate, String observaciones) {
+            Date fechaUpdate, String observaciones, String numeroFianza) {
         this.idContrato = idContrato;
         this.nombreCompleto = nombreCompleto;
         this.numeroContrato = numeroContrato;
@@ -74,6 +75,7 @@ public class ResultsContrato {
         this.usuarioUpdate = usuarioUpdate;
         this.fechaUpdate = fechaUpdate;
         this.observaciones = observaciones;
+        this.numeroFianza = numeroFianza;
     }
 
     public ResultsContrato(BigDecimal idContrato, String nombreCompleto, String numeroContrato, String fechaDel, String fechaAl, String fechaCambioTipoMovimiento, String nombreUbicacion, String nombreRenglon, String estadoCivilLetras, String nit, String direccion, String dpi, String tipoServicios, String titulo, String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario, BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate, Date fechaUpdate, String observaciones, List<RrhhActividad> actividades) {
@@ -175,6 +177,14 @@ public class ResultsContrato {
 
     public void setNombreRenglon(String nombreRenglon) {
         this.nombreRenglon = nombreRenglon;
+    }
+    
+    public String getNumeroFianza() {
+        return numeroFianza;
+    }
+
+    public void setNumeroFianza(String numeroFianza) {
+        this.numeroFianza = numeroFianza;
     }
 
     public String getEstadoCivilLetras() {
