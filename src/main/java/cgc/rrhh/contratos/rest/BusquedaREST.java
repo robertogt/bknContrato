@@ -84,7 +84,7 @@ public class BusquedaREST {
     @GET
     @Path(Constants.EDIT)
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData findContrato(@QueryParam("contrato") BigDecimal contrato) {
+    public ResponseData<ResultsContrato> findContrato(@QueryParam("contrato") BigDecimal contrato) {
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error al cargar la información ");

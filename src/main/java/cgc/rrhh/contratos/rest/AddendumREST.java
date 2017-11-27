@@ -65,7 +65,7 @@ public class AddendumREST {
     @GET
     @Path(Constants.CONTRATO)
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData findContrato(@QueryParam("idContrato") BigDecimal idContrato){
+    public ResponseData<ResultsFuncionario> findContrato(@QueryParam("idContrato") BigDecimal idContrato){
         ResponseData response = new ResponseData();
         System.out.println(idContrato);
         try {

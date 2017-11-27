@@ -120,7 +120,7 @@ public class ContratoREST {
     @GET
     @Path(Constants.FUNCIONARIO)
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData findFuncionario(@QueryParam("dpi") String dpi){
+    public ResponseData<ResultsFuncionario> findFuncionario(@QueryParam("dpi") String dpi){
         ResponseData response = new ResponseData();
         try {
             if(dpi != null && !dpi.isEmpty()){
