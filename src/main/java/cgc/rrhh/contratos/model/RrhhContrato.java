@@ -187,7 +187,7 @@ import javax.xml.bind.annotation.XmlRootElement;
             "INNER JOIN RRHH_DEPARTAMENTO D ON M.DEPARTAMENTO = D.DEPARTAMENTO " +
             "LEFT JOIN RRHH_COLEGIO_PROFESIONAL CP ON A.COLEGIO_PROFESIONAL = CP.COLEGIO_PROFESIONAL " +
             "WHERE L.ID_CONTRATO = ? ",
-         resultSetMapping = "ResultsContrato")
+         resultSetMapping = "ResultsContrato"),
     @NamedNativeQuery(name = "RrhhContrato.findAceptados",
                       query = "SELECT rue.PRIMER_NOMBRE||' '||rue.SEGUNDO_NOMBRE||' '||rue.PRIMER_APELLIDO||' '||rue.SEGUNDO_APELLIDO NOMBRE_COMPLETO," +
                                 "lab.NUMERO_CONTRATO, " +
