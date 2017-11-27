@@ -99,7 +99,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 "INNER JOIN RRHH_MUNICIPIO M ON R.MUNICIPIO_VIVIENDA = M.MUNICIPIO AND R.DEPARTAMENTO_VIVIENDA = M.DEPARTAMENTO  " +
 "INNER JOIN RRHH_DEPARTAMENTO D ON M.DEPARTAMENTO = D.DEPARTAMENTO " +
 "LEFT JOIN RRHH_COLEGIO_PROFESIONAL CP ON A.COLEGIO_PROFESIONAL = CP.COLEGIO_PROFESIONAL " +
-"INNER JOIN ( SELECT C.ID_CONTRATO, C.ID_CATALOGO_ESTADO FROM RRHH_CONTRATO_ESTADO C WHERE ESTADO = 'A' AND ID_CATALOGO_ESTADO = DECODE(?,1,1, ID_CATALOGO_ESTADO )) CE ON C.ID_CONTRATO = CE.ID_CONTRATO " +
+"INNER JOIN ( SELECT C.ID_CONTRATO, C.ID_CATALOGO_ESTADO FROM RRHH_CONTRATO_ESTADO C WHERE ESTADO = 'A' AND ID_CATALOGO_ESTADO = ?) CE ON C.ID_CONTRATO = CE.ID_CONTRATO " +
 "WHERE L.ESTADO = ? ORDER BY L.FECHA_INSERT ASC",
                         resultSetMapping = "ResultsContrato"),
      @NamedNativeQuery(name="RrhhContrato.busquedaGeneral",
@@ -130,7 +130,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 "C.OBSERVACIONES, " +
 "L.NUMERO_FIANZA, "+    
 "P.NACIONALIDAD, " +
-"L.ESTADO  " +
+"L.ESTADO,  " +
+"RE.RENGLON, "+
+"TO_CHAR(R.FECHA_NACIMIENTO,'DD/MM/YYYY') FECHA_NACIMIENTO, "+
+"U.UBICACION_FUNCIONAL " +
 "FROM RRHH_LABORAL L " +
 "INNER JOIN RRHH_RENGLON RE ON L.RENGLON = RE.RENGLON " +
 "INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
@@ -174,7 +177,10 @@ import javax.xml.bind.annotation.XmlRootElement;
             "C.OBSERVACIONES, " +
             "L.NUMERO_FIANZA, "+
             "P.NACIONALIDAD, "+
-            "L.ESTADO "+
+            "L.ESTADO, "+
+            "RE.RENGLON, "+
+            "TO_CHAR(R.FECHA_NACIMIENTO,'DD/MM/YYYY') FECHA_NACIMIENTO, "+
+            "U.UBICACION_FUNCIONAL " +    
             "FROM RRHH_LABORAL L " +
             "INNER JOIN RRHH_RENGLON RE ON L.RENGLON = RE.RENGLON " +
             "INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
@@ -235,8 +241,10 @@ import javax.xml.bind.annotation.XmlRootElement;
                                               @ColumnResult(name = "OBSERVACIONES", type = String.class),
                                               @ColumnResult(name = "NUMERO_FIANZA", type = String.class),
                                               @ColumnResult(name = "NACIONALIDAD", type = String.class),
-                                              @ColumnResult(name = "ESTADO", type = String.class)
-                                              
+                                              @ColumnResult(name = "ESTADO", type = String.class),
+                                              @ColumnResult(name = "RENGLON", type = String.class),
+                                              @ColumnResult(name = "FECHA_NACIMIENTO", type = String.class),
+                                              @ColumnResult(name = "UBICACION_FUNCIONAL", type = BigDecimal.class)
                                    })
                          }),
     @SqlResultSetMapping(name = "ResultFuncionario",

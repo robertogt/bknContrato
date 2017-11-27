@@ -49,15 +49,15 @@ public class FuncionariosREST {
         return result;
     }
     
-    /*public static void main(String[] args){
-        System.out.println(Dpi.toText("2133710490101"));
-        System.out.println(Edad.getEdad("19/01/1992"));
-        System.out.println(Edad.toText("19/01/1992").replaceFirst(" ", ""));
-        System.out.println(Nit.toText("2059349K"));
-        System.out.println(Colegiado.toText("442"));
-        Contrato test = new Contrato(1,12000.00,"15/01/2018","31/12/2018","15/01/2018");
-        System.out.println(test.getMontoTotalEnLetras());
-        System.out.println(test.getPlazoEnLetras());
+   /* public static void main(String[] args) throws Exception{
+//        System.out.println(Dpi.toText("2133710490101"));
+//        System.out.println(Edad.getEdad("19/01/1992"));
+//        System.out.println(Edad.toText("19/01/1992").replaceFirst(" ", ""));
+//        System.out.println(Nit.toText("2059349K"));
+//        System.out.println(Colegiado.toText("442"));
+//        Contrato test = new Contrato(1,12000.00,"15/01/2018","31/12/2018","15/01/2018");
+//        System.out.println(test.getMontoTotalEnLetras());
+//        System.out.println(test.getPlazoEnLetras());
     }*/
    /* public static void main(String[] args) throws Exception{       
        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");

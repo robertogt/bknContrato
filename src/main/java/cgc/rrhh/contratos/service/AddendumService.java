@@ -8,13 +8,16 @@ package cgc.rrhh.contratos.service;
 import cgc.rhh.contratos.util.Constants;
 import cgc.rrhh.contratos.model.RrhhActividadContrato;
 import cgc.rrhh.contratos.model.RrhhContrato;
+import cgc.rrhh.contratos.model.RrhhContratoEstado;
 import cgc.rrhh.contratos.model.RrhhHistoricoLaboral;
 import cgc.rrhh.contratos.model.RrhhLaboral;
 import cgc.rrhh.contratos.model.RrhhMovimientosPresupuesto;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -34,6 +37,12 @@ import org.apache.log4j.Logger;
 public class AddendumService extends GenericAbstractService<RrhhContrato>{
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
+    
+    @EJB
+    private GenerarContrato generarContrato;
+    
+    @EJB
+    private GeneralService generalService;
     
     private static final Logger log = Logger.getLogger(AddendumService.class);
     
@@ -73,9 +82,10 @@ public class AddendumService extends GenericAbstractService<RrhhContrato>{
         }
     }
     
-    public void crearAddendum(RrhhLaboral laboral,RrhhContrato contrato,
+    public void crearAddendum(String usuario,RrhhLaboral laboral,RrhhContrato contrato,
             RrhhMovimientosPresupuesto diff, RrhhMovimientosPresupuesto nuevo,
-            List<RrhhActividadContrato> actividades, RrhhHistoricoLaboral historico) throws Exception{
+            List<RrhhActividadContrato> actividades, RrhhHistoricoLaboral historico,
+            RrhhContratoEstado estadoContrato) throws Exception{
         try {
             if(laboral == null)
                 throw new Exception("Laboral es nulo");
@@ -114,9 +124,28 @@ public class AddendumService extends GenericAbstractService<RrhhContrato>{
             nuevo.setIdContrato(contrato);
             em.persist(nuevo);
             
+            if(estadoContrato != null && estadoContrato.getIdCatalogoEstado().getIdCatalogoEstado().equals(5)){
+                estadoContrato.setFechaUpdate(new Date());
+                estadoContrato.setUsuarioUpdate(usuario);
+                estadoContrato.setEstado("F");
+                em.merge(estadoContrato);
+            }
+            
+            RrhhContratoEstado newEstado = new RrhhContratoEstado();
+            newEstado.setDocumento(generarContrato.generarContrato(contrato.getIdContrato()).toByteArray());
+            newEstado.setEstado(Constants.ACTIVO);
+            newEstado.setFechaInsert(new Date());
+            newEstado.setIdCatalogoEstado(generalService.findEstadoById(BigDecimal.valueOf(6)));
+            newEstado.setIdContrato(contrato);
+            newEstado.setUsuarioInsert(usuario);
+            
+            em.persist(newEstado);
+            
+            if(newEstado.getIdContratoEstado() == null)
+                throw new Exception("No se creo contratoEstado");
+            
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("crearAddendum ",e);
             throw new Exception(e.getMessage());
         }
     }

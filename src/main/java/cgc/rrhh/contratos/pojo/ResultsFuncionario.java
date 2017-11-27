@@ -39,7 +39,7 @@ public class ResultsFuncionario {
     private String numeroColegiado;
     private BigDecimal idPerfil;
     private List<ResultsActividad> actividades;
-    private ResultsAcademico infoAcademica; 
+    private ResultsAcademico academico; 
     private String observaciones;
     
     public ResultsFuncionario() {
@@ -76,7 +76,7 @@ public class ResultsFuncionario {
             String tipoServicios, Double honorario, String estado, Date fechaInsert,
             BigDecimal ubicacionFuncional,String nombreUbicacion,
             String fechaDel, String fechaAl,String fechaCambioTipoMovimiento,List<ResultsActividad> actividades,
-            ResultsAcademico infoAcademica,String observaciones) {
+            ResultsAcademico academico,String observaciones) {
         this.idRue = idRue;
         this.idContrato = idContrato;
         this.fechaNacimiento = fechaNacimiento;
@@ -98,7 +98,7 @@ public class ResultsFuncionario {
         this.fechaAl = fechaAl;
         this.fechaCambioTipoMovimiento = fechaCambioTipoMovimiento;
         this.actividades = actividades;
-        this.infoAcademica = infoAcademica;
+        this.academico = academico;
         this.observaciones = observaciones;
     }
     
@@ -122,7 +122,7 @@ public class ResultsFuncionario {
             String nit, String direccion, String  numeroColegiado,
             BigDecimal ubicacionFuncional,String nombreUbicacion, String fechaDel, String fechaAl,
             String fechaCambioTipoMovimiento,List<ResultsActividad> actividades,
-            ResultsAcademico infoAcademica, String observaciones) {
+            ResultsAcademico academico, String observaciones) {
         this.fechaNacimiento = fechaNacimiento;
         this.estadoCivil = estadoCivil;
         this.estadoCivilLetras = estadoCivilLetras;
@@ -135,7 +135,7 @@ public class ResultsFuncionario {
         this.fechaAl = fechaAl;
         this.fechaCambioTipoMovimiento = fechaCambioTipoMovimiento;
         this.actividades = actividades;
-        this.infoAcademica = infoAcademica;
+        this.academico = academico;
         this.observaciones = observaciones;
         this.ubicacionFuncional = ubicacionFuncional;
         this.nombreUbicacion = nombreUbicacion;
@@ -320,11 +320,11 @@ public class ResultsFuncionario {
     }
 
     public ResultsAcademico getInfoAcademica() {
-        return infoAcademica;
+        return academico;
     }
 
-    public void setInfoAcademica(ResultsAcademico infoAcademica) {
-        this.infoAcademica = infoAcademica;
+    public void setInfoAcademica(ResultsAcademico academico) {
+        this.academico = academico;
     }
 
     public Integer getEdad() {

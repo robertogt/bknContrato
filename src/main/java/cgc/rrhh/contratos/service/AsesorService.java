@@ -16,8 +16,11 @@ import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -30,16 +33,17 @@ public class AsesorService {
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
     
+    private static final Logger log = Logger.getLogger(AsesorService.class);
+    
     public List<ResultsContrato> listAllByAsesor(){
         try {
             TypedQuery<ResultsContrato> query = em
                     .createNamedQuery("RrhhContrato.listAllContrato",ResultsContrato.class);
-            query.setParameter(1, 1);
+            query.setParameter(1, 2);
             query.setParameter(2, 'I');
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+           log.error("listAllByAsesor: ",e);
             return new ArrayList<ResultsContrato>();
         }
     }
@@ -51,8 +55,7 @@ public class AsesorService {
             query.setParameter(1, idContrato);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("findHistorialByContrato: ",e);
             return new ArrayList<ResultsHistorial>();
         }
     }
@@ -64,9 +67,10 @@ public class AsesorService {
                     .createNamedQuery("RrhhContratoEstado.findByIdContrato",RrhhContratoEstado.class);
             query.setParameter("idContrato", idContrato);
             return query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException nr) {
+            return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("findEstadoByContrato: ",e);
             throw new Exception(e.getMessage());
         }
     }
@@ -88,8 +92,7 @@ public class AsesorService {
             
             em.merge(update);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("aprobarRegistro: ",e);
             throw new Exception(e.getMessage());
         }
     }

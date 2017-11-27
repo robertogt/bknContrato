@@ -63,8 +63,8 @@ public class RescindirREST {
                     
                     Contrato diff = new Contrato(laboral.getIdContrato().getCorrelativoContrato().intValue(),
                             laboral.getHonorario().doubleValue(),
-                            format.format(laboral.getFechaInicio()),
                             fechaFin,
+                            format.format(laboral.getFechaAl()),                            
                             format.format(laboral.getFechaCambioTipoMovimiento()));
                     
                     BigDecimal sumLaboral = addendumService.findMontoByLaboral(laboral.getLaboral());

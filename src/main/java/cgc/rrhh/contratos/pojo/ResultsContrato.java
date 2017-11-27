@@ -42,6 +42,10 @@ public class ResultsContrato {
     private String observaciones;
     private String nacionalidad;
     private String estado;
+    private String renglon;
+    private String fechaNacimiento;
+    private BigDecimal ubicacionFuncional;
+    private Integer edad;
     private BigDecimal idPerfil;
     private List<ResultsActividad> actividades;
     private ResultsAcademico academico;
@@ -55,7 +59,8 @@ public class ResultsContrato {
             String nit, String direccion, String dpi, String tipoServicios, String titulo,
             String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario,
             BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate,
-            Date fechaUpdate, String observaciones, String numeroFianza, String nacionalidad, String estado) {
+            Date fechaUpdate, String observaciones, String numeroFianza, String nacionalidad,
+            String estado,String renglon, String fechaNacimiento, BigDecimal ubicacionFuncional) {
         this.idContrato = idContrato;
         this.nombreCompleto = nombreCompleto;
         this.numeroContrato = numeroContrato;
@@ -82,6 +87,9 @@ public class ResultsContrato {
         this.numeroFianza = numeroFianza;
         this.nacionalidad = nacionalidad;
         this.estado = estado;
+        this.renglon = renglon;
+        this.fechaNacimiento = fechaNacimiento;
+        this.ubicacionFuncional = ubicacionFuncional;
     }
 
     public ResultsContrato(BigDecimal idContrato, String nombreCompleto, String numeroContrato, String fechaDel, String fechaAl, String fechaCambioTipoMovimiento, String nombreUbicacion, String nombreRenglon, String estadoCivilLetras, String nit, String direccion, String dpi, String tipoServicios, String titulo, String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario, BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate, Date fechaUpdate, String observaciones) {
@@ -110,6 +118,43 @@ public class ResultsContrato {
         this.observaciones = observaciones;
     }
 
+    public BigDecimal getUbicacionFuncional() {
+        return ubicacionFuncional;
+    }
+
+    public void setUbicacionFuncional(BigDecimal ubicacionFuncional) {
+        this.ubicacionFuncional = ubicacionFuncional;
+    }
+    
+    
+    public String getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(String fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    
+    
+    public Integer getEdad() {
+        return edad;
+    }
+
+    public void setEdad(Integer edad) {
+        this.edad = edad;
+    }
+
+    public String getRenglon() {
+        return renglon;
+    }
+
+    public void setRenglon(String renglon) {
+        this.renglon = renglon;
+    }
+
+    
+    
     public BigDecimal getIdPerfil() {
         return idPerfil;
     }

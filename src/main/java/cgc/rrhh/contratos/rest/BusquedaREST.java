@@ -104,7 +104,7 @@ public class BusquedaREST {
                                     resultsContrato.setActividades(actividades);
                                 }
                           
-                            
+                    
                     ResultsAcademico resultsAcademico = contratoService.getAcademicoByContrato(resultsContrato.getIdContrato());
                     
                     
@@ -112,6 +112,7 @@ public class BusquedaREST {
                         throw new Exception("resultsAcademico is null");
                     
                     resultsContrato.setAcademico(resultsAcademico);
+                    resultsContrato.setEdad(Edad.getEdad(resultsContrato.getFechaNacimiento()));
                     
                     response.setCode(200);
                     response.setMessage("Ok");

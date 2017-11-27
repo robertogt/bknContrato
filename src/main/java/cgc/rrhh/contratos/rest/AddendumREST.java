@@ -9,6 +9,7 @@ import cgc.rhh.contratos.util.Constants;
 import cgc.rhh.contratos.util.ResponseData;
 import cgc.rrhh.contratos.model.RrhhActividadContrato;
 import cgc.rrhh.contratos.model.RrhhContrato;
+import cgc.rrhh.contratos.model.RrhhContratoEstado;
 import cgc.rrhh.contratos.model.RrhhControlPresupuesto;
 import cgc.rrhh.contratos.model.RrhhHistoricoLaboral;
 import cgc.rrhh.contratos.model.RrhhLaboral;
@@ -17,8 +18,10 @@ import cgc.rrhh.contratos.pojo.ResultsActividad;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 import cgc.rrhh.contratos.service.ActividadPerfilService;
 import cgc.rrhh.contratos.service.AddendumService;
+import cgc.rrhh.contratos.service.AsesorService;
 import cgc.rrhh.contratos.service.ContratoService;
 import cgc.rrhh.contratos.service.GeneralService;
+import cgc.rrhh.contratos.service.GenerarContrato;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,11 +62,13 @@ public class AddendumREST {
     @EJB
     private GeneralService generalService;
     
+    @EJB
+    private AsesorService asesorService;
+    
     //private Logger logger = Logger.getLogger("");
     private static final Logger log = Logger.getLogger(AddendumREST.class);
     
     @GET
-    @Path(Constants.CONTRATO)
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseData<ResultsFuncionario> findContrato(@QueryParam("idContrato") BigDecimal idContrato){
         ResponseData response = new ResponseData();
@@ -97,6 +102,10 @@ public class AddendumREST {
             if(funcionario != null && this.validate(funcionario)){
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(funcionario.getIdContrato());
                 if(laboral  != null){
+                    if(laboral.getEstado().equalsIgnoreCase(Constants.ACTIVO)){
+                        
+                    
+                    
                     String usuario = "S/U";
                     SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
                     RrhhHistoricoLaboral historico = this.setHistoricoLaboral(usuario,laboral);
@@ -107,12 +116,15 @@ public class AddendumREST {
                     
                     if(laboral.getHonorario().compareTo(BigDecimal.valueOf(funcionario.getHonorario())) != 0){
                         
-                        
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(format.parse(funcionario.getFechaCambioTipoMovimiento()));
+                        cal.add(Calendar.DATE, -1);
+                        log.info(format.format(cal.getTime()));
                         RrhhMovimientosPresupuesto movimiento = contratoService.findMovimientoByContrato(laboral.getIdContrato().getIdContrato());
                         Contrato diff = new Contrato(laboral.getIdContrato().getCorrelativoContrato().intValue(),
                                 laboral.getHonorario().doubleValue(),
                                 format.format(laboral.getFechaDel()), 
-                                funcionario.getFechaCambioTipoMovimiento(),
+                                format.format(cal.getTime()),
                                 format.format(laboral.getFechaCambioTipoMovimiento()));
                         log.info("fecha DEL: "+laboral.getFechaDel());
                         log.info("fechaMovimiento: "+funcionario.getFechaCambioTipoMovimiento());
@@ -192,10 +204,15 @@ public class AddendumREST {
                         laboral.setObservacion("ADDENDUM AL CONTRATO +"+laboral.getNumeroContrato()+" SURTE EFECTO A PARTIR DEL "+funcionario.getFechaCambioTipoMovimiento());
                         laboral.setFechaUpdate(new Date());
                         laboral.setUsuarioUpdate(usuario);
-                    
-                    addendumService.crearAddendum(laboral, contratoAddendum, diferencia, nuevo, actividades, historico);
+                        
+                        RrhhContratoEstado estadoAnterior = asesorService.findEstadoByContrato(laboral.getIdContrato().getIdContrato());
+                                   
+                    addendumService.crearAddendum(usuario,laboral, contratoAddendum, diferencia, nuevo, actividades, historico,estadoAnterior);
                     data.setCode(200);
                     data.setMessage("ADDENDUM AL CONTRATO +"+laboral.getNumeroContrato()+" SURTE EFECTO A PARTIR DEL "+funcionario.getFechaCambioTipoMovimiento());
+                    }else{
+                        data.setMessage("El contrato debe estar de Alta para realizar un addendum");
+                    }
                 }
             }
         } catch (Exception e) {
