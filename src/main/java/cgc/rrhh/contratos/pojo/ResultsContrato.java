@@ -117,6 +117,22 @@ public class ResultsContrato {
         this.fechaUpdate = fechaUpdate;
         this.observaciones = observaciones;
     }
+    
+    public ResultsContrato(BigDecimal idContrato, String nombreCompleto, String numeroContrato, 
+                            String numeroFianza, String fechaCambioTipoMovimiento, BigDecimal idCatalogoEstado, 
+                            String usuarioInsert, Date fechaInsert, String usuarioUpdate, 
+                            Date fechaUpdate) {
+        this.idContrato = idContrato;
+        this.nombreCompleto = nombreCompleto;
+        this.numeroContrato = numeroContrato;
+        this.numeroFianza = numeroFianza;
+        this.fechaCambioTipoMovimiento = fechaCambioTipoMovimiento;
+        this.idCatalogoEstado = idCatalogoEstado;
+        this.usuarioInsert = usuarioInsert;
+        this.fechaInsert = fechaInsert;
+        this.usuarioUpdate = usuarioUpdate;
+        this.fechaUpdate = fechaUpdate;
+    }
 
     public BigDecimal getUbicacionFuncional() {
         return ubicacionFuncional;

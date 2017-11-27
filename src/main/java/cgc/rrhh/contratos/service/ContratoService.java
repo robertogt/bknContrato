@@ -429,6 +429,24 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         }
     }
     
+    public List<ResultsContrato> findContratosAceptados(BigDecimal renglon, String tipoServicios ){
+        try {
+            TypedQuery<ResultsContrato> query = em
+                    .createNamedQuery("RrhhContrato.findAceptados", ResultsContrato.class);            
+            query.setParameter("renglon", renglon);
+            query.setParameter("tipoServicios", tipoServicios);
+            
+            return query.getResultList();
+        } catch (NonUniqueResultException | NoResultException  nr) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
 
     @Override
     protected EntityManager getEntityManager() {

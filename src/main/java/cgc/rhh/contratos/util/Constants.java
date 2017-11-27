@@ -23,6 +23,7 @@ public class Constants {
     public static final String RESCINDIR = CONTRATO+"/resindir";
     
     
+    public static final String ACEPTADOS = "/aceptados";
     public static final String FUNCIONARIO = "/funcionario";
     public static final String GENERAR = CONTRATO + "/generar";
     public static final String EDITAR = CONTRATO + "/editar";

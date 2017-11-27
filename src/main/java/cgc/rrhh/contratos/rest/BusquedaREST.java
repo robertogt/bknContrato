@@ -104,7 +104,7 @@ public class BusquedaREST {
                                     resultsContrato.setActividades(actividades);
                                 }
                           
-                    
+                            
                     ResultsAcademico resultsAcademico = contratoService.getAcademicoByContrato(resultsContrato.getIdContrato());
                     
                     
@@ -112,7 +112,6 @@ public class BusquedaREST {
                         throw new Exception("resultsAcademico is null");
                     
                     resultsContrato.setAcademico(resultsAcademico);
-                    resultsContrato.setEdad(Edad.getEdad(resultsContrato.getFechaNacimiento()));
                     
                     response.setCode(200);
                     response.setMessage("Ok");
@@ -124,5 +123,18 @@ public class BusquedaREST {
             log.error("Error al buscar Contrato: "+contrato+" ",e);
         }
         return response;
+    }
+    
+    @GET
+    @Path(Constants.ACEPTADOS)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ResultsContrato> findAllAceptados(@QueryParam("renglon") BigDecimal renglon, @QueryParam("tipoServicios") String tipoServicios){
+        List<ResultsContrato> contratos = new ArrayList<ResultsContrato>();
+        try {
+            contratos = contratoService.findContratosAceptados(renglon, tipoServicios);            
+        } catch (Exception e) {            
+            log.error("Error BusquedaREST findAllAprobados: ",e);
+        }
+        return contratos;
     }
 }

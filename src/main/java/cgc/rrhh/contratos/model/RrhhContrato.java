@@ -194,20 +194,25 @@ import javax.xml.bind.annotation.XmlRootElement;
             "LEFT JOIN RRHH_COLEGIO_PROFESIONAL CP ON A.COLEGIO_PROFESIONAL = CP.COLEGIO_PROFESIONAL " +
             "WHERE L.ID_CONTRATO = ? ",
          resultSetMapping = "ResultsContrato"),
+
     @NamedNativeQuery(name = "RrhhContrato.findAceptados",
-                      query = "SELECT rue.PRIMER_NOMBRE||' '||rue.SEGUNDO_NOMBRE||' '||rue.PRIMER_APELLIDO||' '||rue.SEGUNDO_APELLIDO NOMBRE_COMPLETO," +
+                      query = "SELECT c.ID_CONTRATO, "+
+                                "rue.PRIMER_NOMBRE||' '||rue.SEGUNDO_NOMBRE||' '||rue.PRIMER_APELLIDO||' '||rue.SEGUNDO_APELLIDO NOMBRE_COMPLETO," +
                                 "lab.NUMERO_CONTRATO, " +
-                                "lab.DOCUMENTO_MOVIMIENTO, " +
                                 "lab.NUMERO_FIANZA, " +
                                 "lab.FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
-                                "ce.ID_CATALOGO_ESTADO, ce.USUARIO_INSERT, ce.FECHA_INSERT, ce.USUARIO_UPDATE, ce.FECHA_UPDATE " +
+                                "ce.ID_CATALOGO_ESTADO, "+
+                                "ce.USUARIO_INSERT, "+
+                                "ce.FECHA_INSERT, "+
+                                " ce.USUARIO_UPDATE, "+
+                                "ce.FECHA_UPDATE " +
                                 "FROM RRHH_RUE rue " +
                                 "INNER JOIN RRHH_LABORAL lab ON rue.ID_RUE = lab.ID_RUE " +
                                 "INNER JOIN RRHH_CONTRATO c ON lab.ID_CONTRATO = c.ID_CONTRATO " +
                                 "INNER JOIN RRHH_CONTRATO_ESTADO ce ON ce.ID_CONTRATO = c.ID_CONTRATO " +
                                 "WHERE lab.ESTADO = 'I' " +
                                 "  and lab.RENGLON = ?renglon " +
-                                "  and lab.TIPO_SERVICIOS = ?tipoServicio " +
+                                "  and lab.TIPO_SERVICIOS = ?tipoServicios " +
                                 "  and ce.ESTADO = 'A' " +
                                 "  and ce.ID_CATALOGO_ESTADO =4",
                       resultSetMapping = "ResultsContrato")
@@ -262,6 +267,21 @@ import javax.xml.bind.annotation.XmlRootElement;
                                               @ColumnResult(name = "NOMBRE_UBICACION", type = String.class),
                                               @ColumnResult(name = "ID_PERFIL", type = BigDecimal.class),
                                               @ColumnResult(name = "HONORARIO", type = Double.class)
+                                   })
+                         }),
+    @SqlResultSetMapping(name = "ResultsContratoAprobado",
+                         classes = {@ConstructorResult(targetClass = ResultsContrato.class,
+                                   columns = {
+                                              @ColumnResult(name = "ID_CONTRATO", type = BigDecimal.class),
+                                              @ColumnResult(name = "NOMBRE_COMPLETO", type = String.class),                                              
+                                              @ColumnResult(name = "NUMERO_CONTRATO", type = String.class),
+                                              @ColumnResult(name = "NUMERO_FIANZA", type = String.class),
+                                              @ColumnResult(name = "FECHA_CAMBIO_TIPO_MOVIMIENTO", type = String.class),
+                                              @ColumnResult(name = "ID_CATALOGO_ESTADO", type = BigDecimal.class),
+                                              @ColumnResult(name = "USUARIO_INSERT", type = String.class),
+                                              @ColumnResult(name = "FECHA_INSERT", type = Date.class),
+                                              @ColumnResult(name = "USUARIO_UPDATE", type = String.class),
+                                              @ColumnResult(name = "FECHA_UPDATE", type = Date.class)                                              
                                    })
                          })
 })
