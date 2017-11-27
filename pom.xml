@@ -84,7 +84,7 @@
         <dependency>
             <groupId>cgc.contratos</groupId>
             <artifactId>calculoscontrato</artifactId>
-            <version>1.0.0</version>            
+            <version>1.0.1</version>            
         </dependency>   
          <!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
         <dependency>    

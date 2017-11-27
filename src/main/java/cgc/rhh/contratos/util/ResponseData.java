@@ -5,23 +5,22 @@
  */
 package cgc.rhh.contratos.util;
 
-import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 
 
 /**
  *
  * @author ejmorales
  */
-public class ResponseData {
+public class ResponseData<T> {
     
     private Integer code;
-    private ResultsFuncionario data;
+    private T data;
     private String message;    
 
     public ResponseData() {
     }
 
-    public ResponseData(Integer code, ResultsFuncionario data, String message) {
+    public ResponseData(Integer code, T data, String message) {
         this.code = code;
         this.data = data;
         this.message = message;
@@ -35,11 +34,11 @@ public class ResponseData {
         this.code = code;
     }
 
-    public ResultsFuncionario getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(ResultsFuncionario data) {
+    public void setData(T data) {
         this.data = data;
     }
 

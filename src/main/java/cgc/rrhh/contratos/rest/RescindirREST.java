@@ -10,6 +10,7 @@ import cgc.rhh.contratos.util.ResponseData;
 import cgc.rrhh.contratos.model.RrhhHistoricoLaboral;
 import cgc.rrhh.contratos.model.RrhhLaboral;
 import cgc.rrhh.contratos.model.RrhhMovimientosPresupuesto;
+import cgc.rrhh.contratos.service.AddendumService;
 import cgc.rrhh.contratos.service.ContratoService;
 import cgc.rrhh.contratos.service.GeneralService;
 import cgc.rrhh.contratos.service.RescindirService;
@@ -39,6 +40,9 @@ public class RescindirREST {
     @EJB
     private RescindirService rescindirService;
     
+    @EJB
+    private AddendumService addendumService;
+    
     
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -62,7 +66,9 @@ public class RescindirREST {
                             format.format(laboral.getFechaInicio()),
                             fechaFin,
                             format.format(laboral.getFechaCambioTipoMovimiento()));
-                    BigDecimal montoRestante = movimiento.getMonto().add(BigDecimal.valueOf(diff.getMontoTotal()));
+                    
+                    BigDecimal sumLaboral = addendumService.findMontoByLaboral(laboral.getLaboral());
+                    BigDecimal montoRestante = sumLaboral.add(BigDecimal.valueOf(diff.getMontoTotal()));
                     
                     laboral.setEstado("B");
                     laboral.setUsuarioUpdate(usuario);

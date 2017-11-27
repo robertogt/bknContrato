@@ -40,7 +40,11 @@ public class ResultsContrato {
     private String usuarioUpdate;
     private Date fechaUpdate;
     private String observaciones;
-    private List<RrhhActividad> actividades;
+    private String nacionalidad;
+    private String estado;
+    private BigDecimal idPerfil;
+    private List<ResultsActividad> actividades;
+    private ResultsAcademico academico;
 
     public ResultsContrato() {
     }
@@ -51,7 +55,7 @@ public class ResultsContrato {
             String nit, String direccion, String dpi, String tipoServicios, String titulo,
             String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario,
             BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate,
-            Date fechaUpdate, String observaciones, String numeroFianza) {
+            Date fechaUpdate, String observaciones, String numeroFianza, String nacionalidad, String estado) {
         this.idContrato = idContrato;
         this.nombreCompleto = nombreCompleto;
         this.numeroContrato = numeroContrato;
@@ -76,9 +80,11 @@ public class ResultsContrato {
         this.fechaUpdate = fechaUpdate;
         this.observaciones = observaciones;
         this.numeroFianza = numeroFianza;
+        this.nacionalidad = nacionalidad;
+        this.estado = estado;
     }
 
-    public ResultsContrato(BigDecimal idContrato, String nombreCompleto, String numeroContrato, String fechaDel, String fechaAl, String fechaCambioTipoMovimiento, String nombreUbicacion, String nombreRenglon, String estadoCivilLetras, String nit, String direccion, String dpi, String tipoServicios, String titulo, String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario, BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate, Date fechaUpdate, String observaciones, List<RrhhActividad> actividades) {
+    public ResultsContrato(BigDecimal idContrato, String nombreCompleto, String numeroContrato, String fechaDel, String fechaAl, String fechaCambioTipoMovimiento, String nombreUbicacion, String nombreRenglon, String estadoCivilLetras, String nit, String direccion, String dpi, String tipoServicios, String titulo, String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario, BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate, Date fechaUpdate, String observaciones) {
         this.idContrato = idContrato;
         this.nombreCompleto = nombreCompleto;
         this.numeroContrato = numeroContrato;
@@ -102,14 +108,23 @@ public class ResultsContrato {
         this.usuarioUpdate = usuarioUpdate;
         this.fechaUpdate = fechaUpdate;
         this.observaciones = observaciones;
-        this.actividades = actividades;
     }
 
-    public List<RrhhActividad> getActividades() {
+    public BigDecimal getIdPerfil() {
+        return idPerfil;
+    }
+
+    public void setIdPerfil(BigDecimal idPerfil) {
+        this.idPerfil = idPerfil;
+    }
+    
+    
+
+    public List<ResultsActividad> getActividades() {
         return actividades;
     }
 
-    public void setActividades(List<RrhhActividad> actividades) {
+    public void setActividades(List<ResultsActividad> actividades) {
         this.actividades = actividades;
     }
     
@@ -305,6 +320,30 @@ public class ResultsContrato {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
+    }
+
+    public ResultsAcademico getAcademico() {
+        return academico;
+    }
+
+    public String getNacionalidad() {
+        return nacionalidad;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setAcademico(ResultsAcademico academico) {
+        this.academico = academico;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public void setNacionalidad(String nacionalidad) {
+        this.nacionalidad = nacionalidad;
     }
    
     

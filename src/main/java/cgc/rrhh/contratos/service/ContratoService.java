@@ -417,6 +417,18 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         }
     }
     
+    public ResultsContrato findEditContratoByIdContrato(BigDecimal idContrato){
+        try {
+            TypedQuery<ResultsContrato> query = em
+                    .createNamedQuery("RrhhContrato.findContratoEdit",ResultsContrato.class);
+            query.setParameter(1, idContrato);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            log.error("findEditContratoByIdContrato: ",e);
+            return null;
+        }
+    }
+    
 
     @Override
     protected EntityManager getEntityManager() {

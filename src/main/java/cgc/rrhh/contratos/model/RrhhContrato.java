@@ -5,7 +5,6 @@
  */
 package cgc.rrhh.contratos.model;
 
-import cgc.rrhh.contratos.pojo.ResultsAcademico;
 import cgc.rrhh.contratos.pojo.ResultsContrato;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 import java.io.Serializable;
@@ -129,7 +128,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 "L.USUARIO_INSERT, " +
 "L.USUARIO_UPDATE, " +
 "C.OBSERVACIONES, " +
-"L.NUMERO_FIANZA "+                             
+"L.NUMERO_FIANZA, "+    
+"P.NACIONALIDAD, " +
+"L.ESTADO  " +
 "FROM RRHH_LABORAL L " +
 "INNER JOIN RRHH_RENGLON RE ON L.RENGLON = RE.RENGLON " +
 "INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
@@ -137,6 +138,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 "INNER JOIN RRHH_UBICACION_FUNCIONAL U ON L.UBICACION_FUNCIONAL = U.UBICACION_FUNCIONAL " +
 "INNER JOIN RRHH_ACADEMICO A ON C.ACADEMICO = A.ACADEMICO " +
 "INNER JOIN RRHH_TITULO T ON A.TITULO = T.TITULO " +
+"INNER JOIN RRHH_PAIS P ON R.PAIS = P.PAIS " +
 "INNER JOIN RRHH_MUNICIPIO M ON R.MUNICIPIO_VIVIENDA = M.MUNICIPIO AND R.DEPARTAMENTO_VIVIENDA = M.DEPARTAMENTO  " +
 "INNER JOIN RRHH_DEPARTAMENTO D ON M.DEPARTAMENTO = D.DEPARTAMENTO " +
 "LEFT JOIN RRHH_COLEGIO_PROFESIONAL CP ON A.COLEGIO_PROFESIONAL = CP.COLEGIO_PROFESIONAL " +
@@ -144,7 +146,48 @@ import javax.xml.bind.annotation.XmlRootElement;
 "WHERE L.ESTADO IN ('I', 'A') " +
 "AND C.ANIO = ? " +
 "ORDER BY L.FECHA_INSERT ASC ",
-                        resultSetMapping = "ResultsContrato")
+                        resultSetMapping = "ResultsContrato"),
+@NamedNativeQuery(name="RrhhContrato.findContratoEdit",
+        query="SELECT L.ID_CONTRATO, " +
+              "R.PRIMER_NOMBRE||' '||R.SEGUNDO_NOMBRE||' '||R.PRIMER_APELLIDO||' '||R.SEGUNDO_APELLIDO NOMBRE_COMPLETO, " +
+              "L.NUMERO_CONTRATO, " +
+            "TO_CHAR(L.FECHA_DEL,'DD/MM/YYYY') FECHA_DEL, " +
+            "TO_CHAR(L.FECHA_AL,'DD/MM/YYYY') FECHA_AL, " +
+            "TO_CHAR(L.FECHA_CAMBIO_TIPO_MOVIMIENTO,'DD/MM/YYYY') FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
+            "U.NOMBRE NOMBRE_UBICACION, " +
+            "RE.NOMBRE NOMBRE_RENGLON, " +
+            "CASE R.ESTADO_CIVIL WHEN 'C' THEN 'CASADO/A' " +
+            "WHEN 'S' THEN 'SOLTERO/A' WHEN 'V' THEN 'VIUDO/A' WHEN 'D' THEN 'DIVORCIADO/A' " +
+            "WHEN 'U' THEN 'UNIDO/A' END ESTADO_CIVIL_LETRAS, " +
+            "R.NIT, " +
+            "UPPER(R.DIRECCION||' '||M.NOMBRE||', '||D.NOMBRE) DIRECCION, " +
+            "REPLACE(REPLACE(R.CUI,'-',''),' ','') DPI, " +
+            "L.TIPO_SERVICIOS, " +
+            "T.NOMBRE TITULO, " +
+            "CP.NOMBRE_COLEGIO_PROFESIONAL, " +
+            "A.NUMERO_COLEGIADO, " +
+            "L.HONORARIO, " +
+            "L.USUARIO_INSERT, " +
+            "L.FECHA_INSERT, " +
+            "L.USUARIO_UPDATE, " +
+            "L.FECHA_UPDATE, " +
+            "C.OBSERVACIONES, " +
+            "L.NUMERO_FIANZA, "+
+            "P.NACIONALIDAD, "+
+            "L.ESTADO "+
+            "FROM RRHH_LABORAL L " +
+            "INNER JOIN RRHH_RENGLON RE ON L.RENGLON = RE.RENGLON " +
+            "INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
+            "INNER JOIN RRHH_CONTRATO C ON L.ID_CONTRATO = C.ID_CONTRATO " +
+            "INNER JOIN RRHH_UBICACION_FUNCIONAL U ON L.UBICACION_FUNCIONAL = U.UBICACION_FUNCIONAL " +
+            "INNER JOIN RRHH_ACADEMICO A ON C.ACADEMICO = A.ACADEMICO " +
+            "INNER JOIN RRHH_TITULO T ON A.TITULO = T.TITULO " +
+            "INNER JOIN RRHH_PAIS P ON R.PAIS = P.PAIS " +
+            "INNER JOIN RRHH_MUNICIPIO M ON R.MUNICIPIO_VIVIENDA = M.MUNICIPIO AND R.DEPARTAMENTO_VIVIENDA = M.DEPARTAMENTO  " +
+            "INNER JOIN RRHH_DEPARTAMENTO D ON M.DEPARTAMENTO = D.DEPARTAMENTO " +
+            "LEFT JOIN RRHH_COLEGIO_PROFESIONAL CP ON A.COLEGIO_PROFESIONAL = CP.COLEGIO_PROFESIONAL " +
+            "WHERE L.ID_CONTRATO = ? ",
+         resultSetMapping = "ResultsContrato")
 })
 @SqlResultSetMappings({
     @SqlResultSetMapping(name = "ResultsContrato",
@@ -173,7 +216,9 @@ import javax.xml.bind.annotation.XmlRootElement;
                                               @ColumnResult(name = "USUARIO_UPDATE", type = String.class),
                                               @ColumnResult(name = "FECHA_UPDATE", type = Date.class),
                                               @ColumnResult(name = "OBSERVACIONES", type = String.class),
-                                              @ColumnResult(name = "NUMERO_FIANZA", type = String.class)
+                                              @ColumnResult(name = "NUMERO_FIANZA", type = String.class),
+                                              @ColumnResult(name = "NACIONALIDAD", type = String.class),
+                                              @ColumnResult(name = "ESTADO", type = String.class)
                                               
                                    })
                          }),

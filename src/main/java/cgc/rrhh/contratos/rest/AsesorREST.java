@@ -112,7 +112,7 @@ public class AsesorREST {
                     RrhhContratoEstado newEstado = new RrhhContratoEstado();
                     newEstado.setEstado(Constants.ACTIVO);
                     newEstado.setIdContrato(antEstado.getIdContrato());
-                    newEstado.setIdCatalogoEstado(generalService.findEstadoById(BigDecimal.valueOf(3)));
+                    newEstado.setIdCatalogoEstado(generalService.findEstadoById(BigDecimal.valueOf(4)));
                     newEstado.setUsuarioInsert("S/U");
                     newEstado.setDocumento(this.generarContrato(antEstado.getIdContrato().getIdContrato()).toByteArray());
                     newEstado.setFechaInsert(new Date());
@@ -153,7 +153,7 @@ public class AsesorREST {
                     newEstado.setIdContrato(antEstado.getIdContrato());
                     newEstado.setDocumento(docBytes);
                     newEstado.setObservacion(URLDecoder.decode(observaciones,"UTF-8"));
-                    newEstado.setIdCatalogoEstado(generalService.findEstadoById(BigDecimal.valueOf(2)));
+                    newEstado.setIdCatalogoEstado(generalService.findEstadoById(BigDecimal.valueOf(3)));
                     newEstado.setUsuarioInsert("S/U");
                     newEstado.setFechaInsert(new Date());
                     asesorService.aprobarRegistro(antEstado,newEstado);

@@ -100,7 +100,7 @@ public class ActividadPerfilService {
     
     public BigDecimal getIdPerfilByContrato(BigDecimal idContrato){
         try {
-            Query query = em.createNativeQuery("SELECT ID_PERFIL FROM RRHH_ACTIVIDAD_CONTRATO WHERE ID_CONTRATO = ? GROUP BY ID_PERFIL ", BigDecimal.class);
+            Query query = em.createNativeQuery("SELECT ID_PERFIL FROM RRHH_ACTIVIDAD_CONTRATO WHERE ID_CONTRATO = ? GROUP BY ID_PERFIL ");
             query.setMaxResults(1);
             query.setParameter(1, idContrato);
             BigDecimal idPerfil = (BigDecimal)query.getSingleResult();

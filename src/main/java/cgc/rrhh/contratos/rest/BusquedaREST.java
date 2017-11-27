@@ -6,12 +6,18 @@
 package cgc.rrhh.contratos.rest;
 
 import cgc.rhh.contratos.util.Constants;
+import cgc.rhh.contratos.util.ResponseData;
 import cgc.rrhh.contratos.model.RrhhActividad;
+import cgc.rrhh.contratos.model.RrhhLaboral;
+import cgc.rrhh.contratos.pojo.ResultsAcademico;
+import cgc.rrhh.contratos.pojo.ResultsActividad;
 import cgc.rrhh.contratos.pojo.ResultsContrato;
+import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 import cgc.rrhh.contratos.service.ActividadPerfilService;
 import cgc.rrhh.contratos.service.ContratoService;
 import cgc.rrhh.contratos.service.GeneralService;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -23,6 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
+import rrhh.calculos.contrato.Edad;
 
 /**
  *
@@ -60,7 +67,7 @@ public class BusquedaREST {
     }
     
     @GET
-    @Path("/actividades")
+    @Path(Constants.ACTIVIDADES)
     @Produces(MediaType.APPLICATION_JSON)
     public List<RrhhActividad> findAllActividadesByContrato(@QueryParam("contrato") BigDecimal contrato){
         List<RrhhActividad> actividades = new ArrayList<RrhhActividad>();
@@ -72,5 +79,49 @@ public class BusquedaREST {
             log.error("Error BusquedaREST findAllContratos: ",e);
         }
         return actividades;
+    }
+    
+    @GET
+    @Path(Constants.EDIT)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ResponseData findContrato(@QueryParam("contrato") BigDecimal contrato) {
+        ResponseData response = new ResponseData();
+        response.setCode(403);
+        response.setMessage("Error al cargar la información ");
+        try {
+            if(contrato != null){
+                ResultsContrato resultsContrato = contratoService.findEditContratoByIdContrato(contrato);
+                if(resultsContrato != null){
+                    
+                     BigDecimal idPerfil = actividadPerfilService.getIdPerfilByContrato(resultsContrato.getIdContrato());
+                     
+                     if(idPerfil == null)
+                         throw new Exception("idPerfil es nulo");
+                     
+                                List<ResultsActividad> actividades = actividadPerfilService.findAllActividadesByContrato(idPerfil, resultsContrato.getIdContrato());
+                                if(!actividades.isEmpty()){
+                                    resultsContrato.setIdPerfil(idPerfil);
+                                    resultsContrato.setActividades(actividades);
+                                }
+                          
+                            
+                    ResultsAcademico resultsAcademico = contratoService.getAcademicoByContrato(resultsContrato.getIdContrato());
+                    
+                    
+                    if(resultsAcademico == null)
+                        throw new Exception("resultsAcademico is null");
+                    
+                    resultsContrato.setAcademico(resultsAcademico);
+                    
+                    response.setCode(200);
+                    response.setMessage("Ok");
+                    response.setData(resultsContrato);
+                }
+            }
+        } catch (Exception e) {
+            response.setCode(500);
+            log.error("Error al buscar Contrato: "+contrato+" ",e);
+        }
+        return response;
     }
 }
