@@ -188,6 +188,23 @@ import javax.xml.bind.annotation.XmlRootElement;
             "LEFT JOIN RRHH_COLEGIO_PROFESIONAL CP ON A.COLEGIO_PROFESIONAL = CP.COLEGIO_PROFESIONAL " +
             "WHERE L.ID_CONTRATO = ? ",
          resultSetMapping = "ResultsContrato")
+    @NamedNativeQuery(name = "RrhhContrato.findAceptados",
+                      query = "SELECT rue.PRIMER_NOMBRE||' '||rue.SEGUNDO_NOMBRE||' '||rue.PRIMER_APELLIDO||' '||rue.SEGUNDO_APELLIDO NOMBRE_COMPLETO," +
+                                "lab.NUMERO_CONTRATO, " +
+                                "lab.DOCUMENTO_MOVIMIENTO, " +
+                                "lab.NUMERO_FIANZA, " +
+                                "lab.FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
+                                "ce.ID_CATALOGO_ESTADO, ce.USUARIO_INSERT, ce.FECHA_INSERT, ce.USUARIO_UPDATE, ce.FECHA_UPDATE " +
+                                "FROM RRHH_RUE rue " +
+                                "INNER JOIN RRHH_LABORAL lab ON rue.ID_RUE = lab.ID_RUE " +
+                                "INNER JOIN RRHH_CONTRATO c ON lab.ID_CONTRATO = c.ID_CONTRATO " +
+                                "INNER JOIN RRHH_CONTRATO_ESTADO ce ON ce.ID_CONTRATO = c.ID_CONTRATO " +
+                                "WHERE lab.ESTADO = 'I' " +
+                                "  and lab.RENGLON = ?renglon " +
+                                "  and lab.TIPO_SERVICIOS = ?tipoServicio " +
+                                "  and ce.ESTADO = 'A' " +
+                                "  and ce.ID_CATALOGO_ESTADO =4",
+                      resultSetMapping = "ResultsContrato")
 })
 @SqlResultSetMappings({
     @SqlResultSetMapping(name = "ResultsContrato",
