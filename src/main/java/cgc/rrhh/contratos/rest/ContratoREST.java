@@ -48,6 +48,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+import org.apache.log4j.Logger;
 import rrhh.calculos.contrato.Contrato;
 import rrhh.calculos.contrato.Edad;
 
@@ -76,6 +77,8 @@ public class ContratoREST {
     
     @EJB
     private FuncionariosService funcionariosService;
+    
+    private Logger log = Logger.getLogger(ContratoREST.class);
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -112,7 +115,7 @@ public class ContratoREST {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.info("anular contrato ",e);
         }
         return response;
     }
@@ -189,6 +192,7 @@ public class ContratoREST {
         } catch (Exception e) {
             response.setCode(500);
             response.setMessage("Error interno del servidor");
+            log.error("findFuncionario: ",e);
         }
         return response;
     }
@@ -275,6 +279,7 @@ public class ContratoREST {
         } catch (Exception e) {
            response.setCode(500);
            response.setMessage("Error interno del servidor");
+           log.error("crear contrato",e);
         }
         return response;
     }

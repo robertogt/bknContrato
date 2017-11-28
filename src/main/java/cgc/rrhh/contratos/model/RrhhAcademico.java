@@ -54,8 +54,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "RrhhAcademico.findByVenceColegiacion2", query = "SELECT r FROM RrhhAcademico r WHERE r.venceColegiacion2 = :venceColegiacion2")
     , @NamedQuery(name = "RrhhAcademico.findByNumeroConstancia2", query = "SELECT r FROM RrhhAcademico r WHERE r.numeroConstancia2 = :numeroConstancia2")
     , @NamedQuery(name = "RrhhAcademico.findByNivelAcademico", query = "SELECT r FROM RrhhAcademico r WHERE r.nivelAcademico = :nivelAcademico")
-    , @NamedQuery(name = "RrhhAcademico.findByTituloRueColegio", query = "SELECT r FROM RrhhAcademico r WHERE r.titulo.titulo = :titulo AND r.colegioProfesional.colegioProfesional = :colegioProfesional AND r.idRue.idRue = :rue")
-    , @NamedQuery(name = "RrhhAcademico.findByTituloRue", query = "SELECT r FROM RrhhAcademico r WHERE r.titulo.titulo = :titulo AND r.idRue.idRue = :rue")})
+    , @NamedQuery(name = "RrhhAcademico.findByTituloRueColegio", query = "SELECT r FROM RrhhAcademico r WHERE r.titulo.titulo = :titulo AND r.colegioProfesional.colegioProfesional = :colegioProfesional AND r.idRue.idRue = :rue ORDER BY r.fechaInsert DESC")
+    , @NamedQuery(name = "RrhhAcademico.findByTituloRue", query = "SELECT r FROM RrhhAcademico r WHERE r.titulo.titulo = :titulo AND r.idRue.idRue = :rue ORDER by r.fechaInsert DESC")})
 public class RrhhAcademico implements Serializable {
 
     private static final long serialVersionUID = 1L;

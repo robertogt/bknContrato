@@ -8,6 +8,7 @@ package cgc.rrhh.contratos.service;
 import cgc.rhh.contratos.util.Constants;
 import cgc.rrhh.contratos.model.RrhhAcademico;
 import cgc.rrhh.contratos.model.RrhhCatalogoEstado;
+import cgc.rrhh.contratos.model.RrhhContratoEstado;
 import cgc.rrhh.contratos.model.RrhhControlPresupuesto;
 import cgc.rrhh.contratos.model.RrhhDepartamento;
 import cgc.rrhh.contratos.model.RrhhMunicipio;
@@ -29,6 +30,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -40,8 +42,25 @@ public class GeneralService {
     
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
+    
+    private static final Logger log = Logger.getLogger(GeneralService.class);
 
     public GeneralService() {
+    }
+    
+    
+    public RrhhContratoEstado findActiveByContrato(BigDecimal idContrato) throws Exception{
+        try {
+            TypedQuery<RrhhContratoEstado> query = em
+                    .createNamedQuery("RrhhContratoEstado.findActiveByContrato",RrhhContratoEstado.class);
+            query.setParameter("idContrato", idContrato);
+            return query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException nr) {
+            return null;
+        } catch (Exception e) {
+            log.error("findActiveByContrato: ",e);
+            throw new Exception(e.getMessage());
+        }
     }
     
     public RrhhRenglon getRenglonById(String renglon){
@@ -172,6 +191,7 @@ public class GeneralService {
             
             TypedQuery<RrhhAcademico> query = em
                     .createNamedQuery(namedQuery,RrhhAcademico.class);
+            query.setMaxResults(1);
             query.setParameter("titulo", titulo);  
             query.setParameter("rue", rue);     
             if(tipoServicios.equalsIgnoreCase("P")){

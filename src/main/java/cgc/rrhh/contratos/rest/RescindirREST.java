@@ -24,6 +24,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.log4j.Logger;
 import rrhh.calculos.contrato.Contrato;
 
 /**
@@ -42,6 +43,8 @@ public class RescindirREST {
     
     @EJB
     private AddendumService addendumService;
+    
+    private Logger log = Logger.getLogger(RescindirREST.class);
     
     
     @POST
@@ -87,8 +90,7 @@ public class RescindirREST {
         } catch (Exception e) {
             response.setCode(500);
             response.setMessage("Internal Server Error");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            log.error("rescindirContrato ",e);
         }
         return response;
     }

@@ -61,11 +61,13 @@ public class AsesorService {
     }
     
     
-    public RrhhContratoEstado findEstadoByContrato(BigDecimal idContrato) throws Exception{
+    public RrhhContratoEstado findEstadoByContrato(BigDecimal idContrato,
+            BigDecimal idCatalogoEstado) throws Exception{
         try {
             TypedQuery<RrhhContratoEstado> query = em
                     .createNamedQuery("RrhhContratoEstado.findByIdContrato",RrhhContratoEstado.class);
             query.setParameter("idContrato", idContrato);
+            query.setParameter("catalogo", idCatalogoEstado);
             return query.getSingleResult();
         } catch (NoResultException | NonUniqueResultException nr) {
             return null;

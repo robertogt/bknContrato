@@ -102,7 +102,7 @@ public class AsesorREST {
         response.setMessage("Error al realizar la petición");
         try {
             if(contrato != null){
-                RrhhContratoEstado antEstado = asesorService.findEstadoByContrato(contrato);
+                RrhhContratoEstado antEstado = asesorService.findEstadoByContrato(contrato,BigDecimal.valueOf(2));
                 if(antEstado != null){
                     antEstado.setEstado("F");
                     antEstado.setUsuarioUpdate("S/U");
@@ -141,7 +141,7 @@ public class AsesorREST {
         try {
              byte[] docBytes = this.writeFiletoBytes(uploadedInputStream);
              if(docBytes != null){
-                 RrhhContratoEstado antEstado = asesorService.findEstadoByContrato(contrato);
+                 RrhhContratoEstado antEstado = asesorService.findEstadoByContrato(contrato,BigDecimal.valueOf(2));
                  if(antEstado != null){
                     antEstado.setEstado("F");
                     antEstado.setUsuarioUpdate("S/U");

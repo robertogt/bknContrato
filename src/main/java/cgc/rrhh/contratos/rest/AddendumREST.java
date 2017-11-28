@@ -205,7 +205,7 @@ public class AddendumREST {
                         laboral.setFechaUpdate(new Date());
                         laboral.setUsuarioUpdate(usuario);
                         
-                        RrhhContratoEstado estadoAnterior = asesorService.findEstadoByContrato(laboral.getIdContrato().getIdContrato());
+                        RrhhContratoEstado estadoAnterior = asesorService.findEstadoByContrato(laboral.getIdContrato().getIdContrato(),BigDecimal.valueOf(5));
                                    
                     addendumService.crearAddendum(usuario,laboral, contratoAddendum, diferencia, nuevo, actividades, historico,estadoAnterior);
                     data.setCode(200);

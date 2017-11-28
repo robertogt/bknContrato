@@ -11,6 +11,7 @@ import cgc.rrhh.contratos.model.RrhhAcademico;
 import cgc.rrhh.contratos.model.RrhhActividad;
 import cgc.rrhh.contratos.model.RrhhActividadContrato;
 import cgc.rrhh.contratos.model.RrhhContrato;
+import cgc.rrhh.contratos.model.RrhhContratoEstado;
 import cgc.rrhh.contratos.model.RrhhControlPresupuesto;
 import cgc.rrhh.contratos.model.RrhhLaboral;
 import cgc.rrhh.contratos.model.RrhhMovimientosPresupuesto;
@@ -20,6 +21,7 @@ import cgc.rrhh.contratos.pojo.PersistActividades;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
 import cgc.rrhh.contratos.service.ActividadPerfilService;
+import cgc.rrhh.contratos.service.AsesorService;
 import cgc.rrhh.contratos.service.ColegioService;
 import cgc.rrhh.contratos.service.ContratoService;
 import cgc.rrhh.contratos.service.GeneralService;
@@ -64,6 +66,9 @@ public class ContratoEditarREST {
     @EJB
     private TitulosService titulosService;
     
+    @EJB
+    private AsesorService asesorService;
+    
     private static final Logger log = Logger.getLogger(ContratoEditarREST.class);
     
     @POST
@@ -74,11 +79,20 @@ public class ContratoEditarREST {
         response.setMessage("Error al editar contrato");
         try {
             String usuario = "S/U";
+            
             if(funcionario != null && funcionario.getIdContrato() != null){                
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(funcionario.getIdContrato());
+                
+                if(laboral == null)
+                    throw new Exception("laboral es nulo");
+                
+                funcionario.setIdRue(BigDecimal.valueOf(laboral.getIdRue().getIdRue()));
                 RrhhMovimientosPresupuesto movimiento = contratoService
                         .findMovimientoByContrato(laboral.getIdContrato().getIdContrato());
-                if(laboral != null && movimiento != null) {
+                
+                if(movimiento == null)
+                    throw new Exception("movimiento es nulo");
+                
                     SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
                     if(!laboral.getEstado().equalsIgnoreCase("A") && !laboral.getEstado().equalsIgnoreCase("B")){
                        RrhhLaboral modifLaboral = this.setLaboral(usuario,laboral,funcionario);
@@ -93,13 +107,23 @@ public class ContratoEditarREST {
                            cambio = true;
                        }
                        
-                       if(!format.format(laboral.getFechaDel()).equalsIgnoreCase(funcionario.getFechaDel())){
+                       String fechaDel = format.format(format.parse(funcionario.getFechaDel()));
+                       String fechaAl = format.format(format.parse(funcionario.getFechaAl()));
+                       
+                       if(!format.format(laboral.getFechaDel()).equalsIgnoreCase(fechaDel)){
+                           cambio = true;
+                       }
+                       
+                       if(!format.format(laboral.getFechaAl()).equalsIgnoreCase(fechaAl)){
+                           cambio = true;
+                       }
+                       /*if(!format.format(laboral.getFechaDel()).equalsIgnoreCase(funcionario.getFechaDel())){
                            cambio = true;
                        }
                        
                        if(!format.format(laboral.getFechaAl()).equalsIgnoreCase(funcionario.getFechaAl())){
                            cambio = true;
-                       }
+                       }*/
                        
                        if(cambio){
                            
@@ -208,16 +232,32 @@ public class ContratoEditarREST {
                            
                        }
                        
+                        RrhhContratoEstado estado = asesorService.findEstadoByContrato(laboral.getIdContrato().getIdContrato(),BigDecimal.valueOf(3));
+                        RrhhContratoEstado contratoEstado = null;
+                        
+                        if(estado != null){
+                                contratoEstado = new RrhhContratoEstado();
+                                contratoEstado.setEstado(Constants.ACTIVO);
+                                contratoEstado.setFechaInsert(new Date());
+                                contratoEstado.setIdContrato(laboral.getIdContrato());
+                                contratoEstado.setIdCatalogoEstado(generalService.findEstadoById(BigDecimal.valueOf(2)));
+                                contratoEstado.setUsuarioInsert(usuario);
+                                
+                                
+                                estado.setEstado("F");
+                                estado.setFechaUpdate(new Date());
+                                estado.setUsuarioUpdate(usuario);
+                        }
                        
-                       contratoService.editarContrato(laboral, contrato, academico, crear, anular, persistActividades);
+                       
+                       contratoService.editarContrato(laboral, contrato, academico, crear, anular, persistActividades,estado, contratoEstado);
                        response.setCode(200);
                        response.setMessage("Contrato "+laboral.getNumeroContrato()+" editado con éxito");
                        
                        
                     }else{                        
                         response.setMessage("No se puede editar un contrato Activo o de Baja. ");                
-                    }                    
-                }
+                    }   
             }
         } catch (Exception e) {
              log.error("editarContrato: ",e);
@@ -260,9 +300,10 @@ public class ContratoEditarREST {
             for(ResultsActividad results: resultsActividad){
                 boolean eval = true;
                 for(RrhhActividadContrato contratoActividad: actividadContrato){
-                    if(results.getIdActividad().equals(contratoActividad.getIdActividad().getIdActividad()) &&
-                            results.isSeleccionado()){
+                    if(results.getIdActividad().equals(contratoActividad.getIdActividad().getIdActividad())){
                        eval = false;
+                    }else if (!results.isSeleccionado()){
+                        eval = false;
                     }
                 }
                 

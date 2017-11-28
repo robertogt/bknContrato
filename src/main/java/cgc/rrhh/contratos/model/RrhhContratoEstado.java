@@ -45,12 +45,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "RrhhContratoEstado.findAll", query = "SELECT r FROM RrhhContratoEstado r")
     , @NamedQuery(name = "RrhhContratoEstado.findByIdContratoEstado", query = "SELECT r FROM RrhhContratoEstado r WHERE r.idContratoEstado = :idContratoEstado")
-    , @NamedQuery(name = "RrhhContratoEstado.findByIdContrato", query = "SELECT r FROM RrhhContratoEstado r WHERE r.idContrato.idContrato = :idContrato AND r.estado = 'A' AND r.idCatalogoEstado.idCatalogoEstado = 1 ")
+    , @NamedQuery(name = "RrhhContratoEstado.findByIdContrato", query = "SELECT r FROM RrhhContratoEstado r WHERE r.idContrato.idContrato = :idContrato AND r.estado = 'A' AND r.idCatalogoEstado.idCatalogoEstado = :catalogo ")
     , @NamedQuery(name = "RrhhContratoEstado.findByObservacion", query = "SELECT r FROM RrhhContratoEstado r WHERE r.observacion = :observacion")
     , @NamedQuery(name = "RrhhContratoEstado.findByUsuarioInsert", query = "SELECT r FROM RrhhContratoEstado r WHERE r.usuarioInsert = :usuarioInsert")
     , @NamedQuery(name = "RrhhContratoEstado.findByFechaInsert", query = "SELECT r FROM RrhhContratoEstado r WHERE r.fechaInsert = :fechaInsert")
     , @NamedQuery(name = "RrhhContratoEstado.findByUsuarioUpdate", query = "SELECT r FROM RrhhContratoEstado r WHERE r.usuarioUpdate = :usuarioUpdate")
-    , @NamedQuery(name = "RrhhContratoEstado.findByFechaUpdate", query = "SELECT r FROM RrhhContratoEstado r WHERE r.fechaUpdate = :fechaUpdate")})
+    , @NamedQuery(name = "RrhhContratoEstado.findByFechaUpdate", query = "SELECT r FROM RrhhContratoEstado r WHERE r.fechaUpdate = :fechaUpdate")
+    , @NamedQuery(name = "RrhhContratoEstado.findActiveByContrato", query = "SELECT r FROM RrhhContratoEstado r WHERE r.idContrato.idContrato = :idContrato AND r.estado = 'A' ")})
 @NamedNativeQueries({
     @NamedNativeQuery(name = "RrhhContratoEstado.findByContrato",
                       query = "SELECT CAT.NOMBRE NOMBRE_ESTADO,C.OBSERVACION,C.USUARIO_INSERT,C.FECHA_INSERT FROM RRHH_CONTRATO_ESTADO C  " +

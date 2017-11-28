@@ -281,7 +281,8 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
     
     public void editarContrato(RrhhLaboral laboral, RrhhContrato contrato,
             PersistAcademico persistAcademico,RrhhMovimientosPresupuesto crear,
-            RrhhMovimientosPresupuesto anular,PersistActividades persistActividad) throws Exception {
+            RrhhMovimientosPresupuesto anular,PersistActividades persistActividad,
+            RrhhContratoEstado modifEstado, RrhhContratoEstado crearEstado) throws Exception {
         try {
             RrhhAcademico academico = persistAcademico.getRrhhAcademico();
             
@@ -327,6 +328,18 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
                     throw new Exception("crear movimiento es nulo");
                 
            }
+           
+           if(modifEstado != null){
+               em.merge(modifEstado);
+               
+               if(crearEstado == null)
+                   throw new Exception("Crear Estado es nulo");
+               
+               em.persist(crearEstado);
+               
+               if(crearEstado.getIdContratoEstado() == null)
+                   throw new Exception("No se pudo crear el Contrato Estado");
+           }
             
             for(RrhhActividadContrato crearActividadContrato:persistActividad.getCrear()){
                 em.persist(crearActividadContrato);
@@ -337,9 +350,34 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             }
             
         } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            log.error("error al editar contrato: ",e);
+            throw new Exception(e.getMessage());
+        }
+    }
+    
+    public void createFianza(RrhhLaboral laboral, RrhhContratoEstado update,
+            RrhhContratoEstado create, boolean cambio) throws Exception{
+        try {
+            if(laboral == null)
+                throw new Exception("laboral es nulo");
+            
+            em.merge(laboral);
+            
+            if(cambio){
+               em.merge(update);
+               
+               if(create == null)
+                   throw new Exception("create  estado es nulo");
+               
+               em.persist(create);
+               
+               if(create.getIdContratoEstado() == null)
+                   throw new Exception("no pudo crearse el estado contrato ");
+            }
+            
+            
+        } catch (Exception e) {
+            log.error("createFianza: ",e);
             throw new Exception(e.getMessage());
         }
     }
@@ -379,6 +417,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         try {
             TypedQuery<RrhhMovimientosPresupuesto> query = em
                     .createNamedQuery("RrhhMovimientosPresupuesto.findByContrato",RrhhMovimientosPresupuesto.class);
+            query.setMaxResults(1);
             query.setParameter("contrato", idContrato);
             return query.getSingleResult();
           } catch (NonUniqueResultException | NoResultException  nr) {

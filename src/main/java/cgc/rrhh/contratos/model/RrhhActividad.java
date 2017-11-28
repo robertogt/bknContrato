@@ -60,6 +60,8 @@ import javax.xml.bind.annotation.XmlRootElement;
                             "FROM RRHH_PERFIL_ACTIVIDAD P " +
                             "INNER JOIN RRHH_ACTIVIDAD A ON P.ID_ACTIVIDAD = A.ID_ACTIVIDAD " +
                             "WHERE P.ID_PERFIL = ? "+
+                            "AND A.ESTADO = 'A' " +
+                            "AND P.ESTADO = 'A' " +  
                             "ORDER BY A.NOMBRE ASC ",
                       resultSetMapping = "ResultsActividad"),
     @NamedNativeQuery(name = "RrhhActividad.actividadByContrato",
@@ -74,6 +76,7 @@ import javax.xml.bind.annotation.XmlRootElement;
                             "INNER JOIN RRHH_ACTIVIDAD A ON P.ID_ACTIVIDAD = A.ID_ACTIVIDAD " +
                             "WHERE P.ID_PERFIL = ?perfil " +
                             "AND A.ESTADO = 'A' " +
+                            "AND P.ESTADO = 'A' " + 
                             "AND EXISTS(SELECT 1 FROM RRHH_ACTIVIDAD_CONTRATO WHERE ID_ACTIVIDAD = A.ID_ACTIVIDAD AND ID_CONTRATO = ?contrato AND ESTADO = 'A') " +
                             "UNION ALL " +
                             "SELECT A.ID_ACTIVIDAD,A.NOMBRE,A.DESCRIPCION, 0 SELECCIONADO " +
@@ -81,6 +84,7 @@ import javax.xml.bind.annotation.XmlRootElement;
                             "INNER JOIN RRHH_ACTIVIDAD A ON P.ID_ACTIVIDAD = A.ID_ACTIVIDAD " +
                             "WHERE P.ID_PERFIL = ?perfil " +
                             "AND A.ESTADO = 'A' " +
+                            "AND P.ESTADO = 'A' "+  
                             "AND NOT EXISTS(SELECT 1 FROM RRHH_ACTIVIDAD_CONTRATO WHERE ID_ACTIVIDAD = A.ID_ACTIVIDAD AND ID_CONTRATO = ?contrato AND ESTADO = 'A') " +
                             ") ",
                             resultSetMapping = "ResultsActividad")
