@@ -38,6 +38,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.log4j.Logger;
 import rrhh.calculos.contrato.Contrato;
 
 /**
@@ -63,6 +64,8 @@ public class ContratoEditarREST {
     @EJB
     private TitulosService titulosService;
     
+    private static final Logger log = Logger.getLogger(ContratoEditarREST.class);
+    
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseData editarContrato(ResultsFuncionario funcionario){
@@ -84,9 +87,21 @@ public class ContratoEditarREST {
                        RrhhMovimientosPresupuesto crear = new RrhhMovimientosPresupuesto();
                        RrhhMovimientosPresupuesto anular = new RrhhMovimientosPresupuesto();
                        
-                       if(funcionario.getHonorario().compareTo(laboral.getHonorario().doubleValue()) != 0 && 
-                               !format.format(laboral.getFechaDel()).equalsIgnoreCase(funcionario.getFechaDel()) &&
-                               !format.format(laboral.getFechaAl()).equalsIgnoreCase(funcionario.getFechaAl())){
+                       boolean cambio = false;
+                       
+                       if(funcionario.getHonorario().compareTo(laboral.getHonorario().doubleValue()) != 0){
+                           cambio = true;
+                       }
+                       
+                       if(!format.format(laboral.getFechaDel()).equalsIgnoreCase(funcionario.getFechaDel())){
+                           cambio = true;
+                       }
+                       
+                       if(!format.format(laboral.getFechaAl()).equalsIgnoreCase(funcionario.getFechaAl())){
+                           cambio = true;
+                       }
+                       
+                       if(cambio){
                            
                            Contrato temp = new Contrato(laboral.getIdContrato().getCorrelativoContrato().intValue(),
                                    funcionario.getHonorario(),
@@ -95,10 +110,11 @@ public class ContratoEditarREST {
                                    funcionario.getFechaCambioTipoMovimiento());
                            
                            BigDecimal montoTotal = contratoService.findMontoTotal(movimiento.getIdControlPresupuesto().getIdControlPresupuesto());
-                           System.out.println(montoTotal);
+                           log.info(montoTotal);
                            BigDecimal montoReal = montoTotal.add(movimiento.getMonto().abs());
-                           System.out.println(montoReal);
-                           
+                           log.info(montoReal);
+                                
+                              log.info(movimiento.getIdControlPresupuesto().getIdControlPresupuesto());
                                anular.setFechaInsert(new Date());
                                anular.setUsuarioInsert(usuario);
                                anular.setIdContrato(contrato);
@@ -110,11 +126,12 @@ public class ContratoEditarREST {
                                modifLaboral.setHonorario(BigDecimal.valueOf(funcionario.getHonorario()));    
                                modifLaboral.setFuente(movimiento.getIdControlPresupuesto().getIdFuenteFinanciamiento());
                                
+                               log.info(movimiento.getIdControlPresupuesto().getIdControlPresupuesto());
                                crear.setFechaInsert(new Date());
                                crear.setUsuarioInsert(usuario);
                                crear.setIdContrato(contrato);
                                crear.setIdControlPresupuesto(movimiento.getIdControlPresupuesto());
-                               crear.setMonto(montoContrato);
+                               crear.setMonto(montoContrato.negate());
                            }else{
                                Calendar now = Calendar.getInstance();
                                List<RrhhControlPresupuesto> presupuestos = contratoService
@@ -136,19 +153,23 @@ public class ContratoEditarREST {
                                   if(isPresupuesto){
                                         modifLaboral.setFuente(fuente.getIdFuenteFinanciamiento());
                                         modifLaboral.setHonorario(BigDecimal.valueOf(funcionario.getHonorario()));
-                                      
+                                        log.info("isPresupuesto: "+fuente.getIdControlPresupuesto());
                                         crear.setFechaInsert(new Date());
                                         crear.setUsuarioInsert(usuario);
                                         crear.setIdContrato(contrato);
                                         crear.setIdControlPresupuesto(fuente);
-                                        crear.setMonto(montoContrato);
+                                        crear.setMonto(montoContrato.negate());
                                   }else{
                                         response.setCode(403);
                                         response.setMessage("Presupuesto insuficiente");
                                     }
                            }
                            
+                       }else{
+                           crear = null;
+                           anular = null;
                        }
+                       
                        
                        List<RrhhActividadContrato> actividades = actividadPerfilService
                                .findActividadesByPerfilContrato(funcionario.getIdPerfil(),
@@ -199,7 +220,7 @@ public class ContratoEditarREST {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+             log.error("editarContrato: ",e);
         }
         return response;
     }
@@ -258,7 +279,7 @@ public class ContratoEditarREST {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("actividadesUpdate: ",e);
         }
         persist.setCrear(create);
         persist.setUpdate(update);
@@ -270,10 +291,10 @@ public class ContratoEditarREST {
     private RrhhLaboral setLaboral(String usuario,RrhhLaboral laboral,
             ResultsFuncionario funcionario) throws Exception{
         try {
-            SimpleDateFormat format = new SimpleDateFormat();            
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");            
             RrhhUbicacionFuncional ubicacionFuncional = generalService
                     .getUbicacionFuncional(funcionario.getUbicacionFuncional());
-            
+            log.info(ubicacionFuncional.getNombre());
             Calendar del = Calendar.getInstance();
                 del.setTime(format.parse(funcionario.getFechaDel()));
             Calendar al = Calendar.getInstance();
@@ -298,6 +319,7 @@ public class ContratoEditarREST {
             
             return laboral;
         } catch (Exception e) {
+            log.error("setLaboral: ",e);
             throw new Exception("Error al cargar la informacion laboral. ");
         }
         
@@ -320,6 +342,7 @@ public class ContratoEditarREST {
             
             return contrato;
         } catch (Exception e) {
+            log.error("setContrato: ",e);
             throw new Exception(e.getMessage());
         }
     }
@@ -332,19 +355,19 @@ public class ContratoEditarREST {
             boolean create = false;
             
                     academico = generalService.findAcademicoByTituloRueColegio(
-                    resultsFuncionario.getInfoAcademica().getTitulo(),
+                    resultsFuncionario.getAcademico().getTitulo(),
                     resultsFuncionario.getIdRue(),
-                    resultsFuncionario.getInfoAcademica().getColegioProfesional(),
+                    resultsFuncionario.getAcademico().getColegioProfesional(),
                     resultsFuncionario.getTipoServicios());
                     
                     if(academico == null){
                         create = true;
                     }else{
                         if(resultsFuncionario.getTipoServicios().equalsIgnoreCase("P")){
-                            if(!academico.getNumeroColegiado().equalsIgnoreCase(resultsFuncionario.getInfoAcademica().getNumeroColegiado())){
+                            if(!academico.getNumeroColegiado().equalsIgnoreCase(resultsFuncionario.getAcademico().getNumeroColegiado())){
                                 academico.setFechaUpdate(new Date());
                                 academico.setUsuarioUpdate(usuario);
-                                academico.setNumeroColegiado(resultsFuncionario.getInfoAcademica().getNumeroColegiado());
+                                academico.setNumeroColegiado(resultsFuncionario.getAcademico().getNumeroColegiado());
                                 persist.setUpdate(true);
                             }
                         }                        
@@ -358,12 +381,12 @@ public class ContratoEditarREST {
                 }*/
                 academico.setGradoAcademico(titulosService.getGradoAcademicoById("39"));
                 academico.setTitulo(titulosService
-                        .getTituloById(resultsFuncionario.getInfoAcademica().getTitulo()));
+                        .getTituloById(resultsFuncionario.getAcademico().getTitulo()));
                 academico.setEstado(Constants.ACTIVO);
                 if(resultsFuncionario.getTipoServicios().equalsIgnoreCase("P")){
                     academico.setColegioProfesional(colegioService
-                            .getTituloById(resultsFuncionario.getInfoAcademica().getColegioProfesional()));
-                    academico.setNumeroColegiado(resultsFuncionario.getInfoAcademica().getNumeroColegiado());
+                            .getTituloById(resultsFuncionario.getAcademico().getColegioProfesional()));
+                    academico.setNumeroColegiado(resultsFuncionario.getAcademico().getNumeroColegiado());
                     academico.setNivelEducativo("5");
                 }else{
                     academico.setNivelEducativo("4");
@@ -378,7 +401,7 @@ public class ContratoEditarREST {
             
             
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("setAcademico: ",e);
             academico = null;
         }
         

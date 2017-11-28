@@ -319,13 +319,15 @@ public class ResultsFuncionario {
         this.actividades = actividades;
     }
 
-    public ResultsAcademico getInfoAcademica() {
+    public ResultsAcademico getAcademico() {
         return academico;
     }
 
-    public void setInfoAcademica(ResultsAcademico academico) {
+    public void setAcademico(ResultsAcademico academico) {
         this.academico = academico;
     }
+
+   
 
     public Integer getEdad() {
         return edad;

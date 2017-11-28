@@ -161,7 +161,7 @@ public class ContratoREST {
                         }
                         
                         if(resultsAcademico != null){
-                            funcionarioRue.setInfoAcademica(resultsAcademico);
+                            funcionarioRue.setAcademico(resultsAcademico);
                         }
                         
                         response.setCode(200);
@@ -480,19 +480,19 @@ public class ContratoREST {
             
             if(resultsFuncionario.getIdRue() != null){
                     academico = generalService.findAcademicoByTituloRueColegio(
-                    resultsFuncionario.getInfoAcademica().getTitulo(),
+                    resultsFuncionario.getAcademico().getTitulo(),
                     resultsFuncionario.getIdRue(),
-                    resultsFuncionario.getInfoAcademica().getColegioProfesional(),
+                    resultsFuncionario.getAcademico().getColegioProfesional(),
                     resultsFuncionario.getTipoServicios());
                     
                     if(academico == null){
                         create = true;
                     }else{
                         if(resultsFuncionario.getTipoServicios().equalsIgnoreCase("P")){
-                            if(!academico.getNumeroColegiado().equalsIgnoreCase(resultsFuncionario.getInfoAcademica().getNumeroColegiado())){
+                            if(!academico.getNumeroColegiado().equalsIgnoreCase(resultsFuncionario.getAcademico().getNumeroColegiado())){
                                 academico.setFechaUpdate(new Date());
                                 academico.setUsuarioUpdate(usuario);
-                                academico.setNumeroColegiado(resultsFuncionario.getInfoAcademica().getNumeroColegiado());
+                                academico.setNumeroColegiado(resultsFuncionario.getAcademico().getNumeroColegiado());
                                 persist.setUpdate(true);
                             }
                         }                        
@@ -508,12 +508,12 @@ public class ContratoREST {
                 }*/
                 academico.setGradoAcademico(titulosService.getGradoAcademicoById("39"));
                 academico.setTitulo(titulosService
-                        .getTituloById(resultsFuncionario.getInfoAcademica().getTitulo()));
+                        .getTituloById(resultsFuncionario.getAcademico().getTitulo()));
                 academico.setEstado(Constants.ACTIVO);
                 if(resultsFuncionario.getTipoServicios().equalsIgnoreCase("P")){
                     academico.setColegioProfesional(colegioService
-                            .getTituloById(resultsFuncionario.getInfoAcademica().getColegioProfesional()));
-                    academico.setNumeroColegiado(resultsFuncionario.getInfoAcademica().getNumeroColegiado());
+                            .getTituloById(resultsFuncionario.getAcademico().getColegioProfesional()));
+                    academico.setNumeroColegiado(resultsFuncionario.getAcademico().getNumeroColegiado());
                     academico.setNivelEducativo("5");
                 }else{
                     academico.setNivelEducativo("4");
@@ -627,21 +627,21 @@ public class ContratoREST {
             }else if(resultsFuncionario.getTipoServicios().isEmpty()){
                 eval = false;
             }else{
-                if(resultsFuncionario.getInfoAcademica() == null){
+                if(resultsFuncionario.getAcademico() == null){
                      eval = false;
                 }else{
-                    if(resultsFuncionario.getInfoAcademica().getTitulo() == null){
+                    if(resultsFuncionario.getAcademico().getTitulo() == null){
                         eval = false;
                     }
 
                     if(resultsFuncionario.getTipoServicios().equalsIgnoreCase("P")){
-                        if(resultsFuncionario.getInfoAcademica().getColegioProfesional() == null){
+                        if(resultsFuncionario.getAcademico().getColegioProfesional() == null){
                             eval = false;
                         }
 
-                        if(resultsFuncionario.getInfoAcademica().getNumeroColegiado() == null){
+                        if(resultsFuncionario.getAcademico().getNumeroColegiado() == null){
                             eval = false;
-                        }else if(resultsFuncionario.getInfoAcademica().getNumeroColegiado().isEmpty()){
+                        }else if(resultsFuncionario.getAcademico().getNumeroColegiado().isEmpty()){
                             eval = false;
                         }
                     }

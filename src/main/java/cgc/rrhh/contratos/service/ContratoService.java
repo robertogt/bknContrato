@@ -272,9 +272,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             
             eval = true;
         } catch (Exception e) {
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+           log.error("CrearContrato",e);
             throw new Exception(e.getMessage());
             
         }
@@ -294,13 +292,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
                 throw new Exception("academico es nulo");
             
             if(laboral == null)
-                throw new Exception("Laboral es nulo");
-            
-            if(crear == null)
-                throw new Exception("CrearMovimiento es nulo");
-            
-            if(anular == null)
-                throw new Exception("anularMovimiento es nulo");
+                throw new Exception("Laboral es nulo");            
             
             if(persistActividad == null)
                 throw new Exception("persistActividad es nulo");
@@ -320,8 +312,21 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             
             em.merge(laboral);
             
-            em.persist(anular);
-            em.persist(crear);
+           if(anular != null){
+               em.persist(anular);
+            
+                if(anular.getIdMovimientosPresupuesto() == null)
+                    throw new Exception("Anular movimiento es nulo");
+                
+                if(crear == null)
+                    throw new Exception("crear es nulo");
+                
+                 em.persist(crear);
+            
+                if(crear.getIdMovimientosPresupuesto() == null)
+                    throw new Exception("crear movimiento es nulo");
+                
+           }
             
             for(RrhhActividadContrato crearActividadContrato:persistActividad.getCrear()){
                 em.persist(crearActividadContrato);
