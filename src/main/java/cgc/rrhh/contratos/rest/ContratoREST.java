@@ -31,6 +31,7 @@ import cgc.rrhh.contratos.service.GeneralService;
 import cgc.rrhh.contratos.service.TitulosService;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -89,15 +90,18 @@ public class ContratoREST {
     @POST
     @Path(Constants.ANULAR)
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData anular(@FormParam("contrato") BigDecimal idContrato) {
+    public ResponseData anular(@FormParam("contrato") BigDecimal idContrato,
+            @FormParam("observacion") String observacion) {
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error al anular contrato");
         try {
             if(idContrato != null){
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(idContrato);
+                
                 RrhhMovimientosPresupuesto movimientoPresupuesto = 
                         contratoService.findMovimientoByContrato(laboral.getIdContrato().getIdContrato());
+                
                 if(laboral != null && movimientoPresupuesto != null){
                     RrhhMovimientosPresupuesto movimiento = new RrhhMovimientosPresupuesto();
                         movimiento.setFechaInsert(new Date());
@@ -107,6 +111,9 @@ public class ContratoREST {
                         movimiento.setMonto(movimientoPresupuesto.getMonto());
                         
                         
+                       if(observacion != null && !observacion.isEmpty()){
+                           laboral.setObservacion(URLDecoder.decode(observacion,"UTF-8"));
+                       }
                        laboral.setEstado(Constants.ANULADO);
                        
                        contratoService.crearMovimiento(movimiento, laboral);

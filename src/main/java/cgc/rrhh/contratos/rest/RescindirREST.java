@@ -15,6 +15,7 @@ import cgc.rrhh.contratos.service.ContratoService;
 import cgc.rrhh.contratos.service.GeneralService;
 import cgc.rrhh.contratos.service.RescindirService;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.ejb.EJB;
@@ -50,12 +51,13 @@ public class RescindirREST {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseData rescindirContrato(@FormParam("contrato") BigDecimal Contrato,
-            @FormParam("fechaFin") String fechaFin){
+            @FormParam("fechaFin") String fechaFin,@FormParam("observacion") String observacion){
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error al obtener la información");
         try {                        
-            if(Contrato != null && fechaFin != null && !fechaFin.isEmpty()){
+            if(Contrato != null && fechaFin != null && !fechaFin.isEmpty() && observacion != null
+                    && !observacion.isEmpty()){
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(Contrato);
                 RrhhMovimientosPresupuesto movimiento = contratoService.findMovimientoByContrato(laboral.getIdContrato().getIdContrato());
                 if(laboral != null){
@@ -73,6 +75,8 @@ public class RescindirREST {
                     BigDecimal sumLaboral = addendumService.findMontoByLaboral(laboral.getLaboral());
                     BigDecimal montoRestante = sumLaboral.add(BigDecimal.valueOf(diff.getMontoTotal()));
                     
+                    laboral.setFechaFin(format.parse(fechaFin));
+                    laboral.setObservacion(URLDecoder.decode(observacion,"UTF-8"));
                     laboral.setEstado("B");
                     laboral.setUsuarioUpdate(usuario);
                     laboral.setFechaUpdate(new Date());

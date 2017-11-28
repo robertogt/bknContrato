@@ -84,9 +84,7 @@ public class AddendumREST {
         } catch (Exception e) {
             response.setCode(500);
             response.setMessage("Error interno del servidor..");
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findContrato: ",e);
         }
         return response;
     }
@@ -218,6 +216,7 @@ public class AddendumREST {
         } catch (Exception e) {
             data.setCode(500);
             data.setMessage("Error Interno del Servidor");
+            log.error("createAddendum al id Contrato: "+funcionario.getIdContrato(),e);
         }
         return data;
     }
@@ -238,7 +237,7 @@ public class AddendumREST {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("setActividades: ",e);
             actividades = null;
         }
         return actividades;
@@ -291,6 +290,7 @@ public class AddendumREST {
             }
             
         } catch (Exception e) {
+            log.error("setHistoricoLaboral: ",e);
             historico = null;
         }
         return historico;
@@ -325,6 +325,7 @@ public class AddendumREST {
             contrato.setFechaInsert(new Date());
             contrato.setUsuarioInsert(usuario);
         } catch (Exception e) {
+            log.error("setContrato: ",e);
             contrato = null;
         }
         return contrato;
