@@ -26,6 +26,7 @@ public class ApplicationConfig extends Application{
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(cgc.rrhh.contratos.config.CorsFilter.class);
         resources.add(cgc.rrhh.contratos.rest.ActividadPerfilREST.class);
+        resources.add(cgc.rrhh.contratos.rest.AcuerdoAprobacionREST.class);
         resources.add(cgc.rrhh.contratos.rest.AddendumREST.class);
         resources.add(cgc.rrhh.contratos.rest.AsesorREST.class);
         resources.add(cgc.rrhh.contratos.rest.BusquedaREST.class);

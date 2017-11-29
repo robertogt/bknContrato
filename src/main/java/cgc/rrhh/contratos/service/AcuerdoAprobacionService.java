@@ -35,15 +35,35 @@ public class AcuerdoAprobacionService extends GenericAbstractService<RrhhAcuerdo
     
     public boolean crearAcuerdoAprobacion(RrhhAcuerdoAprobacion acuerdoAprobacion, List<RrhhAcuerdoContrato> acuerdosContrato) throws Exception{
         boolean resultado = false;
-        
+        try{
+            
+            validaObjetos(acuerdoAprobacion,acuerdosContrato);            
+            em.persist(acuerdoAprobacion);
+            
+            if(acuerdoAprobacion.getIdAcuerdoAprobacion() == null)
+                throw new Exception("Error al crear el acuerdo");
+            
+            for(RrhhAcuerdoContrato acuerdoContrato: acuerdosContrato){
+                acuerdoContrato.setIdAcuerdoAprobacion(acuerdoAprobacion);
+                em.persist(acuerdoContrato);      
+            }  
+            
+        }catch(Exception ex){
+            log.error("crearAcuerdoAprobacion",ex);
+            throw new Exception(ex.getMessage());
+        }
         
         return resultado;
     }
-    /*
-    private validaObjetos(RrhhAcuerdoAprobacion acuerdoAprobacion, List<RrhhAcuerdoContrato> acuerdosContrato){
-        
-    }*/
     
+    private void validaObjetos(RrhhAcuerdoAprobacion acuerdoAprobacion, List<RrhhAcuerdoContrato> acuerdosContrato) throws Exception{
+        if(acuerdoAprobacion == null)
+            throw new Exception("AcuerdoAprobacion es nulo");
+            
+        if(acuerdosContrato == null)
+            throw new Exception("acuerdosContrato es nulo");
+    }
+        
     public BigDecimal findCorrelativo(String renglon, String tipoServicios, String anio){
         try {
             Query query = em.createNativeQuery("SELECT NVL(MAX(C.NUMERO_ACUERDO),0) + 1 CORRELATIVO FROM RRHH_ACUERDO_APROBACION A WHERE A.RENGLON = ? AND A.TIPO_SERVICIOS = ? AND A.ANIO = ?  ");

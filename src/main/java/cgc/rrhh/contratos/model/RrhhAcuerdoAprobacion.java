@@ -91,8 +91,9 @@ public class RrhhAcuerdoAprobacion implements Serializable {
     @Column(name = "FECHA_UPDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaUpdate;
-    @Column(name = "RENGLON")
-    private BigInteger renglon;
+    @JoinColumn(name = "RENGLON", referencedColumnName = "RENGLON")
+    @ManyToOne
+    private RrhhRenglon renglon;
     @Size(max = 2)
     @Column(name = "TIPO_SERVICIOS")
     private String tipoServicios;
@@ -192,14 +193,6 @@ public class RrhhAcuerdoAprobacion implements Serializable {
         this.fechaUpdate = fechaUpdate;
     }
 
-    public BigInteger getRenglon() {
-        return renglon;
-    }
-
-    public void setRenglon(BigInteger renglon) {
-        this.renglon = renglon;
-    }
-
     public String getTipoServicios() {
         return tipoServicios;
     }
@@ -214,6 +207,14 @@ public class RrhhAcuerdoAprobacion implements Serializable {
 
     public void setAnio(BigInteger anio) {
         this.anio = anio;
+    }
+    
+    public RrhhRenglon getRenglon() {
+        return renglon;
+    }
+
+    public void setRenglon(RrhhRenglon renglon) {
+        this.renglon = renglon;
     }
 
     @XmlTransient

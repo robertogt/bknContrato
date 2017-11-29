@@ -34,6 +34,9 @@ public class Constants {
     public static final String FIANZA = CONTRATO+"/fianza";
     public static final String CAMBIOS = "/cambios";
     
+    /*REST AcuerdoAprobacion*/
+    public static final String ACUERDO_APROBACION = "/acuerdoAprobacion";
+    
     /*REST Asesor*/
     public static final String HISTORIAL = "/historial";
     public static final String APROBAR = "/aprobar";
