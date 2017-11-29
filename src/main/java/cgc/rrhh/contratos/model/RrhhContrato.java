@@ -11,7 +11,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
@@ -25,6 +27,7 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.SqlResultSetMappings;
@@ -34,6 +37,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -214,7 +218,8 @@ import javax.xml.bind.annotation.XmlRootElement;
                                 "  and lab.RENGLON = ?renglon " +
                                 "  and lab.TIPO_SERVICIOS = ?tipoServicios " +
                                 "  and ce.ESTADO = 'A' " +
-                                "  and ce.ID_CATALOGO_ESTADO =4",
+                                "  and ce.ID_CATALOGO_ESTADO =4 "+
+                                "  and lab.NUMERO_FIANZA IS NOT NULL ",
                       resultSetMapping = "ResultsContrato")
 })
 @SqlResultSetMappings({
@@ -287,6 +292,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 })
 
 public class RrhhContrato implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idContrato")
+    private List<RrhhAcuerdoContrato> rrhhAcuerdoContratoList;
 
   
 
@@ -435,6 +443,15 @@ public class RrhhContrato implements Serializable {
 
     public void setCorrelativoContrato(BigInteger correlativoContrato) {
         this.correlativoContrato = correlativoContrato;
+    }
+
+    @XmlTransient
+    public List<RrhhAcuerdoContrato> getRrhhAcuerdoContratoList() {
+        return rrhhAcuerdoContratoList;
+    }
+
+    public void setRrhhAcuerdoContratoList(List<RrhhAcuerdoContrato> rrhhAcuerdoContratoList) {
+        this.rrhhAcuerdoContratoList = rrhhAcuerdoContratoList;
     }
     
 }

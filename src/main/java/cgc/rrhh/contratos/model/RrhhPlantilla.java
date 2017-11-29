@@ -49,6 +49,8 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "RrhhPlantilla.findByRenglonAnioTipo", query = "SELECT r FROM RrhhPlantilla r WHERE r.anio = :anio AND r.idTipoDocumento.idTipoDocumento = :tipoDocumento AND r.idRenglon.renglon = COALESCE(:renglon,r.idRenglon.renglon) AND r.tipoServicio = COALESCE(:tipoServicio,r.tipoServicio) AND r.estado = 'A' ")})
 public class RrhhPlantilla implements Serializable {
 
+    @OneToMany(mappedBy = "idPlantilla")
+    private List<RrhhAcuerdoAprobacion> rrhhAcuerdoAprobacionList;
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -257,6 +259,15 @@ public class RrhhPlantilla implements Serializable {
     @Override
     public String toString() {
         return "cgc.rrhh.contratos.model.RrhhPlantilla[ idPlantilla=" + idPlantilla + " ]";
+    }
+
+    @XmlTransient
+    public List<RrhhAcuerdoAprobacion> getRrhhAcuerdoAprobacionList() {
+        return rrhhAcuerdoAprobacionList;
+    }
+
+    public void setRrhhAcuerdoAprobacionList(List<RrhhAcuerdoAprobacion> rrhhAcuerdoAprobacionList) {
+        this.rrhhAcuerdoAprobacionList = rrhhAcuerdoAprobacionList;
     }
     
 }
