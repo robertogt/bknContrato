@@ -20,6 +20,7 @@ import cgc.rrhh.contratos.pojo.ResultsAcademico;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
 import cgc.rrhh.contratos.pojo.ResultsContrato;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
+import cgc.rrhh.contratos.pojo.ResultsHistorial;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -389,9 +390,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             query.setParameter("contrato", idContrato);            
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findLaboralByContrato: ",e);
             return null;
         }
     }
@@ -406,9 +405,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         } catch (NonUniqueResultException | NoResultException  nr) {
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findContratosByidContrato: ",e);
             return null;
         }
     }
@@ -423,9 +420,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
           } catch (NonUniqueResultException | NoResultException  nr) {
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findMovimientoByContrato: ",e);
             return null;
         }
     }
@@ -441,9 +436,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             em.persist(movimiento);
             em.merge(laboral);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+           log.error("crearMovimiento: ",e);
             throw new Exception(e.getMessage());
         }
     }
@@ -484,10 +477,20 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         } catch (NonUniqueResultException | NoResultException  nr) {
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findContratosAceptados: ",e);
             return null;
+        }
+    }
+    
+    public List<ResultsHistorial> findHistorialByContrato(BigDecimal contrato){
+        try {
+            TypedQuery<ResultsHistorial> query = em
+                    .createNamedQuery("RrhhContratoEstado.findHistorialContrato",ResultsHistorial.class);
+            query.setParameter(1, contrato);
+            return query.getResultList();
+        } catch (Exception e) {
+            log.error("findHistorialByContrato: ",e);
+            return new ArrayList<ResultsHistorial>();
         }
     }
     

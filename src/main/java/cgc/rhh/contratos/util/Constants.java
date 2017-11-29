@@ -32,6 +32,7 @@ public class Constants {
     public static final String EDIT = "/edit";
     public static final String ACTIVIDADES = "/actividades";
     public static final String FIANZA = CONTRATO+"/fianza";
+    public static final String CAMBIOS = "/cambios";
     
     /*REST Asesor*/
     public static final String HISTORIAL = "/historial";

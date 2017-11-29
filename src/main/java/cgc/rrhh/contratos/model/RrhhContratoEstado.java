@@ -58,7 +58,14 @@ import javax.xml.bind.annotation.XmlRootElement;
                         "INNER JOIN RRHH_CATALOGO_ESTADO CAT ON C.ID_CATALOGO_ESTADO = CAT.ID_CATALOGO_ESTADO " +
                         "WHERE C.ID_CONTRATO = ? " +
                         "ORDER BY FECHA_INSERT ASC ",
-                        resultSetMapping = "ResultsHistorial")
+                        resultSetMapping = "ResultsHistorial"),
+    @NamedNativeQuery(name = "RrhhContratoEstado.findHistorialContrato",
+                      query = "SELECT CE.ID_CONTRATO_ESTADO, CE.ID_CATALOGO_ESTADO,CE.ID_CONTRATO,CAT.NOMBRE NOMBRE_ESTADO,CE.OBSERVACION,CE.ESTADO,CE.FECHA_INSERT,CE.USUARIO_INSERT, " +
+"CASE WHEN DOCUMENTO IS NULL THEN 0 ELSE 1 END DOCUMENTO " +
+"FROM RRHH_CONTRATO_ESTADO CE " +
+"INNER JOIN RRHH_CATALOGO_ESTADO CAT ON CE.ID_CATALOGO_ESTADO = CAT.ID_CATALOGO_ESTADO " +
+"WHERE CE.ID_CONTRATO = ? AND CE.ID_CATALOGO_ESTADO IN (2,3) ORDER BY CE.FECHA_INSERT DESC",
+                      resultSetMapping = "ResultsHistorial2")
 })
 @SqlResultSetMappings({
     @SqlResultSetMapping(name = "ResultsHistorial",
@@ -67,6 +74,19 @@ import javax.xml.bind.annotation.XmlRootElement;
                                             @ColumnResult(name = "OBSERVACION", type = String.class),
                                             @ColumnResult(name = "USUARIO_INSERT", type = String.class),
                                             @ColumnResult(name = "FECHA_INSERT", type = Date.class)
+                                 })
+                         }),
+    @SqlResultSetMapping(name = "ResultsHistorial2",
+                         classes = {@ConstructorResult(targetClass = ResultsHistorial.class,
+                                 columns = {@ColumnResult(name = "ID_CONTRATO_ESTADO", type = BigDecimal.class),
+                                            @ColumnResult(name = "ID_CATALOGO_ESTADO", type = BigDecimal.class),
+                                            @ColumnResult(name = "ID_CONTRATO", type = BigDecimal.class),
+                                            @ColumnResult(name = "NOMBRE_ESTADO", type = String.class),
+                                            @ColumnResult(name = "OBSERVACION", type = String.class),
+                                            @ColumnResult(name = "ESTADO", type = String.class),
+                                            @ColumnResult(name = "FECHA_INSERT", type = Date.class),
+                                            @ColumnResult(name = "USUARIO_INSERT", type = String.class),
+                                            @ColumnResult(name = "DOCUMENTO", type = boolean.class)
                                  })
                          })
 })

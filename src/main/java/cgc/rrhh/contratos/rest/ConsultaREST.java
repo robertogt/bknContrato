@@ -8,6 +8,7 @@ package cgc.rrhh.contratos.rest;
 import cgc.rhh.contratos.util.Constants;
 import cgc.rrhh.contratos.model.RrhhActividad;
 import cgc.rrhh.contratos.model.RrhhContrato;
+import cgc.rrhh.contratos.model.RrhhContratoEstado;
 import cgc.rrhh.contratos.model.RrhhLaboral;
 import cgc.rrhh.contratos.model.RrhhMunicipio;
 import cgc.rrhh.contratos.model.RrhhRue;
@@ -18,6 +19,8 @@ import cgc.rrhh.contratos.service.ActividadPerfilService;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -61,20 +64,97 @@ public class ConsultaREST {
     
     private static final Logger log = Logger.getLogger(ConsultaREST.class);
     
+    private static final BigDecimal ACEPTADO = BigDecimal.valueOf(4);
+    private static final BigDecimal APROBADO = BigDecimal.valueOf(5);
+    private static final BigDecimal ADDENDUM = BigDecimal.valueOf(6);
+    
     @GET
     @Path("/{id}") 
     public void generarContrato(@Context HttpServletResponse response,@PathParam("id") BigDecimal id) throws Exception{            	    
 	    try {
-                
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	    	//DocWord word = super.getDocument(1);
               //  ResultsArchivo archivo = super.findArchivoByIdPlantilla(id);
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(id);
                 
                 if(laboral == null)
                     throw new Exception("No se encontro Informacion del Id Solicitado");
+                
+                RrhhContratoEstado contratoEstado = generalService.findActiveByContrato(laboral.getIdContrato().getIdContrato());
+                
+                if(contratoEstado == null)
+                    throw new Exception("El contrato no tiene un estado actualmente");
                  
                 log.info("ENTRO A GENERAR CONTRATO: S/U a la hora: "+new Date()+" NUMERO CONTRATO: "+laboral.getNumeroContrato());
-                 SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                log.info("idCatalogo: "+contratoEstado.getIdCatalogoEstado().getIdCatalogoEstado());
+                        
+                        response.setContentType("application/msword");
+                        response.setHeader("Content-disposition", "filename="+laboral.getNumeroContrato()+".doc");
+                        
+                        boolean generarFromBd = false;
+                        
+                        if(contratoEstado.getIdCatalogoEstado().getIdCatalogoEstado().equals(ACEPTADO)){
+                            generarFromBd = true;
+                        }
+                        
+                        if(contratoEstado.getIdCatalogoEstado().getIdCatalogoEstado().equals(APROBADO)){
+                            generarFromBd = true;
+                        }
+                        
+                        if(contratoEstado.getIdCatalogoEstado().getIdCatalogoEstado().equals(ADDENDUM)){
+                            generarFromBd = true;
+                        }
+                        
+                        if(generarFromBd){
+                            InputStream fileInputStream = new ByteArrayInputStream(contratoEstado.getDocumento());
+                            baos = this.convertInputStreamToByteArrayOutputStream(fileInputStream);
+                        }else{
+                            baos = this.generateContrat(laboral);
+                        }
+                        
+                        
+			OutputStream os = response.getOutputStream();
+			baos.writeTo(os);
+			os.flush();
+		} catch (Exception e) {
+                        log.error("ConsultaREST: ",e);
+                        throw new Exception(e.getMessage());
+		}
+    }
+    
+    private ByteArrayOutputStream convertInputStreamToByteArrayOutputStream(InputStream inputStream) {
+		 
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+ 
+			byte[] buffer = new byte[5 * 1024 * 1024];
+			baos = new ByteArrayOutputStream();
+ 
+			int bytesRead;
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				baos.write(buffer, 0, bytesRead);
+			}
+ 
+		} catch (FileNotFoundException e) {
+			log.error("FileNotFound: ",e);
+		} catch (IOException e) {
+			log.error("IOException: ",e);
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					log.error("IOException: ",e);
+				}
+			}
+		}
+		return baos;
+	}
+    
+    private ByteArrayOutputStream generateContrat(RrhhLaboral laboral){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
                  Contrato contrato = new Contrato(laboral.getIdContrato().getCorrelativoContrato().intValue(),
                          laboral.getHonorario().intValue(),
                          format.format(laboral.getFechaDel()),
@@ -123,18 +203,12 @@ public class ConsultaREST {
                     range.replaceText("  "," ");
                  
                  
-                 response.setContentType("application/msword");
-                 response.setHeader("Content-disposition", "filename="+laboral.getNumeroContrato()+".doc");
-                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                 
 		//	baos = this.convertInputStreamToByteArrayOutputStream(fileInputStream);
                         document.write(baos);
-			OutputStream os = response.getOutputStream();
-			baos.writeTo(os);
-			os.flush();
-		} catch (Exception e) {
-                        log.error("ConsultaREST: ",e);
-                        throw new Exception(e.getMessage());
-		}
+        } catch (Exception e) {
+        }
+        return baos;
     }
     
     

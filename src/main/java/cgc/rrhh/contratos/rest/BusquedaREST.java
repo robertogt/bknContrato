@@ -13,6 +13,7 @@ import cgc.rrhh.contratos.pojo.ResultsAcademico;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
 import cgc.rrhh.contratos.pojo.ResultsContrato;
 import cgc.rrhh.contratos.pojo.ResultsFuncionario;
+import cgc.rrhh.contratos.pojo.ResultsHistorial;
 import cgc.rrhh.contratos.service.ActividadPerfilService;
 import cgc.rrhh.contratos.service.ContratoService;
 import cgc.rrhh.contratos.service.GeneralService;
@@ -134,6 +135,19 @@ public class BusquedaREST {
             contratos = contratoService.findContratosAceptados(renglon, tipoServicios);            
         } catch (Exception e) {            
             log.error("Error BusquedaREST findAllAprobados: ",e);
+        }
+        return contratos;
+    }
+    
+    @GET
+    @Path(Constants.CAMBIOS)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ResultsHistorial> findAllCambios(@QueryParam("contrato") BigDecimal contrato){
+        List<ResultsHistorial> contratos = new ArrayList<ResultsHistorial>();
+        try {
+            contratos = contratoService.findHistorialByContrato(contrato);
+        } catch (Exception e) {            
+            log.error("Error BusquedaREST findAllCambios: ",e);
         }
         return contratos;
     }

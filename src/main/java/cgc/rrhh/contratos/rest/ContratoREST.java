@@ -97,6 +97,7 @@ public class ContratoREST {
         response.setMessage("Error al anular contrato");
         try {
             if(idContrato != null){
+                String usuario = "S/U";
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(idContrato);
                 
                 RrhhMovimientosPresupuesto movimientoPresupuesto = 
@@ -105,7 +106,7 @@ public class ContratoREST {
                 if(laboral != null && movimientoPresupuesto != null){
                     RrhhMovimientosPresupuesto movimiento = new RrhhMovimientosPresupuesto();
                         movimiento.setFechaInsert(new Date());
-                        movimiento.setUsuarioInsert("S/U");
+                        movimiento.setUsuarioInsert(usuario);
                         movimiento.setIdContrato(laboral.getIdContrato());
                         movimiento.setIdControlPresupuesto(movimientoPresupuesto.getIdControlPresupuesto());
                         movimiento.setMonto(movimientoPresupuesto.getMonto());
@@ -117,6 +118,9 @@ public class ContratoREST {
                        laboral.setEstado(Constants.ANULADO);
                        
                        contratoService.crearMovimiento(movimiento, laboral);
+                       response.setCode(200);
+                       response.setMessage("El contrato: "+laboral.getNumeroContrato()+" ha sido anulado con exito.");
+                       log.info("El usuario: "+usuario+" anulo el contrato "+laboral.getNumeroContrato()+" en fecha "+new Date());
                 }else{
                     response.setMessage("Error al consultar contrato");
                 }
