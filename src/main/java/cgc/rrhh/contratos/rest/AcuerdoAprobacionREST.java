@@ -57,26 +57,6 @@ public class AcuerdoAprobacionREST {
         List<RrhhAcuerdoContrato> acuerdos = new ArrayList<RrhhAcuerdoContrato>();
         try {
             
-            for(RrhhAcuerdoContrato acuerdo: acuerdoAprobacion.getRrhhAcuerdoContratoList()){
-                
-                RrhhAcuerdoContrato acuerdoContrato = new RrhhAcuerdoContrato();
-                
-                acuerdoContrato.setIdAcuerdoAprobacion(acuerdoAprobacion);
-                acuerdoContrato.setIdContrato(acuerdoAprobacion.getidcon);
-                acuerdoContrato.setEstado(Constants.ACTIVO);
-                acuerdoContrato.setFechaInsert(new Date());
-                acuerdoContrato.setUsuarioInsert(usuario);
-                acuerdoContrato.
-                        
-                
-                        actividadContrato.setIdActividad(actividadPerfilService
-                            .findActividadById(actividadResult.getIdActividad()));                       
-                        actividadContrato.setIdPerfil(actividadPerfilService
-                                .findPerfilById(funcionario.getIdPerfil()));
-                    actividades.add(actividadContrato);
-                
-            }
-            
         }catch(Exception ex){
             System.out.println(ex.getMessage());
             acuerdos = new ArrayList<RrhhAcuerdoContrato>();
