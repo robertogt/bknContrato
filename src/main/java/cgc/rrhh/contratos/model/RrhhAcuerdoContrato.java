@@ -11,11 +11,14 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -44,7 +47,8 @@ public class RrhhAcuerdoContrato implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
     @Basic(optional = false)
-    @NotNull
+    @SequenceGenerator(name = "iSequence", sequenceName = "SEQ_RRHH_ACUERDO_CONTRATO", allocationSize = 1)
+    @GeneratedValue(generator = "iSequence",strategy = GenerationType.SEQUENCE)
     @Column(name = "ID_ACUERDO_CONTRATO")
     private BigDecimal idAcuerdoContrato;
     @Basic(optional = false)

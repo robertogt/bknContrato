@@ -89,6 +89,8 @@ public class RescindirREST {
                     
                     
                     rescindirService.rescindir(laboral, historico, diferencia);
+                    response.setCode(200);
+                    response.setMessage("el contrato "+laboral.getNumeroContrato()+" se finalizo la fecha "+fechaFin);
                 }
             }
         } catch (Exception e) {

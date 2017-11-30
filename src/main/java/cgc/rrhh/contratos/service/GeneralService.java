@@ -8,6 +8,7 @@ package cgc.rrhh.contratos.service;
 import cgc.rhh.contratos.util.Constants;
 import cgc.rrhh.contratos.model.RrhhAcademico;
 import cgc.rrhh.contratos.model.RrhhCatalogoEstado;
+import cgc.rrhh.contratos.model.RrhhContrato;
 import cgc.rrhh.contratos.model.RrhhContratoEstado;
 import cgc.rrhh.contratos.model.RrhhControlPresupuesto;
 import cgc.rrhh.contratos.model.RrhhDepartamento;
@@ -244,10 +245,20 @@ public class GeneralService {
             query.setParameter("departamento", idDepartamento);
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getMunicipioDepto: ",e);
             return null;
         }     
+    }
+    
+    public RrhhContrato findContratoById(BigDecimal idContrato){
+        try {
+            TypedQuery<RrhhContrato> query = em
+                    .createNamedQuery("RrhhContrato.findByIdContrato",RrhhContrato.class);
+            query.setParameter("idContrato", idContrato);    
+            return query.getSingleResult();
+        } catch (Exception e) {
+            log.error("getMunicipioDepto: ",e);
+            return null;
+        }
     }
 }

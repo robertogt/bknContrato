@@ -146,6 +146,9 @@ public class ContratoREST {
                     }else if(funcionarioRue.getEstado().equals("A") && funcionarioRue.getRenglon().equals("1")){
                       response.setCode(403);
                       response.setMessage("El dpi No."+funcionarioRue.getDpi()+" ya se encuentra Activo actualmente con renglon 011.");  
+                    }else if(funcionarioRue.getEstado().equals("I")){
+                        response.setCode(403);
+                        response.setMessage("El dpi No."+funcionarioRue.getDpi()+" ya cuenta con un contrato ingresado.");  
                     }else{
                         
                         if(funcionarioRue.getFechaNacimiento() != null){

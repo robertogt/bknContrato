@@ -64,9 +64,52 @@ public class ConsultaREST {
     
     private static final Logger log = Logger.getLogger(ConsultaREST.class);
     
+    private static final BigDecimal RECHAZADO = BigDecimal.valueOf(3);
     private static final BigDecimal ACEPTADO = BigDecimal.valueOf(4);
     private static final BigDecimal APROBADO = BigDecimal.valueOf(5);
     private static final BigDecimal ADDENDUM = BigDecimal.valueOf(6);
+    
+    @GET
+    @Path(Constants.RECHAZADO+"/{id}") 
+    public void generarContratoRechazado(@Context HttpServletResponse response,@PathParam("id") BigDecimal id) throws Exception{            	    
+	    try {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    	//DocWord word = super.getDocument(1);
+              //  ResultsArchivo archivo = super.findArchivoByIdPlantilla(id);
+                RrhhLaboral laboral = contratoService.findLaboralByContrato(id);
+                
+                if(laboral == null)
+                    throw new Exception("No se encontro Informacion del Id Solicitado");
+                
+                RrhhContratoEstado contratoEstado = generalService.findActiveByContrato(laboral.getIdContrato().getIdContrato());
+                
+                if(contratoEstado == null)
+                    throw new Exception("El contrato no tiene un estado actualmente");
+                 
+                log.info("ENTRO A GENERAR CONTRATO ESTADO: S/U a la hora: "+new Date()+" NUMERO CONTRATO: "+laboral.getNumeroContrato());                
+                        
+                        response.setContentType("application/msword");
+                        response.setHeader("Content-disposition", "filename="+laboral.getNumeroContrato()+".doc");
+                        
+                        
+                        if(contratoEstado.getIdCatalogoEstado().getIdCatalogoEstado().equals(RECHAZADO)){
+                            if(contratoEstado.getDocumento() != null){
+                                InputStream fileInputStream = new ByteArrayInputStream(contratoEstado.getDocumento());
+                                baos = this.convertInputStreamToByteArrayOutputStream(fileInputStream);
+                            }                            
+                        }else{
+                            throw new Exception("El id Catalogo no es estado rechazado");
+                        }
+                                            
+                        
+			OutputStream os = response.getOutputStream();
+			baos.writeTo(os);
+			os.flush();
+		} catch (Exception e) {
+                        log.error("ConsultaREST: ",e);
+                        throw new Exception(e.getMessage());
+		}
+    }
     
     @GET
     @Path("/{id}") 
