@@ -27,7 +27,8 @@ public class ResultsHistorial {
     public ResultsHistorial() {
     }
 
-    public ResultsHistorial(String nombreEstado, String observaciones, String usuarioInsert, Date fechaInsert) {
+    public ResultsHistorial(BigDecimal idContratoEstado,String nombreEstado, String observaciones, String usuarioInsert, Date fechaInsert) {
+        this.idContratoEstado = idContratoEstado;
         this.nombreEstado = nombreEstado;
         this.observaciones = observaciones;
         this.usuarioInsert = usuarioInsert;

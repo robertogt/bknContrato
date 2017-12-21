@@ -190,11 +190,10 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
      * @return boolean
      * @throws java.lang.Exception 
     **/
-    public boolean CrearContrato(RrhhRue rue,RrhhContrato contrato,
+    public RrhhContrato CrearContrato(RrhhRue rue,RrhhContrato contrato,
             List<RrhhActividadContrato> actividades, RrhhLaboral laboral,
             PersistAcademico academico, RrhhMovimientosPresupuesto movimiento,
             RrhhContratoEstado contratoEstado) throws Exception{
-        boolean eval = false;
         try {
             
             if(rue == null)
@@ -222,15 +221,22 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             if(rue.getIdRue() != null){                           
             
             }else{
+//                rue.setIdRue(Long.valueOf(0));
+              /*  Query q = em.createNativeQuery("SELECT SEQ_RRHH_RUE.NEXTVAL FROM DUAL");
+                BigDecimal seq = (BigDecimal)q.getSingleResult();
+                rue.setIdRue(seq.longValue());*/
                 em.persist(rue);
                 if(rue.getIdRue() == null)
                     throw new Exception("Error al crear Rue");
+                System.out.println("idRue: "+rue.getIdRue());
             }
             
             
             if(academico.isCreate()){
                 academico.getRrhhAcademico().setIdRue(rue);
                 em.persist(academico.getRrhhAcademico());
+                System.out.println("academico: "+academico.getRrhhAcademico().getAcademico());
+                System.out.println("idRue: "+academico.getRrhhAcademico().getIdRue().getIdRue());
             }else if(academico.isUpdate()){
                 em.merge(academico.getRrhhAcademico());
             }
@@ -241,6 +247,10 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             contrato.setAcademico(academico.getRrhhAcademico());
             em.persist(contrato);
             
+            if(laboral.getTipoServicios().equalsIgnoreCase("P")){
+                System.out.println(academico.getRrhhAcademico().getColegioProfesional().getNombreColegioProfesional());
+                System.out.println(academico.getRrhhAcademico().getNumeroColegiado());
+            }
             
             if(contrato.getIdContrato() == null)
                 throw new Exception("Error al crear Contrato");
@@ -271,13 +281,12 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             if(contratoEstado.getIdContratoEstado() == null)
                 throw new Exception("Error al crear Estado de Contrato");
             
-            eval = true;
+            return contrato;
         } catch (Exception e) {
            log.error("CrearContrato",e);
             throw new Exception(e.getMessage());
             
         }
-        return eval;
     }
     
     public void editarContrato(RrhhLaboral laboral, RrhhContrato contrato,
@@ -442,11 +451,14 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
     }
     
     
-    public List<ResultsContrato> findAllContratosByAnio(String anio){
+    public List<ResultsContrato> findAllContratosByAnio(String anio, String renglon,
+            String estado){
         try {
             TypedQuery<ResultsContrato> query = em
                     .createNamedQuery("RrhhContrato.busquedaGeneral", ResultsContrato.class);
             query.setParameter(1, anio);
+            query.setParameter(2, renglon);
+            query.setParameter(3, estado);
             return query.getResultList();
         } catch (Exception e) {
             log.error("findAllContratosByAnio: ",e);

@@ -135,7 +135,7 @@ public class RrhhAcademico implements Serializable {
     @JoinColumn(name = "GRADO_ACADEMICO", referencedColumnName = "GRADO_ACADEMICO")
     @ManyToOne
     private RrhhGradoAcademico gradoAcademico;
-    @JoinColumn(name = "ID_RUE", referencedColumnName = "ID_RUE")
+    @JoinColumn(name = "ID_RUE")
     @ManyToOne(optional = false)
     private RrhhRue idRue;
     @JoinColumn(name = "TITULO", referencedColumnName = "TITULO")

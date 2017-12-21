@@ -8,6 +8,7 @@ package cgc.rrhh.contratos.rest;
 import cgc.rhh.contratos.util.Constants;
 import cgc.rhh.contratos.util.ResponseData;
 import cgc.rrhh.contratos.model.RrhhActividad;
+import cgc.rrhh.contratos.model.RrhhCatalogoEstado;
 import cgc.rrhh.contratos.model.RrhhLaboral;
 import cgc.rrhh.contratos.pojo.ResultsAcademico;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
@@ -46,11 +47,15 @@ public class BusquedaREST {
     @EJB
     private ContratoService contratoService;
     
+     @EJB
+    private GeneralService generalService;
+    
     private static final Logger log = Logger.getLogger(BusquedaREST.class);
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ResultsContrato> findAllContratos(@QueryParam("anio") String anio){
+    public List<ResultsContrato> findAllContratos(@QueryParam("anio") String anio,
+            @QueryParam("renglon") String renglon,@QueryParam("estado") String estado){
         List<ResultsContrato> contratos = new ArrayList<ResultsContrato>();
         try {
             Calendar now = Calendar.getInstance();
@@ -59,7 +64,15 @@ public class BusquedaREST {
                 anio = String.valueOf(now.get(Calendar.YEAR));
             }
             
-            contratos = contratoService.findAllContratosByAnio(anio);
+            if(renglon == null){
+                renglon = "";
+            }
+            
+            if(estado == null){
+                estado = "";
+            }
+            
+            contratos = contratoService.findAllContratosByAnio(anio,renglon,estado);
             
         } catch (Exception e) {            
             log.error("Error BusquedaREST findAllContratos: ",e);
@@ -112,6 +125,7 @@ public class BusquedaREST {
                     if(resultsAcademico == null)
                         throw new Exception("resultsAcademico is null");
                     
+                    resultsContrato.setEdad(Edad.getEdad(resultsContrato.getFechaNacimiento()));
                     resultsContrato.setAcademico(resultsAcademico);
                     
                     response.setCode(200);
@@ -150,5 +164,18 @@ public class BusquedaREST {
             log.error("Error BusquedaREST findAllCambios: ",e);
         }
         return contratos;
+    }
+    
+    @GET
+    @Path(Constants.ESTADOS)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<RrhhCatalogoEstado> getCatalogoEstado(){
+        List<RrhhCatalogoEstado> estados = new ArrayList<RrhhCatalogoEstado>();
+        try {
+            estados = generalService.findCatalogoEstado();
+        } catch (Exception e) {
+            log.error("Error al consultar catalogo estados");
+        }
+        return estados;
     }
 }

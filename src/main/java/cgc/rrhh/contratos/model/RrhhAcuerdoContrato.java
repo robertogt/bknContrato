@@ -5,20 +5,27 @@
  */
 package cgc.rrhh.contratos.model;
 
+import cgc.rrhh.contratos.pojo.ResultsContrato;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.SqlResultSetMappings;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -40,7 +47,69 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "RrhhAcuerdoContrato.findByUsuarioInsert", query = "SELECT r FROM RrhhAcuerdoContrato r WHERE r.usuarioInsert = :usuarioInsert")
     , @NamedQuery(name = "RrhhAcuerdoContrato.findByFechaInsert", query = "SELECT r FROM RrhhAcuerdoContrato r WHERE r.fechaInsert = :fechaInsert")
     , @NamedQuery(name = "RrhhAcuerdoContrato.findByUsuarioUpdate", query = "SELECT r FROM RrhhAcuerdoContrato r WHERE r.usuarioUpdate = :usuarioUpdate")
-    , @NamedQuery(name = "RrhhAcuerdoContrato.findByFechaUpdate", query = "SELECT r FROM RrhhAcuerdoContrato r WHERE r.fechaUpdate = :fechaUpdate")})
+    , @NamedQuery(name = "RrhhAcuerdoContrato.findByFechaUpdate", query = "SELECT r FROM RrhhAcuerdoContrato r WHERE r.fechaUpdate = :fechaUpdate")
+    , @NamedQuery(name = "RrhhAcuerdoContrato.findByAcuerdoAprobacion", query = "SELECT r FROM RrhhAcuerdoContrato r WHERE r.idAcuerdoAprobacion.idAcuerdoAprobacion = :acuerdoAprobacion AND r.estado = 'A'")
+    , @NamedQuery(name = "RrhhAcuerdoContrato.findByAcuerdoByContrato", query = "SELECT r FROM RrhhAcuerdoContrato r WHERE r.idAcuerdoAprobacion.idAcuerdoAprobacion = :acuerdoAprobacion AND r.idContrato.idContrato = :contrato")})
+@NamedNativeQueries({
+    @NamedNativeQuery(name = "RrhhAcuerdoContrato.NativeQueryAcuerdoContratos",
+                      query = "SELECT ROWNUM CORRELATIVO,ID_CONTRATO,NOMBRE_COMPLETO,NUMERO_CONTRATO,FECHA_CAMBIO_TIPO_MOVIMIENTO,NUMERO_FIANZA FROM ( "+
+"SELECT R.PRIMER_NOMBRE||' '||R.SEGUNDO_NOMBRE||' '||R.PRIMER_APELLIDO||' '||R.SEGUNDO_APELLIDO NOMBRE_COMPLETO, " +
+"L.ID_CONTRATO, "+                              
+"L.NUMERO_CONTRATO, " +
+"TO_CHAR(L.FECHA_CAMBIO_TIPO_MOVIMIENTO, 'DD/MM/YYYY') FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
+"L.NUMERO_FIANZA, " +
+"L.ESTADO " +
+"FROM RRHH_CONTRATO C  " +
+"INNER JOIN RRHH_LABORAL L ON C.ID_CONTRATO = L.ID_CONTRATO " +
+"INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
+"INNER JOIN RRHH_ACUERDO_CONTRATO A ON C.ID_CONTRATO = A.ID_CONTRATO  " +
+"WHERE A.ID_ACUERDO_APROBACION = ?acuerdo " +
+"AND A.ESTADO = 'A' "+
+"UNION ALL  " +
+"SELECT R.PRIMER_NOMBRE||' '||R.SEGUNDO_NOMBRE||' '||R.PRIMER_APELLIDO||' '||R.SEGUNDO_APELLIDO NOMBRE_COMPLETO, " +
+"L.ID_CONTRATO, "+ 
+"L.NUMERO_CONTRATO, " +
+"TO_CHAR(L.FECHA_CAMBIO_TIPO_MOVIMIENTO, 'DD/MM/YYYY') FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
+"L.NUMERO_FIANZA, " +
+"L.ESTADO " +
+"FROM RRHH_CONTRATO C  " +
+"INNER JOIN RRHH_LABORAL L ON C.ID_CONTRATO = L.ID_CONTRATO  " +
+"INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
+"INNER JOIN RRHH_CONTRATO_ESTADO CE ON C.ID_CONTRATO = CE.ID_CONTRATO " +
+"WHERE L.TIPO_SERVICIOS = ?tipo " +
+"AND RENGLON = ?renglon  " +
+"AND C.ANIO = ?anio " +
+"AND CE.ID_CATALOGO_ESTADO = 4 " +
+"AND CE.ESTADO = 'A' "+
+"AND L.ESTADO = 'I') ",
+                      resultSetMapping = "ResultsContratoAcuerdo"),
+    @NamedNativeQuery(name = "RrhhAcuerdoContrato.QueryContrato",
+                      query = "SELECT ROWNUM CORRELATIVO, "+
+"L.ID_CONTRATO, "+ 
+"R.PRIMER_NOMBRE||' '||R.SEGUNDO_NOMBRE||' '||R.PRIMER_APELLIDO||' '||R.SEGUNDO_APELLIDO NOMBRE_COMPLETO, " +
+"L.NUMERO_CONTRATO, " +
+"TO_CHAR(L.FECHA_CAMBIO_TIPO_MOVIMIENTO, 'DD/MM/YYYY') FECHA_CAMBIO_TIPO_MOVIMIENTO, " +
+"L.NUMERO_FIANZA " +
+"FROM RRHH_CONTRATO C  " +
+"INNER JOIN RRHH_LABORAL L ON C.ID_CONTRATO = L.ID_CONTRATO " +
+"INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
+"INNER JOIN RRHH_ACUERDO_CONTRATO A ON C.ID_CONTRATO = A.ID_CONTRATO  " +
+"WHERE A.ID_ACUERDO_APROBACION = ?acuerdo "+
+"AND A.ESTADO = 'A' ",
+                      resultSetMapping = "ResultsContratoAcuerdo")
+})
+@SqlResultSetMappings({
+    @SqlResultSetMapping(name = "ResultsContratoAcuerdo",
+                        classes = {@ConstructorResult(targetClass = ResultsContrato.class,
+                                columns = {@ColumnResult(name = "CORRELATIVO", type = BigDecimal.class ),
+                                           @ColumnResult(name = "ID_CONTRATO", type = BigDecimal.class ),
+                                           @ColumnResult(name = "NOMBRE_COMPLETO", type = String.class ),
+                                           @ColumnResult(name = "NUMERO_CONTRATO", type = String.class ),
+                                           @ColumnResult(name = "FECHA_CAMBIO_TIPO_MOVIMIENTO", type = String.class ),
+                                           @ColumnResult(name = "NUMERO_FIANZA", type = String.class )
+                                })
+                        })
+})
 public class RrhhAcuerdoContrato implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -7,7 +7,9 @@ package cgc.rrhh.contratos.service;
 
 import cgc.rhh.contratos.util.Constants;
 import cgc.rrhh.contratos.model.RrhhCatalogoEstado;
+import cgc.rrhh.contratos.model.RrhhCatalogoMotivoRechazo;
 import cgc.rrhh.contratos.model.RrhhContratoEstado;
+import cgc.rrhh.contratos.model.RrhhMotivoRechazo;
 import cgc.rrhh.contratos.pojo.ResultsContrato;
 import cgc.rrhh.contratos.pojo.ResultsHistorial;
 import java.math.BigDecimal;
@@ -34,6 +36,30 @@ public class AsesorService {
     private EntityManager em;
     
     private static final Logger log = Logger.getLogger(AsesorService.class);
+    
+    public List<RrhhCatalogoMotivoRechazo> listAllCatalogosActive(){
+        try {
+            TypedQuery<RrhhCatalogoMotivoRechazo> query = em
+                    .createNamedQuery("RrhhCatalogoMotivoRechazo.findByEstado",RrhhCatalogoMotivoRechazo.class);
+            query.setParameter("estado", Constants.ACTIVO);
+            return query.getResultList();
+        } catch (Exception e) {
+            log.error("listAllCatalogosActive: ",e);
+            return new ArrayList<RrhhCatalogoMotivoRechazo>();
+        }
+    }
+    
+    public RrhhCatalogoMotivoRechazo findMotivoById(BigDecimal idCatalogoMotivoRechazo){
+        try {
+            TypedQuery<RrhhCatalogoMotivoRechazo> query = em
+                    .createNamedQuery("RrhhCatalogoMotivoRechazo.findByIdCatalogoMotivoRechazo",RrhhCatalogoMotivoRechazo.class);
+            query.setParameter("idCatalogoMotivoRechazo", idCatalogoMotivoRechazo);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            log.error("findMotivoById: ",e);
+            return null;
+        }
+    }
     
     public List<ResultsContrato> listAllByAsesor(){
         try {
@@ -96,6 +122,50 @@ public class AsesorService {
         } catch (Exception e) {
             log.error("aprobarRegistro: ",e);
             throw new Exception(e.getMessage());
+        }
+    }
+    
+    public void rechazarRegistro(RrhhContratoEstado update, RrhhContratoEstado create,
+            List<RrhhMotivoRechazo> motivos)
+        throws Exception{
+        try {
+            
+            if(update == null)
+                throw new Exception("update es nulo");
+            
+            if(create == null)
+                throw new Exception("create es nulo");
+            
+            if(motivos == null)
+                throw new Exception("motivos es nulo");
+            
+            em.persist(create);
+            
+            if(create.getIdContratoEstado() == null)
+                throw new Exception("No se pudo guardar ContratoEstado");
+            
+            em.merge(update);
+            
+            
+            for(RrhhMotivoRechazo motivo:motivos){
+                motivo.setContratoEstado(create);
+                em.persist(motivo);
+            }
+        } catch (Exception e) {
+            log.error("rechazarRegistro: ",e);
+            throw new Exception(e.getMessage());
+        }
+    }
+    
+    public List<RrhhCatalogoMotivoRechazo> findAllMotivosById(BigDecimal idContratoEstado){
+        try {
+            TypedQuery<RrhhCatalogoMotivoRechazo> query = em
+                    .createNamedQuery("RrhhMotivoRechazo.findByIdContratoEstado",RrhhCatalogoMotivoRechazo.class);
+            query.setParameter("contratoEstado", idContratoEstado);
+           return query.getResultList();
+        } catch (Exception e) {
+            log.error("findAllMotivosById: ",e);
+            return new ArrayList<RrhhCatalogoMotivoRechazo>();
         }
     }
     

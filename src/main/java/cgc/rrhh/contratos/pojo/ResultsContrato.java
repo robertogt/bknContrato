@@ -49,6 +49,7 @@ public class ResultsContrato {
     private BigDecimal idPerfil;
     private List<ResultsActividad> actividades;
     private ResultsAcademico academico;
+    private BigDecimal correlativo;
 
     public ResultsContrato() {
     }
@@ -133,6 +134,27 @@ public class ResultsContrato {
         this.usuarioUpdate = usuarioUpdate;
         this.fechaUpdate = fechaUpdate;
     }
+
+    public ResultsContrato(BigDecimal correlativo,BigDecimal idContrato,            
+            String nombreCompleto, String numeroContrato,
+            String fechaCambioTipoMovimiento, String numeroFianza) {
+        this.correlativo = correlativo;
+        this.idContrato = idContrato;
+        this.nombreCompleto = nombreCompleto;
+        this.numeroContrato = numeroContrato;        
+        this.fechaCambioTipoMovimiento = fechaCambioTipoMovimiento;        
+        this.numeroFianza = numeroFianza;      
+    }
+
+    public BigDecimal getCorrelativo() {
+        return correlativo;
+    }
+
+    public void setCorrelativo(BigDecimal correlativo) {
+        this.correlativo = correlativo;
+    }
+    
+    
 
     public BigDecimal getUbicacionFuncional() {
         return ubicacionFuncional;

@@ -189,10 +189,18 @@ import javax.xml.bind.annotation.XmlTransient;
 public class RrhhRue implements Serializable {
 
 
-    private static final long serialVersionUID = 1L;
+    /*private static final long serialVersionUID = 1L;
+    
+    
+    @Id
     @Basic(optional = false)
     @SequenceGenerator(name = "fSequence", sequenceName = "SEQ_RRHH_RUE", allocationSize = 1)
     @GeneratedValue(generator = "fSequence",strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID_RUE")
+    private Long idRue;*/
+     private static final long serialVersionUID = 1L;
+    @Basic(optional = false)
+    @NotNull
     @Size(min = 1, max = 21)
     @Column(name = "RUE")
     private String rue;
@@ -377,8 +385,9 @@ public class RrhhRue implements Serializable {
     @Column(name = "ESTADO")
     private String estado;
     @Id
-    @Basic(optional = false)
-    @NotNull
+   // @Basic(optional = false)
+    @SequenceGenerator(name = "fSequence", sequenceName = "SEQ_RRHH_RUE", allocationSize = 1)
+    @GeneratedValue(generator = "fSequence",strategy = GenerationType.SEQUENCE)
     @Column(name = "ID_RUE")
     private Long idRue;
     @Column(name = "FECHA_FALLECIMIENTO_PADRE")
@@ -392,6 +401,9 @@ public class RrhhRue implements Serializable {
     private Date fechaFallecimientoConyuge;
     @Column(name = "CODIGO_EMPLEADO")
     private Long codigoEmpleado;
+    @Lob
+    @Column(name = "HUELLA_DIGITAL")
+    private Serializable huellaDigital;
     @Size(max = 4000)
     @Column(name = "OBSERVACIONES")
     private String observaciones;
@@ -893,6 +905,13 @@ public class RrhhRue implements Serializable {
         this.codigoEmpleado = codigoEmpleado;
     }
 
+    public Serializable getHuellaDigital() {
+        return huellaDigital;
+    }
+
+    public void setHuellaDigital(Serializable huellaDigital) {
+        this.huellaDigital = huellaDigital;
+    }
 
     public String getObservaciones() {
         return observaciones;
@@ -966,8 +985,6 @@ public class RrhhRue implements Serializable {
         this.zonaVivienda2 = zonaVivienda2;
     }
 
-    
-
     public RrhhMunicipio getRrhhMunicipio() {
         return rrhhMunicipio;
     }
@@ -1006,9 +1023,9 @@ public class RrhhRue implements Serializable {
 
     @Override
     public String toString() {
-        return "cgc.rrhh.contratos.model.RrhhRue[ idRue=" + idRue + " ]";
+        return "cgc.general.model.RrhhRue[ idRue=" + idRue + " ]";
     }
-
+    
    
     
 }

@@ -7,8 +7,10 @@ package cgc.rrhh.contratos.rest;
 
 import cgc.rhh.contratos.util.Constants;
 import cgc.rhh.contratos.util.ResponseData;
+import cgc.rrhh.contratos.model.RrhhCatalogoMotivoRechazo;
 import cgc.rrhh.contratos.model.RrhhContratoEstado;
 import cgc.rrhh.contratos.model.RrhhLaboral;
+import cgc.rrhh.contratos.model.RrhhMotivoRechazo;
 import cgc.rrhh.contratos.model.RrhhMunicipio;
 import cgc.rrhh.contratos.model.RrhhRue;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
@@ -20,6 +22,7 @@ import cgc.rrhh.contratos.service.ContratoService;
 import cgc.rrhh.contratos.service.GeneralService;
 import cgc.rrhh.contratos.service.GenerarContrato;
 import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -45,6 +48,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import org.apache.log4j.Logger;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -71,11 +75,33 @@ public class AsesorREST {
     @EJB
     private GenerarContrato generarContrato;
     
+    private static final Logger log = Logger.getLogger(AsesorREST.class);
+    
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<ResultsContrato> findAllContratoAsesor(){
        return asesorService.listAllByAsesor();
+    }
+    
+    @GET
+    @Path(Constants.MOTIVOS)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<RrhhCatalogoMotivoRechazo> findAllCatalogoMotivoActivo(){
+       return asesorService.listAllCatalogosActive();
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path(Constants.HISTORIAL+Constants.MOTIVOS)
+    public List<RrhhCatalogoMotivoRechazo> motivoRechazo(@QueryParam("contratoEstado") BigDecimal contratoEstado){
+        List<RrhhCatalogoMotivoRechazo> motivos = new ArrayList<RrhhCatalogoMotivoRechazo>();
+        try {
+            motivos = asesorService.findAllMotivosById(contratoEstado);
+        } catch (Exception e) {
+            log.error("motivoRechazo: ",e);
+        }
+        return motivos;
     }
     
     @GET
@@ -88,7 +114,7 @@ public class AsesorREST {
               historialCambios =  asesorService.findHistorialByContrato(contrato);
           }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("listHistorialCambios",e);
         }
         return historialCambios;
     }
@@ -116,13 +142,13 @@ public class AsesorREST {
                     newEstado.setDocumento(generarContrato.generarContrato(antEstado.getIdContrato().getIdContrato()).toByteArray());
                     newEstado.setFechaInsert(new Date());
                     asesorService.aprobarRegistro(antEstado,newEstado);
-                     response.setCode(200);
+                    response.setCode(200);
                     response.setMessage("Contrato aprobado con exito");
                 }
             }
         } catch (Exception e) {
             response.setCode(500);
-            System.out.println(e.getMessage());
+            log.error("aprobar",e);
         }
         return response;
     }
@@ -134,35 +160,61 @@ public class AsesorREST {
     public ResponseData rechazar(@FormDataParam("file") InputStream uploadedInputStream,
            @FormDataParam("file") FormDataContentDisposition fileDetail,
            @FormDataParam("contrato") BigDecimal contrato,
-           @FormDataParam("observaciones") String observaciones){
+           @FormDataParam("observaciones") String observaciones ,
+           @FormDataParam("keywords") List<FormDataBodyPart> keywords){
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error al cargar la información");
         try {
              byte[] docBytes = this.writeFiletoBytes(uploadedInputStream);
+             
+           /*  if(keywords.isEmpty())
+                 throw new Exception("Debe seleccionar almenos un motivo de rechazo.");*/
+                 
+             
              if(docBytes != null){
+                 String usuario = "S/U";
                  RrhhContratoEstado antEstado = asesorService.findEstadoByContrato(contrato,BigDecimal.valueOf(2));
                  if(antEstado != null){
                     antEstado.setEstado("F");
-                    antEstado.setUsuarioUpdate("S/U");
+                    antEstado.setUsuarioUpdate(usuario);
                     antEstado.setFechaUpdate(new Date());
                     
                     RrhhContratoEstado newEstado = new RrhhContratoEstado();
                     newEstado.setEstado(Constants.ACTIVO);
                     newEstado.setIdContrato(antEstado.getIdContrato());
                     newEstado.setDocumento(docBytes);
-                    newEstado.setObservacion(URLDecoder.decode(observaciones,"UTF-8"));
+                    if(observaciones != null && !observaciones.isEmpty() 
+                            && !observaciones.equalsIgnoreCase("null") 
+                            && !observaciones.equalsIgnoreCase("undefined")){
+                        newEstado.setObservacion(URLDecoder.decode(observaciones,"UTF-8"));
+                    }
                     newEstado.setIdCatalogoEstado(generalService.findEstadoById(BigDecimal.valueOf(3)));
-                    newEstado.setUsuarioInsert("S/U");
+                    newEstado.setUsuarioInsert(usuario);
                     newEstado.setFechaInsert(new Date());
-                    asesorService.aprobarRegistro(antEstado,newEstado);
+                    
+                    List<RrhhMotivoRechazo> motivos = new ArrayList<RrhhMotivoRechazo>();
+                    for(FormDataBodyPart keyword: keywords){
+                        System.out.println(keyword.getValueAs(String.class));
+                        
+                        RrhhMotivoRechazo motivo = new RrhhMotivoRechazo();                        
+                        motivo.setFechaInsert(new Date());
+                        motivo.setIdCatalogoMotivoRechazo(generalService.findCatalovoMotivoById(BigDecimal.valueOf(Integer.parseInt(keyword.getValueAs(String.class)))));
+                        //motivo.setIdCatalogoMotivoRechazo(asesorService.findMotivoById(keyword.getValueAs(BigDecimal.class)));
+                        motivo.setUsuarioInsert(usuario);
+                        motivos.add(motivo);
+                    }
+                    
+                    asesorService.rechazarRegistro(antEstado,newEstado,motivos);
+                   // asesorService.aprobarRegistro(newEstado, newEstado);
                     response.setCode(200);
                     response.setMessage("Contrato rechazado con exito");
                  }
              }
         } catch (Exception e) {
             response.setCode(500);
-            System.out.println(e.getMessage());
+            response.setMessage("Error interno del servidor");
+            log.error("rechazo de contrato: ",e);
         }
         return response;
     }
@@ -180,7 +232,7 @@ public class AsesorREST {
 
             buffer.flush();
         } catch (Exception e) {
-            System.out.println("writeImgtoBytes: "+e.getMessage());            
+            log.error("writeImgtoBytes: ",e);
         }
         return buffer.toByteArray();
     }

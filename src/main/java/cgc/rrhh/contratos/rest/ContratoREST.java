@@ -213,7 +213,7 @@ public class ContratoREST {
     
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData crearContrato(ResultsFuncionario resultsFuncionario,
+    public ResponseData<RrhhContrato> crearContrato(ResultsFuncionario resultsFuncionario,
             @Context SecurityContext sc){
         ResponseData response = new ResponseData();
         response.setCode(403);
@@ -266,19 +266,23 @@ public class ContratoREST {
                            RrhhMovimientosPresupuesto movimiento = this.createMovimiento(usuario, fuente, montoTotal);
                            RrhhContratoEstado contratoEstado = this.createEstado(usuario);
                            
-                           boolean creado = contratoService
+                           RrhhContrato creado = contratoService
                                    .CrearContrato(rue, contrato, actividades, laboral, academico,movimiento,contratoEstado);
                            
-                           if(creado){
+                           if(creado != null && creado.getIdContrato() != null){
                                response.setCode(200);
+                               response.setData(creado);
                                response.setMessage("Contrato Creado con exito....");
+                               System.out.println("Contrato creado con exito");
                            }
                                                       
                        }else{
+                           System.out.println("Presupuesto insuficiente");
                            response.setCode(403);
                            response.setMessage("Presupuesto insuficiente");
                        }
                    }else{
+                       System.out.println("Error al consultar presupuesto");
                        response.setCode(403);
                        response.setMessage("Error al consultar Presupuesto");
                    }
@@ -287,10 +291,12 @@ public class ContratoREST {
                     System.out.println("funcionario sin rue");
                 }*/
             }else{
+                System.out.println("Error en validacion");
                 response.setCode(403);
                 response.setMessage("Error en validacion");
             }
         } catch (Exception e) {
+            System.out.println("Error interno");
            response.setCode(500);
            response.setMessage("Error interno del servidor");
            log.error("crear contrato",e);
@@ -388,6 +394,8 @@ public class ContratoREST {
                 rue.setLicenciaConducir("2");
                 rue.setLicenciaArmas("2");
                 rue.setEstado(Constants.ACTIVO);
+                rue.setCui(newFuncionario.getDpi());
+                rue.setPais(generalService.finPaisById("91"));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -545,13 +553,13 @@ public class ContratoREST {
             }
             
             
-            
+            persist.setRrhhAcademico(academico);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("createAcademico: ",e);
             academico = null;
         }
         
-        persist.setRrhhAcademico(academico);
+        
         return persist;
     }
     

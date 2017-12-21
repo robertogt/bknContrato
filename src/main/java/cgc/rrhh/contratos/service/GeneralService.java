@@ -8,11 +8,13 @@ package cgc.rrhh.contratos.service;
 import cgc.rhh.contratos.util.Constants;
 import cgc.rrhh.contratos.model.RrhhAcademico;
 import cgc.rrhh.contratos.model.RrhhCatalogoEstado;
+import cgc.rrhh.contratos.model.RrhhCatalogoMotivoRechazo;
 import cgc.rrhh.contratos.model.RrhhContrato;
 import cgc.rrhh.contratos.model.RrhhContratoEstado;
 import cgc.rrhh.contratos.model.RrhhControlPresupuesto;
 import cgc.rrhh.contratos.model.RrhhDepartamento;
 import cgc.rrhh.contratos.model.RrhhMunicipio;
+import cgc.rrhh.contratos.model.RrhhPais;
 import cgc.rrhh.contratos.model.RrhhPlantilla;
 import cgc.rrhh.contratos.model.RrhhPuestoFuncional;
 import cgc.rrhh.contratos.model.RrhhPuestoNominal;
@@ -23,6 +25,8 @@ import cgc.rrhh.contratos.model.RrhhTipoMovimiento;
 import cgc.rrhh.contratos.model.RrhhUbicacionFuncional;
 import cgc.rrhh.contratos.model.RrhhUbicacionNominal;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -49,6 +53,48 @@ public class GeneralService {
     public GeneralService() {
     }
     
+    public RrhhCatalogoMotivoRechazo findCatalovoMotivoById(BigDecimal idMotivo) throws Exception{
+        try {
+            TypedQuery<RrhhCatalogoMotivoRechazo> query = em
+                    .createNamedQuery("RrhhCatalogoMotivoRechazo.findByIdCatalogoMotivoRechazo",RrhhCatalogoMotivoRechazo.class);
+            query.setParameter("idCatalogoMotivoRechazo", idMotivo);
+            return query.getSingleResult();
+        } catch (NoResultException nr) {
+            return null;
+        } catch (Exception e) {
+            log.error("findCatalovoMotivoById: ",e);
+            throw new Exception(e.getMessage());
+        }
+    }
+    
+    public RrhhMunicipio findMunicipio(String departamento,String municipio) throws Exception{
+       try {
+            TypedQuery<RrhhMunicipio> query = em
+                    .createNamedQuery("RrhhMunicipio.findByMunicipioDepto",RrhhMunicipio.class);
+            query.setParameter("municipio", municipio);
+            query.setParameter("departamento", departamento);
+            return query.getSingleResult();
+        } catch (NoResultException nr) {
+            return null;
+        } catch (Exception e) {
+            log.error("findMunicipio: ",e);
+            throw new Exception(e.getMessage());
+        }
+    }
+    
+    public RrhhPais finPaisById(String pais) throws Exception{
+        try {
+            TypedQuery<RrhhPais> query = em
+                    .createNamedQuery("RrhhPais.findByPais",RrhhPais.class);
+            query.setParameter("pais", pais);
+            return query.getSingleResult();
+        } catch (NoResultException nr) {
+            return null;
+        } catch (Exception e) {
+            log.error("finPaisById: ",e);
+            throw new Exception(e.getMessage());
+        }
+    }
     
     public RrhhContratoEstado findActiveByContrato(BigDecimal idContrato) throws Exception{
         try {
@@ -181,7 +227,7 @@ public class GeneralService {
     }
     
     public RrhhAcademico findAcademicoByTituloRueColegio(BigDecimal titulo, BigDecimal rue,
-            BigDecimal colegio, String tipoServicios){
+            BigDecimal colegio, String tipoServicios) throws Exception{
         try {
             String namedQuery = "";
             if(tipoServicios.equalsIgnoreCase("P")){
@@ -200,13 +246,11 @@ public class GeneralService {
             }
             
             return query.getSingleResult();
-        } catch (NoResultException | NonUniqueResultException nr){
+        } catch (NoResultException nr){
             return null;        
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
-            return null;
+            log.error("findAcademicoByTituloRueColegio: ",e);
+            throw new Exception(e.getMessage());
         }     
     }
     
@@ -259,6 +303,18 @@ public class GeneralService {
         } catch (Exception e) {
             log.error("getMunicipioDepto: ",e);
             return null;
+        }
+    }
+    
+    public List<RrhhCatalogoEstado> findCatalogoEstado(){
+        try {
+            TypedQuery<RrhhCatalogoEstado> query = em
+                    .createNamedQuery("RrhhCatalogoEstado.findByEstado",RrhhCatalogoEstado.class);   
+            query.setParameter("estado", Constants.ACTIVO);
+            return query.getResultList();
+        } catch (Exception e) {
+            log.error("findCatalogoEstado: ",e);
+            return new ArrayList<RrhhCatalogoEstado>();
         }
     }
 }

@@ -5,6 +5,7 @@
  */
 package cgc.rrhh.contratos.pojo;
 
+import cgc.rrhh.contratos.model.RrhhAcuerdoAprobacion;
 import cgc.rrhh.contratos.model.RrhhAcuerdoContrato;
 import cgc.rrhh.contratos.model.RrhhContratoEstado;
 import cgc.rrhh.contratos.model.RrhhLaboral;
@@ -20,9 +21,20 @@ public class PersistAcuerdoAprobacion {
     private List<RrhhAcuerdoContrato> acuerdo;
     private List<RrhhContratoEstado> update;
     private List<RrhhContratoEstado> create;
+    private RrhhAcuerdoAprobacion aprobacion;
 
     public PersistAcuerdoAprobacion() {
     }
+
+    public RrhhAcuerdoAprobacion getAprobacion() {
+        return aprobacion;
+    }
+
+    public void setAprobacion(RrhhAcuerdoAprobacion aprobacion) {
+        this.aprobacion = aprobacion;
+    }
+    
+    
 
     public List<RrhhLaboral> getLaboral() {
         return laboral;

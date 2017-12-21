@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "RrhhCatalogoEstado.findByNombre", query = "SELECT r FROM RrhhCatalogoEstado r WHERE r.nombre = :nombre")
     , @NamedQuery(name = "RrhhCatalogoEstado.findByAbreviatura", query = "SELECT r FROM RrhhCatalogoEstado r WHERE r.abreviatura = :abreviatura")
     , @NamedQuery(name = "RrhhCatalogoEstado.findByDescripcion", query = "SELECT r FROM RrhhCatalogoEstado r WHERE r.descripcion = :descripcion")
-    , @NamedQuery(name = "RrhhCatalogoEstado.findByEstado", query = "SELECT r FROM RrhhCatalogoEstado r WHERE r.estado = :estado")
+    , @NamedQuery(name = "RrhhCatalogoEstado.findByEstado", query = "SELECT r FROM RrhhCatalogoEstado r WHERE r.estado = :estado ORDER BY r.idCatalogoEstado ASC")
     , @NamedQuery(name = "RrhhCatalogoEstado.findByUsuarioInsert", query = "SELECT r FROM RrhhCatalogoEstado r WHERE r.usuarioInsert = :usuarioInsert")
     , @NamedQuery(name = "RrhhCatalogoEstado.findByFechaInsert", query = "SELECT r FROM RrhhCatalogoEstado r WHERE r.fechaInsert = :fechaInsert")
     , @NamedQuery(name = "RrhhCatalogoEstado.findByUsuarioUpdate", query = "SELECT r FROM RrhhCatalogoEstado r WHERE r.usuarioUpdate = :usuarioUpdate")

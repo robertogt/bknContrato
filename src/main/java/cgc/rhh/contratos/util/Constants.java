@@ -37,11 +37,15 @@ public class Constants {
     
     /*REST AcuerdoAprobacion*/
     public static final String ACUERDO_APROBACION = "acuerdoAprobacion";
+    public static final String MANTENIMIENTO = ACUERDO_APROBACION + "/mantenimiento";
+    public static final String ACUERDOS = "/acuerdos";
+    public static final String CONTRATOS = "/contratos";
     
     /*REST Asesor*/
     public static final String HISTORIAL = "/historial";
     public static final String APROBAR = "/aprobar";
     public static final String RECHAZAR = "/rechazar";
+    public static final String MOTIVOS = "/motivos";
     
     /*REST Actividad*/
     public static final String ACTIVIDAD = "actividad";       
@@ -53,6 +57,7 @@ public class Constants {
     /*REST Perfil*/
     public static final String BUSQUEDA ="/busqueda";
     public static final String PERFIL = "perfil";
+    public static final String ESTADOS = "/estados";
     
     /*REST PerfilActividad*/
     public static final String PERFIL_ACTIVIDAD = "perfilactividad";
@@ -75,6 +80,5 @@ public class Constants {
     public static final String MODIFICAR = "/modificar";
     public static final String ANULAR = "/anular";
     
-    public static final String PICK_LIST = "/picklist";
     
 }

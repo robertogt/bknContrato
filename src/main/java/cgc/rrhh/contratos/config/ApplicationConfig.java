@@ -36,6 +36,7 @@ public class ApplicationConfig extends Application{
         resources.add(cgc.rrhh.contratos.rest.ContratoREST.class);
         resources.add(cgc.rrhh.contratos.rest.FianzaREST.class);
         resources.add(cgc.rrhh.contratos.rest.FuncionariosREST.class);
+        resources.add(cgc.rrhh.contratos.rest.MantenimientoREST.class);
         resources.add(cgc.rrhh.contratos.rest.RescindirREST.class);
         resources.add(cgc.rrhh.contratos.rest.TitulosRest.class);
     }

@@ -54,7 +54,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "RrhhContratoEstado.findActiveByContrato", query = "SELECT r FROM RrhhContratoEstado r WHERE r.idContrato.idContrato = :idContrato AND r.estado = 'A' ")})
 @NamedNativeQueries({
     @NamedNativeQuery(name = "RrhhContratoEstado.findByContrato",
-                      query = "SELECT CAT.NOMBRE NOMBRE_ESTADO,C.OBSERVACION,C.USUARIO_INSERT,C.FECHA_INSERT FROM RRHH_CONTRATO_ESTADO C  " +
+                      query = "SELECT C.ID_CONTRATO_ESTADO,CAT.NOMBRE NOMBRE_ESTADO,C.OBSERVACION,C.USUARIO_INSERT,C.FECHA_INSERT FROM RRHH_CONTRATO_ESTADO C  " +
                         "INNER JOIN RRHH_CATALOGO_ESTADO CAT ON C.ID_CATALOGO_ESTADO = CAT.ID_CATALOGO_ESTADO " +
                         "WHERE C.ID_CONTRATO = ? " +
                         "ORDER BY FECHA_INSERT ASC ",
@@ -70,7 +70,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SqlResultSetMappings({
     @SqlResultSetMapping(name = "ResultsHistorial",
                          classes = {@ConstructorResult(targetClass = ResultsHistorial.class,
-                                 columns = {@ColumnResult(name = "NOMBRE_ESTADO", type = String.class),
+                                 columns = {@ColumnResult(name = "ID_CONTRATO_ESTADO", type = BigDecimal.class),
+                                            @ColumnResult(name = "NOMBRE_ESTADO", type = String.class),
                                             @ColumnResult(name = "OBSERVACION", type = String.class),
                                             @ColumnResult(name = "USUARIO_INSERT", type = String.class),
                                             @ColumnResult(name = "FECHA_INSERT", type = Date.class)

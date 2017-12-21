@@ -94,7 +94,7 @@ public class ContratoEditarREST {
                     throw new Exception("movimiento es nulo");
                 
                     SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-                    if(!laboral.getEstado().equalsIgnoreCase("A") && !laboral.getEstado().equalsIgnoreCase("B")){
+                    if(!laboral.getEstado().equalsIgnoreCase("A") && !laboral.getEstado().equalsIgnoreCase("B") && !laboral.getEstado().equalsIgnoreCase("X")){
                        RrhhLaboral modifLaboral = this.setLaboral(usuario,laboral,funcionario);
                        RrhhContrato contrato = this.setContrato(usuario,laboral.getIdContrato(),funcionario);
                        PersistAcademico academico = this.setAcademico(usuario, funcionario);
@@ -161,6 +161,7 @@ public class ContratoEditarREST {
                                List<RrhhControlPresupuesto> presupuestos = contratoService
                                   .getPresupuestoByAnioRenglon(String.valueOf(now.get(Calendar.YEAR)), funcionario.getRenglon());
                                
+                               if(presupuestos != null && !presupuestos.isEmpty()){                               
                                Iterator it = presupuestos.iterator();
                                 boolean isPresupuesto = false;
                                 RrhhControlPresupuesto fuente = new RrhhControlPresupuesto();
@@ -186,7 +187,13 @@ public class ContratoEditarREST {
                                   }else{
                                         response.setCode(403);
                                         response.setMessage("Presupuesto insuficiente");
-                                    }
+                                        throw new Exception("Presupuesto insuficiente");
+                                   }
+                               }else{
+                                    response.setCode(403);
+                                    response.setMessage("Error al consultar Presupuesto");
+                                    throw new Exception("Error al consultar Presupuesto");
+                               }
                            }
                            
                        }else{
@@ -256,7 +263,7 @@ public class ContratoEditarREST {
                        
                        
                     }else{                        
-                        response.setMessage("No se puede editar un contrato Activo o de Baja. ");                
+                        response.setMessage("No se puede editar un contrato Activo, de Baja o Anulado. ");                
                     }   
             }
         } catch (Exception e) {

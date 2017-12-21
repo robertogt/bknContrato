@@ -51,7 +51,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "RrhhAcuerdoAprobacion.findByFechaUpdate", query = "SELECT r FROM RrhhAcuerdoAprobacion r WHERE r.fechaUpdate = :fechaUpdate")
     , @NamedQuery(name = "RrhhAcuerdoAprobacion.findByRenglon", query = "SELECT r FROM RrhhAcuerdoAprobacion r WHERE r.renglon = :renglon")
     , @NamedQuery(name = "RrhhAcuerdoAprobacion.findByTipoServicios", query = "SELECT r FROM RrhhAcuerdoAprobacion r WHERE r.tipoServicios = :tipoServicios")
-    , @NamedQuery(name = "RrhhAcuerdoAprobacion.findByAnio", query = "SELECT r FROM RrhhAcuerdoAprobacion r WHERE r.anio = :anio")})
+    , @NamedQuery(name = "RrhhAcuerdoAprobacion.findByAnio", query = "SELECT r FROM RrhhAcuerdoAprobacion r WHERE r.anio = :anio AND r.estado = 'A'")})
 public class RrhhAcuerdoAprobacion implements Serializable {
 
     private static final long serialVersionUID = 1L;
