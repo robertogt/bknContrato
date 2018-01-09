@@ -65,6 +65,11 @@ public class Constants {
     /*REST Ubicaciones Funcionales*/
     public static final String UBICACION_FUNCIONAL = "ubicacionfuncional";
     
+    /*REST rue*/
+    public static final String RUE = "rue";
+    public static final String MUNICIPIOS = "/municipios";
+    public static final String DEPARTAMENTOS = "/departamentos";
+    
     public static final String DETALLE = "detalle";
     
     public static final String PLANTILLA = "plantilla";

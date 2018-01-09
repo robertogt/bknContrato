@@ -8,6 +8,7 @@ package cgc.rrhh.contratos.service;
 import cgc.rrhh.contratos.model.RrhhLaboral;
 import cgc.rrhh.contratos.model.RrhhMunicipio;
 import cgc.rrhh.contratos.model.RrhhRue;
+import cgc.rrhh.contratos.model.RrhhTitulo;
 import cgc.rrhh.contratos.pojo.ResultsActividad;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -47,6 +48,8 @@ public class GenerarContrato {
     private ContratoService contratoService;
     
     private Logger log = Logger.getLogger(GenerarContrato.class);
+    private static final BigDecimal CONTADOR_PUBLICO_AUDITOR = BigDecimal.valueOf(11);
+    private static final BigDecimal ADMIN_CONTADOR_PUBLICO_AUDITOR = BigDecimal.valueOf(612);
    
     public ByteArrayOutputStream generarContrato(BigDecimal id) throws Exception{       
 
@@ -72,16 +75,16 @@ public class GenerarContrato {
                  range.sanityCheck();
                     range.replaceText("<NUMERO_DE_CONTRATO_EN_LETRAS>", contrato.getNumeroContratoLetras());
                     range.replaceText("<NUMERO_DE_CONTRATO>", laboral.getIdContrato().getCorrelativoContrato().toString());
-                    range.replaceText("<DIA_CONTRATO>", contrato.getFechaContrato());
+                    range.replaceText("<DIA_CONTRATO>", this.replaceFinalS(contrato.getFechaContrato()));
                     range.replaceText("<NOMBRE>", this.crearNombre(laboral.getIdRue()));
                     range.replaceText("<EDAD>", Edad.toText(format.format(laboral.getIdRue().getFechaNacimiento())));
                     range.replaceText("<ESTADO_CIVIL>", this.formatEstadoCivil(laboral.getIdRue().getEstadoCivil(), laboral.getIdRue().getGenero()));
-                    range.replaceText("<NACIONALIDAD>", laboral.getIdRue().getPais().getNacionalidad().toUpperCase());
-                    range.replaceText("<PROFESIÓN>", laboral.getIdContrato().getAcademico().getTitulo().getNombre().toUpperCase());
-                    range.replaceText("<DPI>", Dpi.toText(this.formatDpi(laboral.getIdRue().getCui())));
+                    range.replaceText("<NACIONALIDAD>", this.getNacionalidad(laboral.getIdRue()));
+                    range.replaceText("<PROFESIÓN>", this.getProfesion(laboral.getIdRue().getGenero(), laboral.getIdContrato().getAcademico().getTitulo()));
+                    range.replaceText("<DPI>", this.formatDpi(laboral.getIdRue().getCui()));
                     range.replaceText("<NIT>", Nit.toText(laboral.getIdRue().getNit()));
                     range.replaceText("<RESIDENCIA>", this.formatResidencia(laboral.getIdRue()));
-                    range.replaceText("<UBICACIÓN>", laboral.getUbicacionFuncional().getNombre().toUpperCase());
+                    range.replaceText("<UBICACIÓN>", laboral.getUbicacionFuncional().getTipoUbicacion().getPrefijo()+" "+laboral.getUbicacionFuncional().getNombre().toUpperCase());
                     range.replaceText("<ACTIVIDADES>",this.concatActividades(laboral.getIdContrato().getIdContrato()));
                     range.replaceText("<MONTO_TOTAL_EN_LETRAS>", contrato.getMontoTotalEnLetras());
                     range.replaceText("<PLAZO>",contrato.getPlazoEnLetras());
@@ -90,7 +93,7 @@ public class GenerarContrato {
                         range.replaceText("<COLEGIADO>",Colegiado.toText(laboral.getIdContrato().getAcademico().getNumeroColegiado()));
                     }
                     if(laboral.getIdContrato().getAcademico().getColegioProfesional() != null){
-                        range.replaceText("<COLEGIO>",laboral.getIdContrato().getAcademico().getColegioProfesional().getNombreColegioProfesional().toUpperCase());
+                        range.replaceText("<COLEGIO>",this.replaceTituloColegio(laboral.getIdContrato().getAcademico().getColegioProfesional().getNombreColegioProfesional().toLowerCase()));
                     }    
                     range.replaceText("DIECISÉIS .","DIECISÉIS.");
                     range.replaceText(" ) ",") ");
@@ -117,6 +120,78 @@ public class GenerarContrato {
             return baos;
     }
     
+     private String replaceTituloColegio(String text){        
+        String[] pairs = text.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for(String pair:pairs){
+            if(pair.equals("y") || pair.equals("de")){
+                sb.append(pair);     
+            }else{
+                String temp = pair.substring(0,1).toUpperCase()+pair.substring(1);
+                sb.append(temp);                        
+            }
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+    
+    private String getNacionalidad(RrhhRue rue){
+        String nacionalidad = rue.getPais().getNacionalidad().toUpperCase();
+        try {
+           if(rue.getGenero().equalsIgnoreCase("F")){
+               nacionalidad = nacionalidad.substring(0,nacionalidad.length()-1);
+               nacionalidad = nacionalidad+"A";
+           } 
+        } catch (Exception e) {
+            log.error("Error Nacionalidad: ",e);
+            System.out.println("Error Nacionalidad");
+        }
+        System.out.println(nacionalidad);
+        return nacionalidad;
+    }
+    
+    private String getProfesion(String genero, RrhhTitulo titulo){
+        String profesion = titulo.getNombre();
+        try {
+            if(genero != null){
+                System.out.println(genero);
+                if(genero.equalsIgnoreCase("M")){
+                    profesion = profesion.replace("INGENIERIA", "INGENIERO");
+                    profesion = profesion.replace("INGENIERÍA", "INGENIERO");
+                    profesion = profesion.replace("LICENCIATURA", "LICENCIADO");
+                    
+                }else{                
+                    profesion = profesion.replace("INGENIERIA", "INGENIERA");
+                    profesion = profesion.replace("INGENIERÍA", "INGENIERA");
+                    profesion = profesion.replace("LICENCIATURA", "LICENCIADA");
+                    
+                    profesion = profesion.replace("INGENIERO", "INGENIERA");
+                    profesion = profesion.replace("LICENCIADO", "LICENCIADA");
+                    profesion = profesion.replace("ARQUITECTO", "ARQUITECTA");
+                    profesion = profesion.replace("ADMINISTRADOR", "ADMINISTRADORA");
+                    
+                    if(titulo.getTitulo().equals(CONTADOR_PUBLICO_AUDITOR)){
+                        profesion = profesion.replace("CONTADOR", "CONTADORA");
+                        profesion = profesion.replace("PÚBLICO", "PÚBLICA");
+                        profesion = profesion.replace("PUBLICO", "PUBLICA");
+                        profesion = profesion.replace("AUDITOR", "AUDITORA");
+                    }
+                    
+                    if(titulo.getTitulo().equals(ADMIN_CONTADOR_PUBLICO_AUDITOR)){
+                        profesion = profesion.replace("CONTADOR", "CONTADORA");
+                        profesion = profesion.replace("PÚBLICO", "PÚBLICA");
+                        profesion = profesion.replace("PUBLICO", "PUBLICA");
+                        profesion = profesion.replace("AUDITOR", "AUDITORA");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error con la profesion",e);
+        }            
+        System.out.println(profesion);
+        return profesion;
+    }
+    
     private String concatActividades(BigDecimal idContrato) throws Exception{
         StringBuilder builder = new StringBuilder();
         try {            
@@ -132,7 +207,23 @@ public class GenerarContrato {
         } catch (Exception e) {
             throw new Exception("error en actividades ");
         }
-        return builder.toString().toUpperCase();
+        return builder.toString();
+    }
+    
+    private String replaceFinalS(String text){
+       
+        String subs = text;
+        try {
+            
+            if(subs.endsWith(" ")){
+                subs = subs.substring(0,subs.length() - 1);
+            }
+        
+        } catch (Exception e) {
+            log.error("Error character: ",e);
+            System.out.println("Error replace espacio");
+        }
+         return subs;
     }
     
     private String crearNombre(RrhhRue rue) throws Exception {
@@ -167,13 +258,20 @@ public class GenerarContrato {
     
     private String formatDpi(String dpi) throws Exception{
         String cui = "";
+        StringBuilder builder = new StringBuilder();
         try {
             cui = dpi.replaceAll(" ", "");
             cui = cui.replaceAll("-", "");
+            String temp = Dpi.toText(cui);
+            
+            builder.append(temp.substring(0,temp.lastIndexOf("(")+1));
+            builder.append(dpi);
+            builder.append(temp.substring(temp.lastIndexOf(")")));
+            
         } catch (Exception e) {
             throw new Exception("dpi es null");
         }
-        return cui;
+        return builder.toString();
     }
     
     

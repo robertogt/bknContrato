@@ -24,12 +24,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import org.apache.log4j.Logger;
 
 /**
@@ -52,8 +55,10 @@ public class AcuerdoAprobacionREST {
     private static final Logger log = Logger.getLogger(AcuerdoAprobacionREST.class);
     
     @POST
+    @RolesAllowed("rrhh_contrato")
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData<RrhhAcuerdoAprobacion> crearAcuerdoAprobacion(ResultAcuerdoAprobacion acuerdoAprobacion){
+    public ResponseData<RrhhAcuerdoAprobacion> crearAcuerdoAprobacion(ResultAcuerdoAprobacion acuerdoAprobacion,
+            @Context SecurityContext sc){
         Calendar now = Calendar.getInstance();
         ResponseData response = new ResponseData();
         response.setCode(403);
@@ -61,7 +66,8 @@ public class AcuerdoAprobacionREST {
         
         try {
             if(acuerdoAprobacion != null && this.validate(acuerdoAprobacion)){
-                String usuario = "S/U";
+                //String usuario = "S/U";
+                String usuario = sc.getUserPrincipal().getName().toUpperCase();
                 BigDecimal correlativo = acuerdoAprobacionService
                             .findCorrelativo(acuerdoAprobacion.getRenglon(), acuerdoAprobacion.getTipoServicios(),
                                              String.valueOf(now.get(Calendar.YEAR)));

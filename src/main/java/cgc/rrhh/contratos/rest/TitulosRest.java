@@ -14,6 +14,7 @@ import cgc.rrhh.contratos.service.TitulosService;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -23,18 +24,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author ejmorales
  */
 @Stateless
+@RolesAllowed("rrhh_contrato")
 @Path(Constants.TITULOS)
 public class TitulosRest{
 
     @EJB
     private TitulosService titulosService;
 
+    private static final Logger log = Logger.getLogger(TitulosRest.class);
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<ResultsTexto> listAll(@QueryParam("texto") String texto){
@@ -42,9 +47,7 @@ public class TitulosRest{
         try {
             result = titulosService.listTitulosByTexto(URLDecoder.decode(texto,"UTF-8"));
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("listAll: ",e);
         }
         
         return result;

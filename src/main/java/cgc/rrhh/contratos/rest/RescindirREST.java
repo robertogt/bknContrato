@@ -18,13 +18,16 @@ import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import org.apache.log4j.Logger;
 import rrhh.calculos.contrato.Contrato;
 
@@ -33,6 +36,7 @@ import rrhh.calculos.contrato.Contrato;
  * @author ejmorales
  */
 @Stateless
+@RolesAllowed("rrhh_contrato")
 @Path(Constants.RESCINDIR)
 public class RescindirREST {
     
@@ -51,7 +55,8 @@ public class RescindirREST {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseData rescindirContrato(@FormParam("contrato") BigDecimal Contrato,
-            @FormParam("fechaFin") String fechaFin,@FormParam("observacion") String observacion){
+            @FormParam("fechaFin") String fechaFin,@FormParam("observacion") String observacion,
+            @Context SecurityContext sc){
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error al obtener la información");
@@ -61,7 +66,8 @@ public class RescindirREST {
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(Contrato);
                 RrhhMovimientosPresupuesto movimiento = contratoService.findMovimientoByContrato(laboral.getIdContrato().getIdContrato());
                 if(laboral != null){
-                    String usuario = "S/U";
+                    //String usuario = "S/U";
+                    String usuario = sc.getUserPrincipal().getName().toUpperCase();
                     SimpleDateFormat  format = new SimpleDateFormat("dd/MM/yyyy");
                     RrhhMovimientosPresupuesto diferencia = new RrhhMovimientosPresupuesto();
                     RrhhHistoricoLaboral historico = this.setHistoricoLaboral(usuario,laboral);

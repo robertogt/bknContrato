@@ -44,9 +44,7 @@ public class ActividadPerfilService {
             query.setParameter("idUbicacion", idUbicacion);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findAllByUbicacion: ",e);
             return new ArrayList<RrhhPerfil>();
         }
     }
@@ -58,9 +56,7 @@ public class ActividadPerfilService {
             query.setParameter(1, idPerfil);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findAllActividadesByPerfil: ",e);
             return new ArrayList<ResultsActividad>();
         }
     }
@@ -74,9 +70,7 @@ public class ActividadPerfilService {
             query.setParameter("contrato", idContrato);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findAllActividadesByContrato: ",e);
             return new ArrayList<ResultsActividad>();
         }
     }
@@ -91,9 +85,7 @@ public class ActividadPerfilService {
         } catch (NonUniqueResultException | NoResultException nr){ 
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findContratoByRue: ",e);
             return null;
         }
     }
@@ -109,9 +101,7 @@ public class ActividadPerfilService {
         } catch (NoResultException | NonUniqueResultException nr){
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+           log.error("getIdPerfilByContrato: ",e);
             return null;
         }
     }
@@ -124,9 +114,7 @@ public class ActividadPerfilService {
             query.setParameter("idActividad", idActividad);
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findActividadById: ",e);
             return null;
         }
     }
@@ -139,9 +127,7 @@ public class ActividadPerfilService {
             query.setParameter("idPerfil", idPerfil);
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findPerfilById: ",e);
             return null;
         }
     }
@@ -153,9 +139,7 @@ public class ActividadPerfilService {
             query.setParameter(1, idContrato);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findActividadesByContrato: ",e);
             return null;
         }
     }
@@ -168,9 +152,7 @@ public class ActividadPerfilService {
             query.setParameter("contrato", idContrato);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findActividadesByPerfilContrato: ",e);
             return null;
         }
     }
@@ -182,9 +164,7 @@ public class ActividadPerfilService {
             query.setParameter("contrato", idContrato);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findActividadContratoByContrato: ",e);
             return null;
         }
     }

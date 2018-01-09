@@ -34,12 +34,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import org.apache.log4j.Logger;
 import rrhh.calculos.contrato.Contrato;
 
@@ -48,6 +51,7 @@ import rrhh.calculos.contrato.Contrato;
  * @author ejmorales
  */
 @Stateless
+@RolesAllowed("rrhh_contrato")
 @Path(Constants.EDITAR)
 public class ContratoEditarREST {
     
@@ -73,12 +77,14 @@ public class ContratoEditarREST {
     
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData editarContrato(ResultsFuncionario funcionario){
+    public ResponseData editarContrato(ResultsFuncionario funcionario,
+            @Context SecurityContext sc){
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error al editar contrato");
         try {
-            String usuario = "S/U";
+            //String usuario = "S/U";
+            String usuario = sc.getUserPrincipal().getName().toUpperCase();
             
             if(funcionario != null && funcionario.getIdContrato() != null){                
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(funcionario.getIdContrato());

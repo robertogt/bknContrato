@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
@@ -47,6 +48,7 @@ import rrhh.calculos.contrato.Contrato;
  * @author jrroquel
  */
 @Stateless
+@RolesAllowed("rrhh_contrato")
 @Path(Constants.ADDENDUM)
 public class AddendumREST {
     
@@ -72,9 +74,7 @@ public class AddendumREST {
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseData<ResultsFuncionario> findContrato(@QueryParam("idContrato") BigDecimal idContrato){
         ResponseData response = new ResponseData();
-        System.out.println(idContrato);
         try {
-            System.out.println(idContrato);
             ResultsFuncionario funcionarioRue = addendumService.findContratoByid(idContrato);
             List<ResultsActividad> actividades = actividadPerfilService.findAllActividadesByContrato(funcionarioRue.getIdPerfil(), idContrato);
             funcionarioRue.setActividades(actividades);
@@ -104,7 +104,8 @@ public class AddendumREST {
                         
                     
                     
-                    String usuario = "S/U";
+                    //String usuario = "S/U";
+                    String usuario = sc.getUserPrincipal().getName().toUpperCase();
                     SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
                     RrhhHistoricoLaboral historico = this.setHistoricoLaboral(usuario,laboral);
                     RrhhContrato contratoAddendum = this.setContrato(usuario, laboral);                    

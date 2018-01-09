@@ -169,7 +169,7 @@ import javax.xml.bind.annotation.XmlTransient;
             "WHEN 'U' THEN 'UNIDO/A' END ESTADO_CIVIL_LETRAS, " +
             "R.NIT, " +
             "UPPER(R.DIRECCION||' '||M.NOMBRE||', '||D.NOMBRE) DIRECCION, " +
-            "REPLACE(REPLACE(R.CUI,'-',''),' ','') DPI, " +
+            "R.CUI DPI, " +
             "L.TIPO_SERVICIOS, " +
             "T.NOMBRE TITULO, " +
             "CP.NOMBRE_COLEGIO_PROFESIONAL, " +
@@ -185,7 +185,8 @@ import javax.xml.bind.annotation.XmlTransient;
             "L.ESTADO, "+
             "RE.RENGLON, "+
             "TO_CHAR(R.FECHA_NACIMIENTO,'DD/MM/YYYY') FECHA_NACIMIENTO, "+
-            "U.UBICACION_FUNCIONAL " +    
+            "U.UBICACION_FUNCIONAL, " +    
+            "L.ID_RUE "+
             "FROM RRHH_LABORAL L " +
             "INNER JOIN RRHH_RENGLON RE ON L.RENGLON = RE.RENGLON " +
             "INNER JOIN RRHH_RUE R ON L.ID_RUE = R.ID_RUE " +
@@ -255,7 +256,8 @@ import javax.xml.bind.annotation.XmlTransient;
                                               @ColumnResult(name = "ESTADO", type = String.class),
                                               @ColumnResult(name = "RENGLON", type = String.class),
                                               @ColumnResult(name = "FECHA_NACIMIENTO", type = String.class),
-                                              @ColumnResult(name = "UBICACION_FUNCIONAL", type = BigDecimal.class)
+                                              @ColumnResult(name = "UBICACION_FUNCIONAL", type = BigDecimal.class),
+                                              @ColumnResult(name = "ID_RUE", type = BigDecimal.class)
                                    })
                          }),
     @SqlResultSetMapping(name = "ResultFuncionario",

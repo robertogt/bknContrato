@@ -10,23 +10,28 @@ import cgc.rrhh.contratos.model.RrhhColegioProfesional;
 import cgc.rrhh.contratos.service.ColegioService;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author ejmorales
  */
 @Stateless
+@RolesAllowed("rrhh_contrato")
 @Path(Constants.COLEGIOS)
 public class ColegiosRest{
     
     @EJB
     private ColegioService colegioService;
+    
+    private static final Logger log = Logger.getLogger(ColegiosRest.class);
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -35,9 +40,7 @@ public class ColegiosRest{
         try {
             result = colegioService.findAllColegios();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+           log.error("listAll: ",e);
         }
         
         return result;

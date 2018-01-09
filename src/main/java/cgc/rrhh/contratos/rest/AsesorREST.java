@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +49,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import org.apache.log4j.Logger;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.Range;
@@ -63,6 +65,7 @@ import rrhh.calculos.contrato.Nit;
  * @author ejmorales
  */
 @Stateless
+@RolesAllowed("rrhh_contrato")
 @Path(Constants.ASESOR)
 public class AsesorREST {
 
@@ -122,23 +125,26 @@ public class AsesorREST {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path(Constants.APROBAR)
-    public ResponseData aprobar(@FormParam("contrato") BigDecimal contrato){
+    public ResponseData aprobar(@FormParam("contrato") BigDecimal contrato,
+            @Context SecurityContext sc){
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error al realizar la petición");
         try {
             if(contrato != null){
+                //String usuario = "S/U";
+                String usuario = sc.getUserPrincipal().getName().toUpperCase();
                 RrhhContratoEstado antEstado = asesorService.findEstadoByContrato(contrato,BigDecimal.valueOf(2));
                 if(antEstado != null){
                     antEstado.setEstado("F");
-                    antEstado.setUsuarioUpdate("S/U");
+                    antEstado.setUsuarioUpdate(usuario);
                     antEstado.setFechaUpdate(new Date());
                     
                     RrhhContratoEstado newEstado = new RrhhContratoEstado();
                     newEstado.setEstado(Constants.ACTIVO);
                     newEstado.setIdContrato(antEstado.getIdContrato());
                     newEstado.setIdCatalogoEstado(generalService.findEstadoById(BigDecimal.valueOf(4)));
-                    newEstado.setUsuarioInsert("S/U");
+                    newEstado.setUsuarioInsert(usuario);
                     newEstado.setDocumento(generarContrato.generarContrato(antEstado.getIdContrato().getIdContrato()).toByteArray());
                     newEstado.setFechaInsert(new Date());
                     asesorService.aprobarRegistro(antEstado,newEstado);
@@ -161,7 +167,8 @@ public class AsesorREST {
            @FormDataParam("file") FormDataContentDisposition fileDetail,
            @FormDataParam("contrato") BigDecimal contrato,
            @FormDataParam("observaciones") String observaciones ,
-           @FormDataParam("keywords") List<FormDataBodyPart> keywords){
+           @FormDataParam("keywords") List<FormDataBodyPart> keywords,
+           @Context SecurityContext sc){
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error al cargar la información");
@@ -173,7 +180,8 @@ public class AsesorREST {
                  
              
              if(docBytes != null){
-                 String usuario = "S/U";
+                 //String usuario = "S/U";
+                 String usuario = sc.getUserPrincipal().getName().toUpperCase();
                  RrhhContratoEstado antEstado = asesorService.findEstadoByContrato(contrato,BigDecimal.valueOf(2));
                  if(antEstado != null){
                     antEstado.setEstado("F");

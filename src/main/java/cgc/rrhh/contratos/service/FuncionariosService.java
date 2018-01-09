@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -27,6 +28,8 @@ public  class FuncionariosService {
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
     
+    private static final Logger log = Logger.getLogger(FuncionariosService.class);
+    
     public FuncionariosService() {
     }
     
@@ -37,7 +40,7 @@ public  class FuncionariosService {
             query.setMaxResults(5000);
             return query.getResultList();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("finAllFuncionarios: ",e);
             return new ArrayList<TcFuncionarios>();
         }
     }
@@ -49,7 +52,7 @@ public  class FuncionariosService {
             query.setParameter("dpi",dpi);
             return query.getSingleResult();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("findFuncionarioByDPI: ",e);
             return null;
         }
     }
@@ -62,7 +65,7 @@ public  class FuncionariosService {
             query.setMaxResults(5000);
             return query.getResultList();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("findAllFuncionariosByDPI: ",e);
             return new ArrayList<TcFuncionarios>();
         }
     }
@@ -75,7 +78,7 @@ public  class FuncionariosService {
             query.setMaxResults(5000);
             return query.getResultList();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("findFuncionariosByDPI: ",e);
             return new ArrayList<ResultsFuncionarios>();
         }
     }
@@ -88,7 +91,7 @@ public  class FuncionariosService {
             query.setMaxResults(5000);
             return query.getResultList();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("findFuncionarioByDpi: ",e);
             return null;
         }
     }

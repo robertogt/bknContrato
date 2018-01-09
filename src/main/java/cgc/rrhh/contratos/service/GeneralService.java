@@ -117,9 +117,7 @@ public class GeneralService {
             query.setParameter("renglon", renglon);            
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getRenglonById: ",e);
             return null;
         }        
     }
@@ -131,9 +129,7 @@ public class GeneralService {
             query.setParameter("tipoMovimiento", idTipoMovimiento);            
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getTipoMovimientoById: ",e);
             return null;
         }     
     }
@@ -145,9 +141,7 @@ public class GeneralService {
             query.setParameter("puestoNominal", idPuestoNominal);            
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getPuestoNominal: ",e);
             return null;
         }     
     }
@@ -159,9 +153,7 @@ public class GeneralService {
             query.setParameter("ubicacionNominal", ubicacionNominal);            
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getUbicacionNominal: ",e);
             return null;
         }     
     }
@@ -173,9 +165,7 @@ public class GeneralService {
             query.setParameter("puestoFuncional", puestoFuncional);            
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getPuestoFuncional: ",e);
             return null;
         }     
     }
@@ -188,9 +178,7 @@ public class GeneralService {
             query.setParameter("ubicacionFuncional", ubicacionFuncional);            
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getUbicacionFuncional: ",e);
             return null;
         }     
     }
@@ -205,9 +193,7 @@ public class GeneralService {
             query.setParameter("tipoDocumento", tipoDocumento);
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getPlantillaByRenglonAnio: ",e);
             return null;
         }     
     }
@@ -219,9 +205,7 @@ public class GeneralService {
             query.setParameter("idRue", idRue);            
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getRueById: ",e);
             return null;
         }     
     }
@@ -262,7 +246,7 @@ public class GeneralService {
             String value = (String)query.getSingleResult();
             return value;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("findCorrelativoRue: ",e);
             throw new Exception("error al crerar rue");
         }
     }
@@ -274,9 +258,7 @@ public class GeneralService {
             query.setParameter("idCatalogoEstado", idEstado);            
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findEstadoById: ",e);
             return null;
         }     
     }

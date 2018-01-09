@@ -5,16 +5,23 @@
  */
 package cgc.rrhh.contratos.model;
 
+import cgc.rrhh.contratos.pojo.ResultsMunicipio;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.SqlResultSetMappings;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,6 +41,22 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "RrhhMunicipio.findByNombre", query = "SELECT r FROM RrhhMunicipio r WHERE r.nombre = :nombre")
     , @NamedQuery(name = "RrhhMunicipio.findByOrden", query = "SELECT r FROM RrhhMunicipio r WHERE r.orden = :orden")
     , @NamedQuery(name = "RrhhMunicipio.findByMunicipioDepto", query = "SELECT r FROM RrhhMunicipio r WHERE r.rrhhMunicipioPK.municipio = :municipio AND r.rrhhMunicipioPK.departamento = :departamento")})
+@NamedNativeQueries({
+    @NamedNativeQuery(name = "RrhhMunicipio.NativeMunicipiosDepto",
+                      query = "SELECT M.DEPARTAMENTO,M.MUNICIPIO,D.NOMBRE||' - '||M.NOMBRE NOMBRE FROM RRHH_MUNICIPIO M " +
+                            "INNER JOIN RRHH_DEPARTAMENTO D ON M.DEPARTAMENTO = D.DEPARTAMENTO " +
+                            "ORDER BY M.ORDEN ",
+                      resultSetMapping = "ResultsMunicipio")
+})
+@SqlResultSetMappings({
+    @SqlResultSetMapping(name = "ResultsMunicipio",
+                        classes = {@ConstructorResult(targetClass = ResultsMunicipio.class,
+                                columns = {@ColumnResult(name = "DEPARTAMENTO",type = String.class),
+                                           @ColumnResult(name = "MUNICIPIO",type = String.class),
+                                           @ColumnResult(name = "NOMBRE",type = String.class)
+                                })
+                        })
+})
 public class RrhhMunicipio implements Serializable {
 
     private static final long serialVersionUID = 1L;

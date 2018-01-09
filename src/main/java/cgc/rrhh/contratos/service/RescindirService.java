@@ -13,6 +13,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -23,6 +24,8 @@ import javax.persistence.PersistenceContext;
 public class RescindirService {
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
+    
+    private static final Logger log = Logger.getLogger(RescindirService.class);
     
     public void rescindir(RrhhLaboral laboral, RrhhHistoricoLaboral historico,
             RrhhMovimientosPresupuesto movimiento) throws Exception{
@@ -46,8 +49,7 @@ public class RescindirService {
             em.persist(movimiento);
             
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            log.error("rescindir: ",e);
             throw new Exception(e.getMessage());
         }
     }

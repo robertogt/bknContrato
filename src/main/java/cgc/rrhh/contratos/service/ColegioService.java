@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -27,6 +28,8 @@ public class ColegioService {
     
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
+    
+    private static final Logger log = Logger.getLogger(ColegioService.class);
 
     public ColegioService() {
     }
@@ -37,9 +40,7 @@ public class ColegioService {
                     .createNamedQuery("RrhhColegioProfesional.findAll", RrhhColegioProfesional.class);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findAllColegios: ",e);
             return new ArrayList<RrhhColegioProfesional>();
         }
     }
@@ -52,9 +53,7 @@ public class ColegioService {
             query.setParameter("colegioProfesional", colegioProfesional);
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getTituloById: ",e);
             return null;
         }
     }

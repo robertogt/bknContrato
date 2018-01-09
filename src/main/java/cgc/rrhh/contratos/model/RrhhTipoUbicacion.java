@@ -42,11 +42,23 @@ public class RrhhTipoUbicacion implements Serializable {
     @Size(max = 75)
     @Column(name = "DESCRIPCION")
     private String descripcion;
+    @Column(name = "PREFIJO")
+    private String prefijo;
     @OneToMany(mappedBy = "tipoUbicacion")
     private List<RrhhUbicacionFuncional> rrhhUbicacionFuncionalList;
 
     public RrhhTipoUbicacion() {
     }
+
+    public String getPrefijo() {
+        return prefijo;
+    }
+
+    public void setPrefijo(String prefijo) {
+        this.prefijo = prefijo;
+    }
+    
+    
 
     public RrhhTipoUbicacion(Long tipoUbicacion) {
         this.tipoUbicacion = tipoUbicacion;

@@ -38,6 +38,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.FormParam;
@@ -58,6 +59,7 @@ import rrhh.calculos.contrato.Edad;
  * @author ejmorales
  */
 @Stateless
+@RolesAllowed("rrhh_contrato")
 @Path(Constants.CONTRATO)
 public class ContratoREST {
     
@@ -91,13 +93,15 @@ public class ContratoREST {
     @Path(Constants.ANULAR)
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseData anular(@FormParam("contrato") BigDecimal idContrato,
-            @FormParam("observacion") String observacion) {
+            @FormParam("observacion") String observacion,
+            @Context SecurityContext sc) {
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error al anular contrato");
         try {
             if(idContrato != null){
-                String usuario = "S/U";
+                //String usuario = "S/U";
+                String usuario = sc.getUserPrincipal().getName().toUpperCase();
                 RrhhLaboral laboral = contratoService.findLaboralByContrato(idContrato);
                 
                 RrhhMovimientosPresupuesto movimientoPresupuesto = 
@@ -250,8 +254,8 @@ public class ContratoREST {
                        
                        if(isPresupuesto){
                            System.out.println("isPresupuesto: "+isPresupuesto);
-                           //String usuario = sc.getUserPrincipal().getName().toUpperCase();
-                           String usuario = "S/U";
+                           String usuario = sc.getUserPrincipal().getName().toUpperCase();
+                           //String usuario = "S/U";
                            String correlativo = contratoService
                                    .findCorrelativo(resultsFuncionario.getRenglon(), 
                                            resultsFuncionario.getTipoServicios(),

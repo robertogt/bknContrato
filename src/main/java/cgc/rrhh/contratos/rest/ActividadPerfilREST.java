@@ -13,6 +13,7 @@ import cgc.rrhh.contratos.service.ActividadPerfilService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.MediaType;
  * @author ejmorales
  */
 @Stateless
+@RolesAllowed("rrhh_contrato")
 @Path("actividades")
 public class ActividadPerfilREST {
     

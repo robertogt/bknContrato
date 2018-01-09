@@ -7,6 +7,7 @@ package cgc.rrhh.contratos.service;
 
 import java.util.List;
 import javax.persistence.EntityManager;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -15,6 +16,8 @@ import javax.persistence.EntityManager;
 public abstract class GenericAbstractService<T> {
     
     private Class<T> entityClass;
+    
+    private static final Logger log = Logger.getLogger(GenericAbstractService.class);
 
     public GenericAbstractService(Class<T> entityClass) {
         this.entityClass = entityClass;
@@ -28,7 +31,7 @@ public abstract class GenericAbstractService<T> {
             cq.select(cq.from(entityClass));
             return getEntityManager().createQuery(cq).getResultList();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("getEntityManager: ",e);
             throw new Exception(e.getMessage());
         }
     }

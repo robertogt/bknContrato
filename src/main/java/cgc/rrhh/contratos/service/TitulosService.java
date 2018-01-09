@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -30,6 +31,8 @@ public class TitulosService {
     @PersistenceContext(unitName = Constants.PERSIST_RUE)
     private EntityManager em;
     
+    private static final Logger log = Logger.getLogger(TitulosService.class);
+    
     public TitulosService() {
     }
     
@@ -40,9 +43,7 @@ public class TitulosService {
             query.setParameter(1, texto);
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("listTitulosByTexto: ",e);
             return new ArrayList<ResultsTexto>();
         }
     }
@@ -54,9 +55,7 @@ public class TitulosService {
             query.setParameter("titulo", titulo);
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getTituloById: ",e);
             return null;
         }
     }
@@ -68,9 +67,7 @@ public class TitulosService {
             query.setParameter("gradoAcademico", gradoAcademico);
             return query.getSingleResult();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getGradoAcademicoById: ",e);
             return null;
         }
     }

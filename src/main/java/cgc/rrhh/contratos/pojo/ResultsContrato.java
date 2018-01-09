@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class ResultsContrato {
     
+    private BigDecimal idRue;
     private BigDecimal idContrato;
     private String nombreCompleto;
     private String numeroContrato;
@@ -61,7 +62,8 @@ public class ResultsContrato {
             String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario,
             BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate,
             Date fechaUpdate, String observaciones, String numeroFianza, String nacionalidad,
-            String estado,String renglon, String fechaNacimiento, BigDecimal ubicacionFuncional) {
+            String estado,String renglon, String fechaNacimiento, BigDecimal ubicacionFuncional,BigDecimal idRue) {
+        
         this.idContrato = idContrato;
         this.nombreCompleto = nombreCompleto;
         this.numeroContrato = numeroContrato;
@@ -91,6 +93,7 @@ public class ResultsContrato {
         this.renglon = renglon;
         this.fechaNacimiento = fechaNacimiento;
         this.ubicacionFuncional = ubicacionFuncional;
+        this.idRue = idRue;
     }
 
     public ResultsContrato(BigDecimal idContrato, String nombreCompleto, String numeroContrato, String fechaDel, String fechaAl, String fechaCambioTipoMovimiento, String nombreUbicacion, String nombreRenglon, String estadoCivilLetras, String nit, String direccion, String dpi, String tipoServicios, String titulo, String nombreColegioProfesional, BigDecimal numeroColegiado, BigDecimal honorario, BigDecimal idCatalogoEstado, String usuarioInsert, Date fechaInsert, String usuarioUpdate, Date fechaUpdate, String observaciones) {
@@ -146,6 +149,16 @@ public class ResultsContrato {
         this.numeroFianza = numeroFianza;      
     }
 
+    public BigDecimal getIdRue() {
+        return idRue;
+    }
+
+    public void setIdRue(BigDecimal idRue) {
+        this.idRue = idRue;
+    }
+
+    
+    
     public BigDecimal getCorrelativo() {
         return correlativo;
     }

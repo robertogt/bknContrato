@@ -14,6 +14,7 @@ import cgc.rrhh.contratos.service.ContratoService;
 import cgc.rrhh.contratos.service.GeneralService;
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.FormParam;
@@ -21,7 +22,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import org.apache.log4j.Logger;
 
 /**
@@ -29,6 +32,7 @@ import org.apache.log4j.Logger;
  * @author ejmorales
  */
  @Stateless
+ @RolesAllowed("rrhh_contrato")
  @Path(Constants.FIANZA)
 public class FianzaREST {
      
@@ -43,13 +47,15 @@ public class FianzaREST {
      @POST
      @Produces(MediaType.APPLICATION_JSON)
      public ResponseData guardarFianza(@FormParam("contrato") BigDecimal contrato,
-             @FormParam("fianza") String fianza){
+             @FormParam("fianza") String fianza,
+             @Context SecurityContext sc){
          ResponseData response = new ResponseData();
          response.setCode(403);
          response.setMessage("Error al validar la informacion");
          try {
              if(contrato != null && fianza != null && !fianza.isEmpty()){
-                 String usuario = "S/U";
+                 //String usuario = "S/U";
+                 String usuario = sc.getUserPrincipal().getName().toUpperCase();
                  RrhhLaboral laboral = contratoService.findLaboralByContrato(contrato);
                  if(laboral == null)
                      throw new Exception("Laboral es nulo");

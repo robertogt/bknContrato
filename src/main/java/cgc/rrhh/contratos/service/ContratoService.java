@@ -62,9 +62,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         } catch (NonUniqueResultException | NoResultException  nr) {
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findRueByDPI: ",e);
             return null;
         }
     }
@@ -79,9 +77,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         } catch (NonUniqueResultException | NoResultException nr){
              return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findFuncionarioByDpi: ",e);
             return null;
         }
     }
@@ -103,9 +99,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         } catch (NoResultException | NonUniqueResultException nr) {
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findAcademicoByRue: ",e);
             return null;
         }
     }
@@ -120,9 +114,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         } catch (NoResultException | NonUniqueResultException nr) {
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getAcademicoByContrato: ",e);
             return null;
         }
     }
@@ -135,16 +127,14 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             query.setParameter("renglon", renglon);            
             return query.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("getPresupuestoByAnioRenglon: ",e);
             return new ArrayList<RrhhControlPresupuesto>();
         }
     }
     
     public BigDecimal findCorrelativo(String renglon, String tipoServicios, String anio){
         try {
-            Query query = em.createNativeQuery("SELECT NVL(MAX(C.CORRELATIVO_CONTRATO),0) + 1 CORRELATIVO FROM RRHH_CONTRATO C INNER JOIN RRHH_LABORAL L ON C.ID_CONTRATO = L.ID_CONTRATO WHERE L.RENGLON = ? AND L.TIPO_SERVICIOS = ? AND C.ANIO = ?  ");
+            Query query = em.createNativeQuery("SELECT NVL(MAX(C.CORRELATIVO_CONTRATO),0) + 1 CORRELATIVO FROM RRHH_CONTRATO C INNER JOIN RRHH_LABORAL L ON C.ID_CONTRATO = L.ID_CONTRATO WHERE L.RENGLON = ? AND L.TIPO_SERVICIOS = ? AND C.ANIO = ?  AND L.ESTADO <> 'X'");
             query.setParameter(1, renglon);
             query.setParameter(2, tipoServicios);
             query.setParameter(3, anio);
@@ -152,9 +142,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             BigDecimal value = (BigDecimal)query.getSingleResult();
             return value;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findCorrelativo: ",e);
             return null;
         }
     }
@@ -171,9 +159,7 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             BigDecimal total = (BigDecimal)query.getSingleResult();
             return total;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findMontoTotal: ",e);
             throw new Exception(e.getMessage());
         }
     }
@@ -228,15 +214,13 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
                 em.persist(rue);
                 if(rue.getIdRue() == null)
                     throw new Exception("Error al crear Rue");
-                System.out.println("idRue: "+rue.getIdRue());
+                
             }
             
             
             if(academico.isCreate()){
                 academico.getRrhhAcademico().setIdRue(rue);
-                em.persist(academico.getRrhhAcademico());
-                System.out.println("academico: "+academico.getRrhhAcademico().getAcademico());
-                System.out.println("idRue: "+academico.getRrhhAcademico().getIdRue().getIdRue());
+                em.persist(academico.getRrhhAcademico());                
             }else if(academico.isUpdate()){
                 em.merge(academico.getRrhhAcademico());
             }

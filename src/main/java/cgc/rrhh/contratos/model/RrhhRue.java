@@ -122,7 +122,7 @@ import javax.xml.bind.annotation.XmlTransient;
 "WHEN 'U' THEN 'UNIDO/A' END ESTADO_CIVIL_LETRAS, " +
 "P.PAIS,  " +
 "P.NACIONALIDAD,  " +
-"REPLACE(REPLACE(R.CUI,'-',''),' ','') DPI,R.NIT, " +
+"R.CUI DPI,R.NIT, " +
 "UPPER(R.DIRECCION||' '||M.NOMBRE||', '||D.NOMBRE) DIRECCION, " +
 "L.RENGLON, " +
 "L.TIPO_SERVICIOS, " +
@@ -403,7 +403,7 @@ public class RrhhRue implements Serializable {
     private Long codigoEmpleado;
     @Lob
     @Column(name = "HUELLA_DIGITAL")
-    private Serializable huellaDigital;
+    private byte[] huellaDigital;
     @Size(max = 4000)
     @Column(name = "OBSERVACIONES")
     private String observaciones;
@@ -905,11 +905,11 @@ public class RrhhRue implements Serializable {
         this.codigoEmpleado = codigoEmpleado;
     }
 
-    public Serializable getHuellaDigital() {
+    public byte[] getHuellaDigital() {
         return huellaDigital;
     }
 
-    public void setHuellaDigital(Serializable huellaDigital) {
+    public void setHuellaDigital(byte[] huellaDigital) {
         this.huellaDigital = huellaDigital;
     }
 

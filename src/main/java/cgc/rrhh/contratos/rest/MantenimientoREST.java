@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ws.rs.FormParam;
@@ -35,7 +36,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import org.apache.log4j.Logger;
 
 /**
@@ -43,6 +46,7 @@ import org.apache.log4j.Logger;
  * @author ejmorales
  */
 @Stateless
+@RolesAllowed("rrhh_contrato")
 @Path(Constants.MANTENIMIENTO)
 public class MantenimientoREST {
     
@@ -97,12 +101,14 @@ public class MantenimientoREST {
     
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData modificarAcuerdoContrato(ResultAcuerdoAprobacion acuerdoAprobacion){
+    public ResponseData modificarAcuerdoContrato(ResultAcuerdoAprobacion acuerdoAprobacion,
+            @Context SecurityContext sc){
         ResponseData response = new ResponseData();        
         response.setCode(403);
         response.setMessage("Error al modificar la informacion");
         try {
-            String usuario = "S/U";
+            //String usuario = "S/U";
+            String usuario = sc.getUserPrincipal().getName().toUpperCase();
             if(acuerdoAprobacion.getContratos() != null && !acuerdoAprobacion.getContratos().isEmpty()
                     && acuerdoAprobacion.getIdAcuerdoAprobacion() != null){
                 List<RrhhAcuerdoContrato> rrhhAcuerdoContratos = acuerdoAprobacionService
@@ -129,13 +135,15 @@ public class MantenimientoREST {
     @POST
     @Path(Constants.ANULAR)
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseData anularAcuerdoAprobacion(@FormParam("acuerdo") BigDecimal acuerdo){
+    public ResponseData anularAcuerdoAprobacion(@FormParam("acuerdo") BigDecimal acuerdo,
+            @Context SecurityContext sc){
         ResponseData response = new ResponseData();
         response.setCode(403);
         response.setMessage("Error Al obtener la información");
         try {
             if(acuerdo != null){
-                String usuario =  "S/U";
+                //String usuario =  "S/U";
+                String usuario = sc.getUserPrincipal().getName().toUpperCase();
                 RrhhAcuerdoAprobacion acuerdoAprobacion = acuerdoAprobacionService.findAcuerdoById(acuerdo);
                 
                 if(acuerdoAprobacion == null)

@@ -75,9 +75,7 @@ public class AddendumService extends GenericAbstractService<RrhhContrato>{
         } catch (NonUniqueResultException | NoResultException  nr) {
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.out.println(e.getMessage());
+            log.error("findContratoByid: ",e);
             return null;
         }
     }
