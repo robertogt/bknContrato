@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -230,7 +231,7 @@ public class ConsultaREST {
                     range.replaceText("<DPI>", this.formatDpi(laboral.getIdRue().getCui()));
                     range.replaceText("<NIT>", Nit.toText(laboral.getIdRue().getNit()));
                     range.replaceText("<RESIDENCIA>", this.formatResidencia(laboral.getIdRue()));
-                    range.replaceText("<UBICACIÓN>", laboral.getUbicacionFuncional().getTipoUbicacion().getPrefijo()+" "+laboral.getUbicacionFuncional().getNombre().toUpperCase());
+                    range.replaceText("<UBICACIÓN>", this.getUbicacion(laboral));
                     range.replaceText("<ACTIVIDADES>",this.concatActividades(laboral.getIdContrato().getIdContrato()));
                     range.replaceText("<MONTO_TOTAL_EN_LETRAS>", contrato.getMontoTotalEnLetras());
                     range.replaceText("<PLAZO>",contrato.getPlazoEnLetras());
@@ -260,10 +261,27 @@ public class ConsultaREST {
 		//	baos = this.convertInputStreamToByteArrayOutputStream(fileInputStream);
                         document.write(baos);
         } catch (Exception e) {
+            log.error("generateContrat",e);
         }
         return baos;
     }
     
+    private String getUbicacion(RrhhLaboral laboral){
+        String ubicacion = (laboral.getUbicacionFuncional().getTipoUbicacion() != null 
+                            ? laboral.getUbicacionFuncional().getTipoUbicacion().getPrefijo() : "la")+" "+laboral.getUbicacionFuncional().getNombre().toUpperCase();
+        try {
+            if(laboral.getRenglon().getRenglon().equals("3") || laboral.getRenglon().getRenglon().equals("4")
+                    || laboral.getRenglon().getRenglon().equals("6")){
+                if(laboral.getUbicacionFuncional().isDependiente()){
+                    ubicacion = "UNA DE LAS DEPENDENCIAS QUE CONFORMAN LA SUBCONTRALORIA DE CALIDAD DE GASTO PÚBLICO";
+                }
+            }
+            
+        } catch (Exception e) {
+            log.error("getUbicacion: ",e);
+        }
+        return ubicacion;
+    }
     
     private String replaceTituloColegio(String text){        
         String[] pairs = text.split(" ");
@@ -289,9 +307,7 @@ public class ConsultaREST {
            } 
         } catch (Exception e) {
             log.error("Error Nacionalidad: ",e);
-            System.out.println("Error Nacionalidad");
         }
-        System.out.println(nacionalidad);
         return nacionalidad;
     }
     
@@ -306,7 +322,6 @@ public class ConsultaREST {
         
         } catch (Exception e) {
             log.error("Error character: ",e);
-            System.out.println("Error replace espacio");
         }
          return subs;
     }
@@ -315,7 +330,6 @@ public class ConsultaREST {
         String profesion = titulo.getNombre();
         try {
             if(genero != null){
-                System.out.println(genero);
                 if(genero.equalsIgnoreCase("M")){
                     profesion = profesion.replace("INGENIERIA", "INGENIERO");
                     profesion = profesion.replace("INGENIERÍA", "INGENIERO");
@@ -353,7 +367,6 @@ public class ConsultaREST {
         } catch (Exception e) {
             log.error("Error con la profesion",e);
         }            
-        System.out.println(profesion);
         return profesion;
     }
     
@@ -362,12 +375,26 @@ public class ConsultaREST {
         StringBuilder builder = new StringBuilder();
         try {            
             List<ResultsActividad> actividades = actividadPerfilService.findActividadesByContrato(idContrato);
-            for(ResultsActividad actividad: actividades){
+            Iterator it = actividades.iterator();
+            while(it.hasNext()){
+                ResultsActividad actividad = (ResultsActividad)it.next();
                 builder.append(" ");
                 builder.append(actividad.getIdActividad());
                 builder.append(") ");
                 builder.append(actividad.getDescripcion());
+                
+                if(it.hasNext()){
+                    builder.append(",");
+                    builder.append(" ");
+                }
             }
+            /*for(ResultsActividad actividad: actividades){
+                builder.append(" ");
+                builder.append(actividad.getIdActividad());
+                builder.append(") ");
+                builder.append(actividad.getDescripcion());
+                builder.append(",");
+            }*/
             
             builder.append(".");
         } catch (Exception e) {

@@ -232,8 +232,8 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             em.persist(contrato);
             
             if(laboral.getTipoServicios().equalsIgnoreCase("P")){
-                System.out.println(academico.getRrhhAcademico().getColegioProfesional().getNombreColegioProfesional());
-                System.out.println(academico.getRrhhAcademico().getNumeroColegiado());
+                //System.out.println(academico.getRrhhAcademico().getColegioProfesional().getNombreColegioProfesional());
+                //System.out.println(academico.getRrhhAcademico().getNumeroColegiado());
             }
             
             if(contrato.getIdContrato() == null)

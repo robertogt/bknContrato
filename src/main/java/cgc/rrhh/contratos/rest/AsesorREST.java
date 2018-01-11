@@ -65,7 +65,7 @@ import rrhh.calculos.contrato.Nit;
  * @author ejmorales
  */
 @Stateless
-@RolesAllowed("rrhh_contrato")
+@RolesAllowed({"rrhh_contrato","subcontraloria_contrato"})
 @Path(Constants.ASESOR)
 public class AsesorREST {
 
@@ -203,7 +203,6 @@ public class AsesorREST {
                     
                     List<RrhhMotivoRechazo> motivos = new ArrayList<RrhhMotivoRechazo>();
                     for(FormDataBodyPart keyword: keywords){
-                        System.out.println(keyword.getValueAs(String.class));
                         
                         RrhhMotivoRechazo motivo = new RrhhMotivoRechazo();                        
                         motivo.setFechaInsert(new Date());

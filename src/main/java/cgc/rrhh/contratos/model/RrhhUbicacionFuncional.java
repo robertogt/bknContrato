@@ -121,6 +121,8 @@ public class RrhhUbicacionFuncional implements Serializable {
     @JoinColumn(name = "TIPO_UBICACION", referencedColumnName = "TIPO_UBICACION")
     @ManyToOne
     private RrhhTipoUbicacion tipoUbicacion;
+    @Column(name = "DEPENDIENTE")
+    private boolean dependiente;
 
     public RrhhUbicacionFuncional() {
     }
@@ -135,6 +137,16 @@ public class RrhhUbicacionFuncional implements Serializable {
         this.usuarioInsert = usuarioInsert;
         this.fechaInsert = fechaInsert;
     }
+
+    public boolean isDependiente() {
+        return dependiente;
+    }
+
+    public void setDependiente(boolean dependiente) {
+        this.dependiente = dependiente;
+    }
+    
+    
 
     public BigDecimal getUbicacionFuncional() {
         return ubicacionFuncional;

@@ -21,6 +21,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -33,6 +34,8 @@ public class ActividadPerfilREST {
     
     @EJB
     private ActividadPerfilService actividadPerfilService;
+    
+    private static final Logger log = Logger.getLogger(ActividadPerfilREST.class);
      
     @GET
     @Path("/perfiles/ubicacion")
@@ -61,7 +64,7 @@ public class ActividadPerfilREST {
                 actividad = actividadPerfilService.findAllActividadesByPerfil(idPerfil);
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("getAllActividades: ",e);
         }
         return actividad;
     }

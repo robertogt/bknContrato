@@ -237,7 +237,6 @@ public class ContratoREST {
                    BigDecimal montoTotal = BigDecimal
                            .valueOf(libContrato.getMontoTotal());
                    
-                    System.out.println(montoTotal);
                    if(presupuestos != null && !presupuestos.isEmpty()){
                        Iterator it = presupuestos.iterator();
                        boolean isPresupuesto = false;
@@ -253,7 +252,6 @@ public class ContratoREST {
                        }
                        
                        if(isPresupuesto){
-                           System.out.println("isPresupuesto: "+isPresupuesto);
                            String usuario = sc.getUserPrincipal().getName().toUpperCase();
                            //String usuario = "S/U";
                            String correlativo = contratoService
@@ -277,16 +275,15 @@ public class ContratoREST {
                                response.setCode(200);
                                response.setData(creado);
                                response.setMessage("Contrato Creado con exito....");
-                               System.out.println("Contrato creado con exito");
                            }
                                                       
                        }else{
-                           System.out.println("Presupuesto insuficiente");
+                           log.info("Presupuesto Insuficiente.");
                            response.setCode(403);
                            response.setMessage("Presupuesto insuficiente");
                        }
                    }else{
-                       System.out.println("Error al consultar presupuesto");
+                       log.info("Error al consultar Presupuesto.");
                        response.setCode(403);
                        response.setMessage("Error al consultar Presupuesto");
                    }
@@ -294,13 +291,11 @@ public class ContratoREST {
                /* }else{
                     System.out.println("funcionario sin rue");
                 }*/
-            }else{
-                System.out.println("Error en validacion");
+            }else{                
                 response.setCode(403);
                 response.setMessage("Error en validacion");
             }
         } catch (Exception e) {
-            System.out.println("Error interno");
            response.setCode(500);
            response.setMessage("Error interno del servidor");
            log.error("crear contrato",e);
@@ -317,7 +312,7 @@ public class ContratoREST {
             estado.setEstado(Constants.ACTIVO);
             
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("createEstado: ",e);
             estado = null;
         }
         
@@ -333,7 +328,7 @@ public class ContratoREST {
             movimientoPresupuesto.setMonto(montoTotal.negate());
             movimientoPresupuesto.setIdControlPresupuesto(presupuesto);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("createMovimiento: ",e);
             movimientoPresupuesto = null;
         }
         return movimientoPresupuesto;
@@ -402,7 +397,7 @@ public class ContratoREST {
                 rue.setPais(generalService.finPaisById("91"));
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("createRue: ",e);
             rue = null;
         }
         
@@ -449,7 +444,7 @@ public class ContratoREST {
             laboral.setEdificio(ubicacionFuncional.getEdificio());
             laboral.setNumeroDocumento("0");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("createLaboral: ",e);
             laboral = null;
         }
         return laboral;
@@ -474,7 +469,7 @@ public class ContratoREST {
                 contrato.setObservaciones(resultsFuncionario.getObservaciones());
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("createContrato: ",e);
             contrato = null;
         }
         return contrato;
@@ -497,7 +492,7 @@ public class ContratoREST {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("createActividades: ",e);
             actividades = new ArrayList<RrhhActividadContrato>();
         }
         return actividades;
@@ -589,11 +584,10 @@ public class ContratoREST {
             builder.append(correlativo);
             builder.append("-");
             builder.append(now.get(Calendar.YEAR));
-            
-            System.out.println(builder.toString());
+                        
             return builder.toString();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("numeroContrato: ",e);
             return null;
         }
     }
@@ -690,7 +684,7 @@ public class ContratoREST {
             }
             
         } catch (Exception e) {
-           System.out.println(e.getMessage());
+           log.error("validate: ",e);
            eval = false;
         }
         return eval;

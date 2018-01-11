@@ -96,7 +96,6 @@ public class ActividadPerfilService {
             query.setMaxResults(1);
             query.setParameter(1, idContrato);
             BigDecimal idPerfil = (BigDecimal)query.getSingleResult();
-            System.out.println(idPerfil);
             return idPerfil;
         } catch (NoResultException | NonUniqueResultException nr){
             return null;

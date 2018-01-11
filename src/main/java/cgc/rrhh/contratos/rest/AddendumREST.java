@@ -306,11 +306,8 @@ public class AddendumREST {
             contrato.setAcademico(laboral.getIdContrato().getAcademico());
             contrato.setCorrelativoContrato(laboral.getIdContrato().getCorrelativoContrato());
             log.info(String.valueOf(now.get(Calendar.YEAR)));
-            System.out.println(now.get(Calendar.YEAR));
             log.info(laboral.getRenglon().getRenglon());
-            System.out.println(laboral.getRenglon().getRenglon());
             log.info(laboral.getTipoServicios());
-            System.out.println(laboral.getTipoServicios());
             contrato.setIdPlantilla(generalService
                     .getPlantillaByRenglonAnio(String.valueOf(now.get(Calendar.YEAR)),
                             laboral.getRenglon().getRenglon(),

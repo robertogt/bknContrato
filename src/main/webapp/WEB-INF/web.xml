@@ -6,7 +6,57 @@
 	 version="3.1">
     <session-config>
         <session-timeout>
-            30
+            60
         </session-timeout>
     </session-config>
+    
+    <security-constraint>
+         <web-resource-collection>
+             <web-resource-name>Contratos</web-resource-name>
+             <url-pattern>/rest/actividades/*</url-pattern>
+             <url-pattern>/rest/acuerdoAprobacion/*</url-pattern>
+             <url-pattern>/rest/addendum/*</url-pattern>
+             <url-pattern>/rest/asesor/*</url-pattern>
+             <url-pattern>/rest/contrato/*</url-pattern>
+             <url-pattern>/rest/colegios/*</url-pattern>
+             <url-pattern>/rest/funcionarios/*</url-pattern>
+             <url-pattern>/rest/rue/*</url-pattern>
+             <url-pattern>/rest/titulos/*</url-pattern>
+             <http-method>GET</http-method>
+             <http-method>POST</http-method>
+             <http-method>PUT</http-method>
+             <http-method>DELETE</http-method>
+         </web-resource-collection>
+         <auth-constraint>
+             <role-name>rrhh_contrato</role-name> 
+         </auth-constraint>
+         <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+         <web-resource-collection>
+             <web-resource-name>RevisionAsesor</web-resource-name>
+             <url-pattern>/rest/asesor/*</url-pattern>
+             <http-method>GET</http-method>
+             <http-method>POST</http-method>
+             <http-method>PUT</http-method>
+             <http-method>DELETE</http-method>
+         </web-resource-collection>
+         <auth-constraint>
+             <role-name>subcontraloria_contrato</role-name> 
+         </auth-constraint>
+         <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+       <login-config>
+        <auth-method>BASIC</auth-method>        
+       </login-config>
+    <security-role>
+        <role-name>rrhh_contrato</role-name>
+    </security-role> 
+    <security-role>
+        <role-name>subcontraloria_contrato</role-name>
+    </security-role> 
 </web-app>

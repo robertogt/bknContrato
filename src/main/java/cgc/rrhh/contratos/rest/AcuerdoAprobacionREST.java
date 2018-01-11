@@ -204,7 +204,6 @@ public class AcuerdoAprobacionREST {
             builder.append("-");
             builder.append(now.get(Calendar.YEAR));
             
-            System.out.println(builder.toString());
             return builder.toString();
         } catch (Exception e) {
             log.error("generarIdentificadorAcuerdo",e);
