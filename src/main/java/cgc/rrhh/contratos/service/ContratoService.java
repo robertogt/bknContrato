@@ -147,6 +147,23 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
         }
     }
     
+    public BigDecimal findCorrelativo(Integer correlativo,String renglon, String tipoServicios, String anio) throws Exception{
+        try {
+            Query query = em.createNativeQuery("SELECT C.CORRELATIVO_CONTRATO CORRELATIVO FROM RRHH_CONTRATO C INNER JOIN RRHH_LABORAL L ON C.ID_CONTRATO = L.ID_CONTRATO WHERE L.RENGLON = ? AND L.TIPO_SERVICIOS = ? AND C.ANIO = ? AND C.CORRELATIVO_CONTRATO = ? AND L.ESTADO <> 'X'");
+            query.setParameter(1, renglon);
+            query.setParameter(2, tipoServicios);
+            query.setParameter(3, anio);
+            query.setParameter(4, correlativo);
+            BigDecimal value = (BigDecimal)query.getSingleResult();
+            return value;
+        } catch(NoResultException nr) {
+            return null;
+        } catch (Exception e) {
+            log.error("findCorrelativo: ",e);
+            throw new Exception(e.getMessage());
+        }
+    }
+    
     public BigDecimal findMontoTotal(BigDecimal idPresupuesto)throws Exception{
         try {
             Query query = em.createNativeQuery("SELECT A.MONTO + B.MONTO MONTO_FINAL FROM ( " +

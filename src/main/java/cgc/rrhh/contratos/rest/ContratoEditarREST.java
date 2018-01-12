@@ -75,6 +75,26 @@ public class ContratoEditarREST {
     
     private static final Logger log = Logger.getLogger(ContratoEditarREST.class);
     
+    private String findCorrelativo(String renglon, String tipoServicios) throws Exception{        
+        Calendar now = Calendar.getInstance();
+        Integer count = 0;
+        BigDecimal correlativo = BigDecimal.ONE;
+        try {
+            do{
+                count++;
+                correlativo = contratoService
+                                   .findCorrelativo(count,renglon, 
+                                           tipoServicios,
+                                           String.valueOf(now.get(Calendar.YEAR)));                 
+            }while(correlativo != null);
+        } catch (Exception e) {
+            log.error("findCorrelativo: ",e);
+            throw new Exception("Error findCorrelativo");            
+        }
+        
+        return count.toString();
+    }
+    
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseData editarContrato(ResultsFuncionario funcionario,
@@ -101,8 +121,28 @@ public class ContratoEditarREST {
                 
                     SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
                     if(!laboral.getEstado().equalsIgnoreCase("A") && !laboral.getEstado().equalsIgnoreCase("B") && !laboral.getEstado().equalsIgnoreCase("X")){
-                       RrhhLaboral modifLaboral = this.setLaboral(usuario,laboral,funcionario);
-                       RrhhContrato contrato = this.setContrato(usuario,laboral.getIdContrato(),funcionario);
+                        
+                       boolean change = false;
+                       String correlativo = null;
+                        if(!funcionario.getRenglon().equalsIgnoreCase(laboral.getRenglon().getRenglon())){
+                           change = true;                            
+                       }
+                        
+                       if(!funcionario.getTipoServicios().equalsIgnoreCase(laboral.getTipoServicios())){
+                           change = true;
+                       }
+                       
+                       if(change){
+                           //Calendar now = Calendar.getInstance();
+                           /*correlativo = contratoService
+                                   .findCorrelativo(funcionario.getRenglon(), 
+                                           funcionario.getTipoServicios(),
+                                           String.valueOf(now.get(Calendar.YEAR))).toString();*/
+                           correlativo = this.findCorrelativo(funcionario.getRenglon(), funcionario.getTipoServicios());
+                       }
+                        
+                       RrhhLaboral modifLaboral = this.setLaboral(usuario,laboral,funcionario,change,correlativo);
+                       RrhhContrato contrato = this.setContrato(usuario,laboral.getIdContrato(),funcionario,change,correlativo);
                        PersistAcademico academico = this.setAcademico(usuario, funcionario);
                        RrhhMovimientosPresupuesto crear = new RrhhMovimientosPresupuesto();
                        RrhhMovimientosPresupuesto anular = new RrhhMovimientosPresupuesto();
@@ -278,6 +318,36 @@ public class ContratoEditarREST {
         return response;
     }
     
+    private String numeroContrato(String renglon, String tipoServicios, String correlativo){
+        try {
+            Calendar now = Calendar.getInstance();
+            
+            if(correlativo == null)
+                throw new Exception("Ocurrio un error con el correlativo. ");
+            
+            
+            StringBuilder builder = new StringBuilder();
+            builder.append("RRHH");
+            builder.append("-");
+            if(tipoServicios.equalsIgnoreCase("T")){
+                builder.append("ST");
+            }else{
+                builder.append("SP");
+            }
+            builder.append("-");
+            builder.append(generalService.getRenglonById(renglon).getNombre());
+            builder.append("-");
+            builder.append(correlativo);
+            builder.append("-");
+            builder.append(now.get(Calendar.YEAR));
+                        
+            return builder.toString();
+        } catch (Exception e) {
+            log.error("numeroContrato: ",e);
+            return null;
+        }
+    }
+    
     private PersistActividades actividadesUpdate(List<RrhhActividadContrato> actividadContrato, 
             List<ResultsActividad> resultsActividad, String usuario, BigDecimal idPerfil, RrhhContrato contrato){
         PersistActividades persist = new PersistActividades();
@@ -343,7 +413,7 @@ public class ContratoEditarREST {
     
     
     private RrhhLaboral setLaboral(String usuario,RrhhLaboral laboral,
-            ResultsFuncionario funcionario) throws Exception{
+            ResultsFuncionario funcionario, boolean  change, String correlativo) throws Exception{
         try {
             SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");            
             RrhhUbicacionFuncional ubicacionFuncional = generalService
@@ -354,6 +424,11 @@ public class ContratoEditarREST {
             Calendar al = Calendar.getInstance();
                 al.setTime(format.parse(funcionario.getFechaAl()));
             int diffMonth = al.get(Calendar.MONTH) - del.get(Calendar.MONTH) + 1;
+            
+            if(change){
+                laboral.setDocumentoMovimiento(this.numeroContrato(funcionario.getRenglon(), funcionario.getTipoServicios(), correlativo));
+                laboral.setNumeroContrato(this.numeroContrato(funcionario.getRenglon(), funcionario.getTipoServicios(), correlativo));
+            }
             
             laboral.setPlazoContrato(diffMonth+" meses");
             laboral.setEdificio(ubicacionFuncional.getEdificio());            
@@ -380,7 +455,7 @@ public class ContratoEditarREST {
     }
     
     private RrhhContrato setContrato(String usuario, RrhhContrato contrato,
-            ResultsFuncionario funcionario) throws Exception{
+            ResultsFuncionario funcionario, boolean change, String correlativo) throws Exception{
         try {
              Calendar now = Calendar.getInstance();
             contrato.setAnio(BigInteger.valueOf(now.get(Calendar.YEAR)));
@@ -389,6 +464,11 @@ public class ContratoEditarREST {
             if(funcionario.getObservaciones() != null && !funcionario.getObservaciones().isEmpty()){
                contrato.setObservaciones(funcionario.getObservaciones());
             }
+            
+            if(change){                
+                contrato.setCorrelativoContrato(BigInteger.valueOf(Integer.valueOf(correlativo)));
+            }
+            
            contrato.setIdPlantilla(generalService
                     .getPlantillaByRenglonAnio(String.valueOf(now.get(Calendar.YEAR)),
                             funcionario.getRenglon(),

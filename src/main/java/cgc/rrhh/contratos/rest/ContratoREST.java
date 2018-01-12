@@ -215,6 +215,26 @@ public class ContratoREST {
         return response;
     }
     
+    private String findCorrelativo(String renglon, String tipoServicios) throws Exception{        
+        Calendar now = Calendar.getInstance();
+        Integer count = 0;
+        BigDecimal correlativo = BigDecimal.ONE;
+        try {
+            do{
+                count++;
+                correlativo = contratoService
+                                   .findCorrelativo(count,renglon, 
+                                           tipoServicios,
+                                           String.valueOf(now.get(Calendar.YEAR)));                 
+            }while(correlativo != null);
+        } catch (Exception e) {
+            log.error("findCorrelativo: ",e);
+            throw new Exception("Error findCorrelativo");            
+        }
+        
+        return count.toString();
+    }
+    
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseData<RrhhContrato> crearContrato(ResultsFuncionario resultsFuncionario,
@@ -254,10 +274,12 @@ public class ContratoREST {
                        if(isPresupuesto){
                            String usuario = sc.getUserPrincipal().getName().toUpperCase();
                            //String usuario = "S/U";
-                           String correlativo = contratoService
+                          /* String correlativo = contratoService
                                    .findCorrelativo(resultsFuncionario.getRenglon(), 
                                            resultsFuncionario.getTipoServicios(),
-                                           String.valueOf(now.get(Calendar.YEAR))).toString();
+                                           String.valueOf(now.get(Calendar.YEAR))).toString();*/
+                          String correlativo = this.findCorrelativo(resultsFuncionario.getRenglon(),
+                                            resultsFuncionario.getTipoServicios());
                            RrhhRue rue = this.createRue(usuario, resultsFuncionario);
                            RrhhLaboral laboral = this.createLaboral(usuario, 
                                    resultsFuncionario, 
