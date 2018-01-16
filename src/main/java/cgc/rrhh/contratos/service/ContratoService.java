@@ -169,8 +169,10 @@ public class ContratoService extends GenericAbstractService<RrhhContrato>{
             Query query = em.createNativeQuery("SELECT A.MONTO + B.MONTO MONTO_FINAL FROM ( " +
 "SELECT MONTO FROM RRHH_CONTROL_PRESUPUESTO " +
 "WHERE ID_CONTROL_PRESUPUESTO = ?id ) A, " +
-"(SELECT NVL(SUM(MONTO),0) AS MONTO FROM RRHH_MOVIMIENTO_PRESUPUESTO " +
-"WHERE ID_CONTROL_PRESUPUESTO = ?id ) B ");
+"(SELECT NVL(SUM(M.MONTO),0) AS MONTO FROM RRHH_MOVIMIENTO_PRESUPUESTO M " +
+"INNER JOIN RRHH_CONTRATO C ON M.ID_CONTRATO = C.ID_CONTRATO " +
+"INNER JOIN RRHH_LABORAL L ON L.ID_CONTRATO = C.ID_CONTRATO " +
+"WHERE M.ID_CONTROL_PRESUPUESTO = ?id AND L.ESTADO <> 'X' ) B ");
             query.setParameter("id", idPresupuesto);
             
             BigDecimal total = (BigDecimal)query.getSingleResult();
